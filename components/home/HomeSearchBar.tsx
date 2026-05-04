@@ -18,7 +18,7 @@ export function HomeSearchBar({
   showFilterButton = true
 }: HomeSearchBarProps) {
   return (
-    <label
+    <div
       className={`relative flex h-12 items-center gap-3 rounded-full bg-white py-0 pl-4 pr-14 shadow-sm ring-1 ring-black/5 ${className ?? ""}`}
     >
       <Search className="h-5 w-5 shrink-0 text-black" />
@@ -52,6 +52,6 @@ export function HomeSearchBar({
           />
         </button>
       ) : null}
-    </label>
+    </div>
   );
 }
