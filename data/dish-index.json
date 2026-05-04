@@ -1,32 +1,142 @@
 [
   {
     "id": "dish-tomato-egg",
-    "name": "Tomato Egg Stir-Fry",
-    "cuisine": "Chinese Home Style",
-    "summary": "Fast stir-fry with soft eggs and juicy tomatoes.",
-    "requiredIngredients": ["tomato", "egg", "garlic"],
-    "optionalIngredients": ["spring onion", "onion"],
+    "name": "Trứng xào cà chua",
+    "cuisine": "Món gia đình",
+    "summary": "Món xào nhanh với trứng mềm, cà chua mọng nước và tỏi thơm.",
+    "requiredIngredients": ["cà chua", "trứng", "tỏi"],
+    "optionalIngredients": ["hành lá", "hành tím", "tiêu"],
     "estimatedTimeMinutes": 18,
     "difficulty": "easy"
   },
   {
-    "id": "dish-thai-basil-chicken",
-    "name": "Thai Basil Chicken Rice Bowl",
-    "cuisine": "Thai",
-    "summary": "Savory chicken with basil served over steamed rice.",
-    "requiredIngredients": ["chicken", "thai basil", "garlic", "rice"],
-    "optionalIngredients": ["onion", "egg"],
+    "id": "dish-canh-chua-ca",
+    "name": "Canh chua cá",
+    "cuisine": "Món Việt",
+    "summary": "Canh chua thanh vị với cá, cà chua, dứa, bạc hà và rau thơm.",
+    "requiredIngredients": ["cá", "cà chua", "dứa", "bạc hà"],
+    "optionalIngredients": ["giá đỗ", "đậu bắp", "ngò rí", "sả", "tỏi"],
+    "estimatedTimeMinutes": 35,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-ca-kho-to",
+    "name": "Cá kho tộ",
+    "cuisine": "Món Việt",
+    "summary": "Cá kho đậm đà với hành tím, tỏi, tiêu và nước mắm, hợp ăn cùng cơm nóng.",
+    "requiredIngredients": ["cá", "hành tím", "tỏi"],
+    "optionalIngredients": ["ớt", "tiêu", "gừng", "nước mắm"],
+    "estimatedTimeMinutes": 45,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-thit-kho-trung",
+    "name": "Thịt kho trứng",
+    "cuisine": "Món Việt",
+    "summary": "Thịt heo kho mềm cùng trứng, hành tím và gia vị mặn ngọt.",
+    "requiredIngredients": ["thịt heo", "trứng", "hành tím"],
+    "optionalIngredients": ["tỏi", "ớt", "nước mắm"],
+    "estimatedTimeMinutes": 55,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-ga-xao-hung-que",
+    "name": "Cơm gà xào húng quế",
+    "cuisine": "Món Thái",
+    "summary": "Gà xào thơm cùng húng quế, tỏi và cơm nóng rất hợp cho bữa chính.",
+    "requiredIngredients": ["thịt gà", "húng quế", "tỏi", "gạo"],
+    "optionalIngredients": ["hành tây", "trứng", "ớt"],
     "estimatedTimeMinutes": 30,
     "difficulty": "medium"
   },
   {
-    "id": "dish-garlic-butter-pasta",
-    "name": "Garlic Butter Pasta",
-    "cuisine": "Italian Inspired",
-    "summary": "Comforting pasta finished with butter and garlic.",
-    "requiredIngredients": ["pasta", "butter", "garlic"],
-    "optionalIngredients": ["basil", "tomato"],
+    "id": "dish-bo-xao-hanh-tay",
+    "name": "Bò xào hành tây",
+    "cuisine": "Món Việt",
+    "summary": "Thịt bò xào nhanh với hành tây, tỏi và tiêu, giữ độ mềm ngọt.",
+    "requiredIngredients": ["thịt bò", "hành tây", "tỏi"],
+    "optionalIngredients": ["ớt chuông", "cần tây", "tiêu"],
+    "estimatedTimeMinutes": 22,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-rau-muong-xao-toi",
+    "name": "Rau muống xào tỏi",
+    "cuisine": "Món Việt",
+    "summary": "Rau xanh xào lửa lớn với tỏi thơm, nhanh gọn cho bữa cơm.",
+    "requiredIngredients": ["rau muống", "tỏi"],
+    "optionalIngredients": ["ớt", "nước mắm"],
+    "estimatedTimeMinutes": 12,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-dau-hu-sot-ca",
+    "name": "Đậu hũ sốt cà chua",
+    "cuisine": "Món chay",
+    "summary": "Đậu hũ mềm sốt cà chua, tỏi và hành, dễ ăn cho cả gia đình.",
+    "requiredIngredients": ["đậu hũ", "cà chua", "tỏi"],
+    "optionalIngredients": ["hành lá", "hành tím", "nấm"],
+    "estimatedTimeMinutes": 25,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-tom-xao-bong-cai",
+    "name": "Tôm xào bông cải",
+    "cuisine": "Món gia đình",
+    "summary": "Tôm xào cùng bông cải và tỏi, giòn ngọt và nhiều rau.",
+    "requiredIngredients": ["tôm", "bông cải", "tỏi"],
+    "optionalIngredients": ["cà rốt", "hành tây"],
+    "estimatedTimeMinutes": 25,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-canh-bi-do-thit-bam",
+    "name": "Canh bí đỏ thịt băm",
+    "cuisine": "Món Việt",
+    "summary": "Canh bí đỏ mềm ngọt nấu với thịt băm, hành và rau thơm.",
+    "requiredIngredients": ["bí đỏ", "thịt heo", "hành lá"],
+    "optionalIngredients": ["ngò rí", "tỏi"],
+    "estimatedTimeMinutes": 30,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-mi-bo-toi",
+    "name": "Mì bơ tỏi",
+    "cuisine": "Món Âu dễ nấu",
+    "summary": "Mì áp chảo cùng bơ và tỏi, thơm béo, dễ làm khi cần một bữa nhanh.",
+    "requiredIngredients": ["mì", "bơ", "tỏi"],
+    "optionalIngredients": ["húng quế", "cà chua", "phô mai"],
     "estimatedTimeMinutes": 20,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-salad-dua-leo-ca-chua",
+    "name": "Salad dưa leo cà chua",
+    "cuisine": "Món nhẹ",
+    "summary": "Salad tươi mát từ dưa leo, cà chua và rau thơm.",
+    "requiredIngredients": ["dưa leo", "cà chua"],
+    "optionalIngredients": ["xà lách", "hành tây", "chanh"],
+    "estimatedTimeMinutes": 10,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-muc-xao-sa-ot",
+    "name": "Mực xào sả ớt",
+    "cuisine": "Món Việt",
+    "summary": "Mực xào săn với sả, ớt và tỏi, thơm cay nhẹ.",
+    "requiredIngredients": ["mực", "sả", "ớt", "tỏi"],
+    "optionalIngredients": ["hành tây", "gừng"],
+    "estimatedTimeMinutes": 25,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-nam-xao-toi",
+    "name": "Nấm xào tỏi",
+    "cuisine": "Món chay",
+    "summary": "Nấm xào nhanh với tỏi, tiêu và chút gia vị, giữ vị ngọt tự nhiên.",
+    "requiredIngredients": ["nấm", "tỏi"],
+    "optionalIngredients": ["hành lá", "đậu hũ", "ớt"],
+    "estimatedTimeMinutes": 15,
     "difficulty": "easy"
   }
 ]

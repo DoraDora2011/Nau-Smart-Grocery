@@ -30,6 +30,15 @@ type ScanRecipeView = {
   upsellProducts: ProductCatalogItem[];
 };
 
+type ScanRecipeApiResult = {
+  dish?: string;
+  steps?: string[];
+  ingredients?: Array<{
+    name?: string;
+    amount?: string;
+  }>;
+};
+
 const VIETNAMESE_DISH_COPY: Record<
   string,
   { name: string; cuisine: string; summary: string }
@@ -101,7 +110,7 @@ function getScanRecipeSteps(suggestion: DishSuggestion, dishName: string, ingred
     ];
   }
 
-  if (suggestion.id === "dish-thai-basil-chicken") {
+  if (suggestion.id === "dish-ga-xao-hung-que") {
     return [
       "Sơ chế thịt gà, băm hoặc cắt miếng nhỏ để nhanh chín và dễ thấm gia vị.",
       "Phi thơm tỏi, cho gà vào xào lửa lớn đến khi săn lại.",
@@ -110,7 +119,7 @@ function getScanRecipeSteps(suggestion: DishSuggestion, dishName: string, ingred
     ];
   }
 
-  if (suggestion.id === "dish-garlic-butter-pasta") {
+  if (suggestion.id === "dish-mi-bo-toi") {
     return [
       "Luộc mì vừa chín tới, giữ lại một ít nước luộc mì để làm sốt.",
       "Đun chảy bơ, phi thơm tỏi ở lửa nhỏ để tỏi thơm nhưng không cháy.",
@@ -127,12 +136,47 @@ function getScanRecipeSteps(suggestion: DishSuggestion, dishName: string, ingred
   ];
 }
 
+function normalizeDetailedRecipeSteps(data: ScanRecipeApiResult, fallbackSteps: string[]) {
+  const apiSteps = Array.isArray(data.steps)
+    ? data.steps.map((step) => step.trim()).filter(Boolean)
+    : [];
+
+  if (apiSteps.length > 0) {
+    return apiSteps;
+  }
+
+  return fallbackSteps;
+}
+
+async function fetchDetailedScanRecipeSteps(
+  dishName: string,
+  fallbackSteps: string[]
+) {
+  const response = await fetch("/api/recipe", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      mode: "recipe",
+      dish: dishName,
+      servings: 1,
+      allergies: [],
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Scan recipe detail request failed with status ${response.status}`);
+  }
+
+  const data = (await response.json()) as ScanRecipeApiResult;
+  return normalizeDetailedRecipeSteps(data, fallbackSteps);
+}
+
 function getUpsellProductsForSuggestion(suggestion: DishSuggestion) {
   const foodCategories = new Set(["seasoning", "vegetable", "egg-dairy", "rice-noodle", "meat"]);
   const categoryPriority =
     suggestion.id === "dish-tomato-egg"
       ? ["egg-dairy", "vegetable", "seasoning", "rice-noodle", "meat"]
-      : suggestion.id === "dish-thai-basil-chicken"
+      : suggestion.id === "dish-ga-xao-hung-que"
         ? ["meat", "vegetable", "seasoning", "rice-noodle", "egg-dairy"]
         : ["rice-noodle", "seasoning", "egg-dairy", "vegetable", "meat"];
 
@@ -179,6 +223,7 @@ export function ScanWorkflow() {
   const [suggestionMessage, setSuggestionMessage] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
+  const [isLoadingRecipeDetails, setIsLoadingRecipeDetails] = useState(false);
   const [isSuggestionSheetOpen, setIsSuggestionSheetOpen] = useState(false);
   const [selectedRecipeView, setSelectedRecipeView] = useState<ScanRecipeView | null>(null);
   const [cartMessage, setCartMessage] = useState<string | null>(null);
@@ -206,23 +251,44 @@ export function ScanWorkflow() {
     });
   };
 
-  const openScanRecipeView = (suggestion: DishSuggestion) => {
+  const openScanRecipeView = async (suggestion: DishSuggestion) => {
     const display = getDishDisplay(suggestion);
     const nutrition = getDishNutrition(suggestion);
     const ingredientNames = [...suggestion.matchedIngredients, ...suggestion.missingIngredients].map((name) =>
       getLocalizedIngredientName(name, locale),
     );
+    const fallbackSteps = getScanRecipeSteps(suggestion, display.name, ingredientNames);
 
     setSelectedRecipeView({
       suggestion,
       display,
       nutrition,
       ingredientNames,
-      steps: getScanRecipeSteps(suggestion, display.name, ingredientNames),
+      steps: fallbackSteps,
       upsellProducts: getUpsellProductsForSuggestion(suggestion),
     });
     setIsSuggestionSheetOpen(false);
     setCartMessage(null);
+    setIsLoadingRecipeDetails(true);
+
+    try {
+      const detailedSteps = await fetchDetailedScanRecipeSteps(display.name, fallbackSteps);
+
+      setSelectedRecipeView((current) => {
+        if (!current || current.suggestion.id !== suggestion.id) {
+          return current;
+        }
+
+        return {
+          ...current,
+          steps: detailedSteps,
+        };
+      });
+    } catch (error) {
+      console.warn("Could not load detailed scan recipe steps; using fallback steps.", error);
+    } finally {
+      setIsLoadingRecipeDetails(false);
+    }
   };
 
   const addUpsellProductToCart = (product: ProductCatalogItem) => {
@@ -596,6 +662,12 @@ export function ScanWorkflow() {
               </p>
 
               <div className="mt-8 space-y-4">
+                {isLoadingRecipeDetails ? (
+                  <div className="flex items-center gap-3 rounded-3xl bg-[#ffe467] px-4 py-3 text-sm font-black text-black/70">
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                    Nấu đang viết hướng dẫn chi tiết từng bước...
+                  </div>
+                ) : null}
                 {selectedRecipeView.steps.map((step, index) => (
                   <p key={`${step}-${index}`} className="text-base font-bold leading-7 text-black/85">
                     {index + 1}. {step}
