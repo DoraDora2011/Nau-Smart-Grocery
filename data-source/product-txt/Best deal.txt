@@ -1,0 +1,135 @@
+Product ID: watermelon-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): watermelon-001.png
+Product name (Tên tiếng Việt): Dưa Hấu Không Hạt
+Detail (gram): kg
+Price:19.800đ
+Old price: 195.000đ
+
+Product ID: sausage-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): sausage-001.png
+Product name (Tên tiếng Việt): Lạp Xưởng Nướng Đá Vị Cay…
+Detail (gram): 
+Price: 80.900đ
+Old price: 192.500đ
+
+Product ID: toothbrush-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): toothbrush-001.png
+Product name (Tên tiếng Việt): Bàn Chải Điện Đa Năng Perfect
+Detail (gram):
+Price: 159.000đ
+Old price: 399.000đ
+
+Product ID: fan-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): fan-001.png
+Product name (Tên tiếng Việt): Quạt Sạc Để Bàn Tích Điện…
+Detail (gram): 
+Price: 119.000đ
+Old price: 279.000đ
+
+Product ID: sausage-002
+Category: Best deal
+File name (tên đã đặt cho ảnh): sausage-002.png
+Product name (Tên tiếng Việt): Lạp Xưởng Tươi Đài Loan L C…
+Detail (gram): 
+Price: 80.900đ
+Old price: 187.500đ
+
+Product ID: kettle-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): kettle-001.png
+Product name (Tên tiếng Việt): Ấm Pha Trà Đa Năng Joyoung
+Detail (gram): 
+Price: 549.000đ
+Old price: 1.290.000đ
+
+Product ID: tissue-002
+Category: Best deal
+File name (tên đã đặt cho ảnh): tissue-002.png
+Product name (Tên tiếng Việt): 2 Lớp Giấy Lụa Lau Mặt Elene
+Detail (gram): 260 tờ / Lô
+Price: 25.900đ
+Old price: 59.000đ
+
+Product ID: chilli-sauce-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): chilli-sauce-001.png
+Product name (Tên tiếng Việt): Tương Ớt Siracha Dellycook …
+Detail (gram): 
+Price: 33.900đ
+Old price: 77.800đ
+
+Product ID: energy-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): energy-001.png
+Product name (Tên tiếng Việt): Sạc Dự Phòng Energizer…
+Detail (gram): 
+Price: 219.000đ
+Old price:
+
+Product ID: vietnamese-cake-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): vietnamese-001.png
+Product name (Tên tiếng Việt): Bánh Nậm Hoa Doanh Tôm Thịt
+Detail (gram): 
+Price: 18.000đ
+Old price: 40.200đ
+
+Product ID: vietnamese-cake-002
+Category: Best deal
+File name (tên đã đặt cho ảnh): vietnamese-cake-002.png
+Product name (Tên tiếng Việt): Bánh Nậm Hoa Doanh Tôm Thịt
+Detail (gram): 
+Price: 30.500đ
+Old price: 68.400đ
+
+Product ID: plastic-box-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): plastic-box-001.png
+Product name (Tên tiếng Việt): Hộp Quai Matsu Trung
+Detail (gram): 
+Price: 25.000đ
+Old price: 55.000đ
+	
+Product ID: teddy-bear-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): teddy-bear-001.png
+Product name (Tên tiếng Việt): Thú Nhồi Bông Na Tra Tinh…
+Detail (gram): 
+Price: 49.000đ
+Old price: 109.000đ
+
+Product ID: cooker-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): cooker-001.png
+Product name (Tên tiếng Việt): Nồi Cơm Điện Tử Tefal RK7301…
+Detail (gram): 1L
+Price: 690.000đ
+Old price: 1.490.000đ
+
+Product ID: fish-sauce-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): fish-sauce-001.png
+Product name (Tên tiếng Việt): Nước mắm đầu bếp tôm cốt…
+Detail (gram): 
+Price: 19.000đ
+Old price: 43.500đ
+
+Product ID: bird-nest-001
+Category: Best deal
+File name (tên đã đặt cho ảnh): bird-nest-001.png
+Product name (Tên tiếng Việt): Hộp 6 Hũ Nước Yến Red Nest…
+Detail (gram): 
+Price: 62.000đ
+Old price: 195.000đ
+
+Product ID: kette-002
+Category: bestdeal
+File name (tên đã đặt cho ảnh): kettle-002.png
+Product name (Tên tiếng Việt): Bình Đun Siêu Tốc Perfect PF…
+Detail (gram): 
+Price: 119.000đ
+Old price: 419.000đ

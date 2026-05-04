@@ -1,0 +1,135 @@
+Product ID: milk-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): milk-001.png
+Product name (Tên tiếng Việt): Sữa Tươi Tiệt Trùng Mlekovita ....
+Detail (gram):
+Price: 29.000đ
+Old price:
+
+Product ID: soymilk-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): soymilk-001.png
+Product name (Tên tiếng Việt): Sữa Đậu Nành Fami Canxi Ít ....
+Detail (gram):
+Price: 4.500đ
+Old price:
+
+Product ID: spicy-noodle-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): spicy-noodle-001.png
+Product name (Tên tiếng Việt): Mì Siukay Acecook Hải Sản
+Detail (gram): 128G
+Price: 12.600đ
+Old price:
+
+Product ID: vinamilk-yogurt-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): vinamilk-yogurt-001.png
+Product name (Tên tiếng Việt): Lốc 4 Sữa Chua Ăn Vinamilk ....
+Detail (gram): 4 hộp/lốc
+Price: 22.900đ
+Old price:
+
+Product ID: lavie-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): lavie-001.png
+Product name (Tên tiếng Việt): Nước Khoáng Lavie Dịu Nhẹ
+Detail (gram): 500ML
+Price: 4.900đ
+Old price:
+
+Product ID: vinh-hao-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): vinh-hao-001.png
+Product name (Tên tiếng Việt): Nước Khoáng Vĩnh Hảo Chai
+Detail (gram): 500ML
+Price: 3.800đ
+Old price:
+
+Product ID: noodle-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): noodle-001.png
+Product name (Tên tiếng Việt): Mì 3 Miền Gà Sợi Phở Gói 65G
+Detail (gram): 65G
+Price: 3.500đ
+Old price:
+
+Product ID: noodle-002
+Category: Popular Item
+File name (tên đã đặt cho ảnh): noodle-002.png
+Product name (Tên tiếng Việt): Mì Hảo Hảo Tôm Chua Cay 75G
+Detail (gram): 75G
+Price: 3.900đ
+Old price:
+
+Product ID: vinamilk-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): vinamilk-001.png
+Product name (Tên tiếng Việt): Sữa Tươi Tiệt Trùng Vinamilk ....
+Detail (gram):
+Price: 8.200đ
+Old price:
+
+Product ID: egg-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): egg-001.png
+Product name (Tên tiếng Việt): Hộp Trứng Gà Tươi CL Size XL
+Detail (gram): 10 Trứng/hộp Size XL
+Price: 27.900đ
+Old price:
+
+Product ID: spicy-noodle-002
+Category: Popular Item
+File name (tên đã đặt cho ảnh): spicy-noodle-002.png
+Product name (Tên tiếng Việt): Mì Siukay Acecook Vị Bò 127G
+Detail (gram): 127G
+Price: 12.600đ
+Old price:
+
+Product ID: vinamilk-yogurt-002
+Category: Popular Item
+File name (tên đã đặt cho ảnh): vinamilk-yogurt-002.png
+Product name (Tên tiếng Việt): Sữa Chua Ăn Vinamilk Có ....
+Detail (gram): 4 hộp/lốc
+Price: 22.900đ
+Old price:
+
+Product ID: rice-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): rice-001.png
+Product name (Tên tiếng Việt): Gạo Thơm Phù Sa Vua Gạo 5KG
+Detail (gram): 5KG
+Price: 118.000đ
+Old price:
+
+Product ID: sapvwa-water-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): sapvwa-water-001.png
+Product name (Tên tiếng Việt): Nước Tinh Khiết Sapuwa
+Detail (gram): 330ML
+Price: 2.500đ
+Old price:
+
+Product ID: milk-002
+Category: Popular Item
+File name (tên đã đặt cho ảnh): milk-002.png
+Product name (Tên tiếng Việt): Lốc 4 Sữa Tươi Tiệt Trùng ....
+Detail (gram): 4 hộp/lốc
+Price: 43.500đ
+Old price:
+
+Product ID: revive-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): revive-001.png
+Product name (Tên tiếng Việt): Nước Điện Giải Revive
+Detail (gram): 6 chai/lốc
+Price: 62.000đ
+Old price:
+
+Product ID: tissue-001
+Category: Popular Item
+File name (tên đã đặt cho ảnh): tissue-001.png
+Product name (Tên tiếng Việt): Khăn Giấy Lụa Let Green
+Detail (gram): 300 Tờ
+Price: 20.200đ
+Old price:

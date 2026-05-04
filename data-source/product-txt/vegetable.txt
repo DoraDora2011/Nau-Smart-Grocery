@@ -1,0 +1,192 @@
+Product ID: vegetable-001
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-001.png
+Product name (Tên tiếng Việt): Giá đậu nành
+Detail (gram): 150g
+Price: 18.000đ
+Old price:
+
+Product ID: vegetable-002
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-002.png
+Product name (Tên tiếng Việt): Cải thìa baby
+Detail (gram): 350g
+Price: 45.800đ
+Old price:
+
+Product ID: vegetable-003
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-003.png
+Product name (Tên tiếng Việt): Rau Muống Phú Lộc
+Detail (gram): 500g
+Price: 32.500đ
+Old price:
+
+Product ID: vegetable-004
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-004.png
+Product name (Tên tiếng Việt): Măng Tây loại III
+Detail (gram): 200g
+Price: 34.000đ
+Old price: 34.000đ
+
+Product ID: vegetable-005
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-005.png
+Product name (Tên tiếng Việt): Đậu Bắp
+Detail (gram): 200g
+Price: 20.500đ
+Old price:
+
+Product ID: vegetable-006
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-006.png
+Product name (Tên tiếng Việt): Cà Chua Đà Lạt
+Detail (gram): 1kg
+Price: 42.800đ
+Old price:
+
+Product ID: vegetable-007
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-007.png
+Product name (Tên tiếng Việt): Dưa leo
+Detail (gram): 1kg
+Price: 22.000đ
+Old price:
+
+Product ID: vegetable-008
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-008.png
+Product name (Tên tiếng Việt): Hành tây
+Detail (gram): 500g
+Price: 17.500đ
+Old price:
+
+Product ID: vegetable-009
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-009.png
+Product name (Tên tiếng Việt): Cà rốt
+Detail (gram): 500g
+Price: 16.500đ
+Old price:
+
+Product ID: vegetable-010
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-010.png
+Product name (Tên tiếng Việt): Khoai tây
+Detail (gram): 500g
+Price: 15.000đ
+Old price:
+
+Product ID: vegetable-011
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-011.png
+Product name (Tên tiếng Việt): Ớt chuông hai màu
+Detail (gram): 350g
+Price: 33.800đ
+Old price:
+
+Product ID: vegetable-012
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-012.png
+Product name (Tên tiếng Việt): Sả cây
+Detail (gram): 200g
+Price: 6.000đ
+Old price:
+
+Product ID: vegetable-013
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-013.png
+Product name (Tên tiếng Việt): Hành Tím Lý Sơn
+Detail (gram): 100g
+Price: 14.800đ
+Old price:
+
+Product ID: vegetable-014
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-014.png
+Product name (Tên tiếng Việt): Me Nấu Canh Chua Đóng Hộp
+Detail (gram): 60g
+Price: 8.800đ
+Old price:
+
+Product ID: vegetable-015
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-015.png
+Product name (Tên tiếng Việt): Củ Gừng Tươi
+Detail (gram): 100g
+Price: 8.800đ
+Old price:
+
+Product ID: vegetable-016
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-016.png
+Product name (Tên tiếng Việt): Ớt Sừng Đỏ
+Detail (gram): 100g
+Price: 9.000đ
+Old price:
+
+Product ID: vegetable-017
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-017.png
+Product name (Tên tiếng Việt): Hỗn Hợp Hành Ngò
+Detail (gram): 100g
+Price: 13.800đ
+Old price:
+
+Product ID: vegetable-018
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-018.png
+Product name (Tên tiếng Việt): Tỏi Lý Sơn Nguyên Củ
+Detail (gram): 100g
+Price: 24.800đ
+Old price:
+
+Product ID: vegetable-019
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-019.png
+Product name (Tên tiếng Việt): Trái Tắc Tươi Túi
+Detail (gram): 150g
+Price: 8.800đ
+Old price:
+
+Product ID: vegetable-020
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-020.png
+Product name (Tên tiếng Việt): Nấm Rơm
+Detail (gram): 200g
+Price: 38.800đ
+Old price:
+
+Product ID: vegetable-021
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-021.png
+Product name (Tên tiếng Việt): Nấm Kim Châm Hàn Quốc
+Detail (gram): 150g
+Price: 22.800đ
+Old price:
+
+Product ID: vegetable-022
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-022.png
+Product name (Tên tiếng Việt): Xà Lách
+Detail (gram): 330g
+Price: 44.800đ
+Old price:
+
+Product ID: vegetable-023
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-023.png
+Product name (Tên tiếng Việt): Cải Thảo
+Detail (gram): 600g
+Price: 31.800đ
+Old price: 58.800đ
+
+Product ID: vegetable-024
+Category: vegetable
+File name (tên đã đặt cho ảnh): vegetable-024.png
+Product name (Tên tiếng Việt): Bạc Hà
+Detail (gram): 200g
+Price: 9.800đ
+Old price:
+

@@ -1,0 +1,66 @@
+[
+  {
+    "dishName": "Tomato Egg Stir-Fry",
+    "cuisine": "Món Hoa kiểu gia đình",
+    "summary": "Món cà chua xào trứng đậm vị, dễ ăn và phù hợp cho bữa cơm trưa hoặc tối.",
+    "difficulty": "easy",
+    "baseServings": 2,
+    "prepTimeMinutes": 8,
+    "cookTimeMinutes": 10,
+    "ingredients": [
+      { "name": "Cà chua", "normalizedName": "tomato", "quantity": 2, "unit": "quả" },
+      { "name": "Trứng gà", "normalizedName": "egg", "quantity": 4, "unit": "quả" },
+      { "name": "Tỏi", "normalizedName": "garlic", "quantity": 2, "unit": "tép" },
+      { "name": "Hành lá", "normalizedName": "spring onion", "quantity": 1, "unit": "cọng", "optional": true }
+    ],
+    "steps": [
+      { "order": 1, "instruction": "Đập trứng ra tô, đánh đều với một ít muối và băm nhỏ tỏi.", "durationMinutes": 3 },
+      { "order": 2, "instruction": "Cho trứng vào chảo, đảo nhẹ đến khi vừa chín tới rồi lấy ra riêng.", "durationMinutes": 3 },
+      { "order": 3, "instruction": "Phi tỏi thơm, cho cà chua cắt múi cau vào xào đến khi mềm.", "durationMinutes": 2 },
+      { "order": 4, "instruction": "Cho trứng trở lại chảo, đảo đều rồi rắc hành lá trước khi tắt bếp.", "durationMinutes": 2 }
+    ]
+  },
+  {
+    "dishName": "Thai Basil Chicken Rice Bowl",
+    "cuisine": "Món Thái",
+    "summary": "Cơm gà húng quế thơm đậm vị, phù hợp cho bữa tối nhanh nhưng vẫn tròn vị.",
+    "difficulty": "medium",
+    "baseServings": 2,
+    "prepTimeMinutes": 12,
+    "cookTimeMinutes": 18,
+    "ingredients": [
+      { "name": "Thịt đùi gà", "normalizedName": "chicken", "quantity": 300, "unit": "g" },
+      { "name": "Húng quế Thái", "normalizedName": "thai basil", "quantity": 1, "unit": "bó" },
+      { "name": "Tỏi", "normalizedName": "garlic", "quantity": 4, "unit": "tép" },
+      { "name": "Gạo Jasmine", "normalizedName": "rice", "quantity": 250, "unit": "g" },
+      { "name": "Hành tây", "normalizedName": "onion", "quantity": 1, "unit": "củ", "optional": true }
+    ],
+    "steps": [
+      { "order": 1, "instruction": "Nấu cơm Jasmine cho chín tơi và giữ nóng.", "durationMinutes": 15 },
+      { "order": 2, "instruction": "Phi thơm tỏi và hành, sau đó cho thịt gà băm hoặc cắt nhỏ vào xào chín.", "durationMinutes": 7 },
+      { "order": 3, "instruction": "Cho húng quế vào đảo nhanh đến khi vừa héo thơm.", "durationMinutes": 2 },
+      { "order": 4, "instruction": "Múc cơm ra tô rồi cho gà xào húng quế lên trên.", "durationMinutes": 1 }
+    ]
+  },
+  {
+    "dishName": "Garlic Butter Pasta",
+    "cuisine": "Phong cách Ý",
+    "summary": "Món mì bơ tỏi thơm béo, dễ làm và phù hợp cho những bữa ăn nhanh tại nhà.",
+    "difficulty": "easy",
+    "baseServings": 2,
+    "prepTimeMinutes": 5,
+    "cookTimeMinutes": 15,
+    "ingredients": [
+      { "name": "Mì spaghetti", "normalizedName": "pasta", "quantity": 200, "unit": "g" },
+      { "name": "Bơ lạt", "normalizedName": "butter", "quantity": 40, "unit": "g" },
+      { "name": "Tỏi", "normalizedName": "garlic", "quantity": 3, "unit": "tép" },
+      { "name": "Cà chua", "normalizedName": "tomato", "quantity": 1, "unit": "quả", "optional": true },
+      { "name": "Húng quế", "normalizedName": "basil", "quantity": 0.25, "unit": "bó", "optional": true }
+    ],
+    "steps": [
+      { "order": 1, "instruction": "Luộc mì trong nước có muối đến khi sợi mì vừa chín tới.", "durationMinutes": 10 },
+      { "order": 2, "instruction": "Đun chảy bơ rồi phi tỏi lát trên lửa vừa cho thơm.", "durationMinutes": 3 },
+      { "order": 3, "instruction": "Cho mì vào đảo đều với bơ tỏi, thêm húng quế hoặc cà chua nếu muốn.", "durationMinutes": 2 }
+    ]
+  }
+]

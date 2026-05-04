@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nâu Mascot Dress-Up Viewer</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="viewer-panel" aria-label="3D character viewer">
+        <canvas id="characterCanvas"></canvas>
+        <div id="loadingText" class="loading-text">Loading character...</div>
+      </section>
+
+      <aside class="controls-panel" aria-label="Outfit controls">
+        <div class="brand-block">
+          <p class="eyebrow">Character Viewer</p>
+          <h1>Dress-Up Studio</h1>
+        </div>
+
+        <div class="outfit-controls" role="group" aria-label="Select outfit">
+          <button class="outfit-button active" type="button" data-outfit="default">
+            Default
+          </button>
+          <button class="outfit-button" type="button" data-outfit="outfit1">
+            Outfit 1
+          </button>
+          <button class="outfit-button" type="button" data-outfit="outfit2">
+            Outfit 2
+          </button>
+          <button class="outfit-button" type="button" data-outfit="outfit3">
+            Outfit 3
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module" src="./script.js?v=14"></script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "produce",
+    "name": "Rau củ",
+    "description": "Rau củ tươi và các nguyên liệu bếp quen thuộc mỗi ngày.",
+    "image": "/catalog/categories/produce.png"
+  },
+  {
+    "slug": "dairy-eggs",
+    "name": "Sữa và trứng",
+    "description": "Các món cơ bản cho bữa sáng và nhóm hàng cần bảo quản mát.",
+    "image": "/catalog/categories/dairy-eggs.png"
+  },
+  {
+    "slug": "herbs",
+    "name": "Rau thơm",
+    "description": "Nhóm rau thơm và các nguyên liệu giúp món ăn dậy mùi hơn.",
+    "image": "/catalog/categories/herbs.png"
+  },
+  {
+    "slug": "pantry",
+    "name": "Đồ khô và gia vị",
+    "description": "Nhóm đồ khô, gia vị và nguyên liệu nấu ăn dùng hằng ngày.",
+    "image": "/catalog/categories/pantry.png"
+  },
+  {
+    "slug": "meat",
+    "name": "Thịt cá",
+    "description": "Nhóm đạm phù hợp cho các món nấu nhanh và món cơm nhà.",
+    "image": "/catalog/categories/meat.png"
+  }
+]

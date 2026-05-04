@@ -1,0 +1,167 @@
+Product ID: carb-001
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-001.png
+Product name (Tên tiếng Việt): Bánh mì sandwich lạt Otto
+Detail (gram): gói 490g (khoảng 13 lát)
+Price: 31.000đ
+Old price:
+
+Product ID: carb-002
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-002.png
+Product name (Tên tiếng Việt): Gạo lứt tím Vinh Hiền
+Detail (gram): túi 1kg
+Price: 48.000đ
+Old price:
+
+Product ID: carb-003
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-003.png
+Product name (Tên tiếng Việt): Gạo nếp cái hoa vàng Việt…
+Detail (gram): túi 1kg
+Price: 50.000đ
+Old price: 60.000đ
+
+Product ID: carb-004
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-004.png
+Product name (Tên tiếng Việt): Gạo thơm Vua Gạo ST25
+Detail (gram): túi 5kg
+Price: 129.000đ
+Old price: 190.000đ
+
+Product ID: carb-005
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-005.png
+Product name (Tên tiếng Việt): Phở khô Susan gói
+Detail (gram): 200g
+Price: 15.000đ
+Old price:
+
+Product ID: carb-006
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-006.png
+Product name (Tên tiếng Việt): Bánh đa khô
+Detail (gram): 300g
+Price: 30.000đ
+Old price:
+
+Product ID: carb-007
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-007.png
+Product name (Tên tiếng Việt): Miến khô Vifon gói
+Detail (gram): 210g
+Price: 41.000đ
+Old price:
+
+Product ID: carb-008
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-008.png
+Product name (Tên tiếng Việt): Bún gạo Bà Bảy gói
+Detail (gram): 400g
+Price: 28.000đ
+Old price:
+
+Product ID: carb-009
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-009.png
+Product name (Tên tiếng Việt): Hủ tiếu khô Nuffam gói
+Detail (gram): 250g
+Price: 23.000đ
+Old price:
+
+Product ID: carb-010
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-010.png
+Product name (Tên tiếng Việt): Mì trứng cao cấp Meizan gói
+Detail (gram): 500g
+Price: 33.500đ
+Old price:
+
+Product ID: carb-011
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-011.png
+Product name (Tên tiếng Việt): Bánh Canh Khô (Mì Vắt) Đặc…
+Detail (gram): 350g
+Price: 26.800đ
+Old price:
+
+Product ID: carb-012
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-012.png
+Product name (Tên tiếng Việt): Nui rau củ ống dài Nuffam gói
+Detail (gram): 350g
+Price: 23.000đ
+Old price:
+
+Product ID: carb-013
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-013.png
+Product name (Tên tiếng Việt): Bột bắp Meizan gói
+Detail (gram): 150g
+Price: 13.000đ
+Old price:
+
+Product ID: carb-014
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-014.png
+Product name (Tên tiếng Việt): Bột bánh xèo Meizan gói
+Detail (gram): 400g
+Price: 20.000đ
+Old price:
+
+Product ID: carb-015
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-015.png
+Product name (Tên tiếng Việt): Bột gạo Tài Ký gói
+Detail (gram): 400g
+Price: 21.000đ
+Old price:
+
+Product ID: carb-016
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-016.png
+Product name (Tên tiếng Việt): Bột mì đa dạng Meizan cao cấp
+Detail (gram): 500g
+Price: 14.000đ
+Old price: 15.000đ
+
+Product ID: carb-017
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-017.png
+Product name (Tên tiếng Việt): Bột chiên giòn Meizan gói
+Detail (gram): 150g
+Price: 9.000đ
+Old price: 10.000đ
+
+Product ID: carb-018
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-018.png
+Product name (Tên tiếng Việt): Hủ tiếu sườn heo Cung Đình gói
+Detail (gram): 85g
+Price: 10.300đ
+Old price:
+
+Product ID: carb-019
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-019.png
+Product name (Tên tiếng Việt): Phở bò Vifon gói (có gói thịt…
+Detail (gram): 90g
+Price: 17.000đ
+Old price:
+
+Product ID: carb-020
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-020.png
+Product name (Tên tiếng Việt): Combo 2 gói cháo tươi cá hồi…
+Detail (gram): 240g
+Price: 39.000đ
+Old price: 50.000đ
+
+Product ID: carb-021
+Category: rice-noodle
+File name (tên đã đặt cho ảnh): carb-021.png
+Product name (Tên tiếng Việt): Ngũ cốc dinh dưỡng MacCereal…
+Detail (gram): 560g
+Price: 69.000đ
+Old price: 87.000đ

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "dish-tomato-egg",
+    "name": "Tomato Egg Stir-Fry",
+    "cuisine": "Chinese Home Style",
+    "summary": "Fast stir-fry with soft eggs and juicy tomatoes.",
+    "requiredIngredients": ["tomato", "egg", "garlic"],
+    "optionalIngredients": ["spring onion", "onion"],
+    "estimatedTimeMinutes": 18,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-thai-basil-chicken",
+    "name": "Thai Basil Chicken Rice Bowl",
+    "cuisine": "Thai",
+    "summary": "Savory chicken with basil served over steamed rice.",
+    "requiredIngredients": ["chicken", "thai basil", "garlic", "rice"],
+    "optionalIngredients": ["onion", "egg"],
+    "estimatedTimeMinutes": 30,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-garlic-butter-pasta",
+    "name": "Garlic Butter Pasta",
+    "cuisine": "Italian Inspired",
+    "summary": "Comforting pasta finished with butter and garlic.",
+    "requiredIngredients": ["pasta", "butter", "garlic"],
+    "optionalIngredients": ["basil", "tomato"],
+    "estimatedTimeMinutes": 20,
+    "difficulty": "easy"
+  }
+]

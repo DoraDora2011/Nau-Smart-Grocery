@@ -1,0 +1,192 @@
+Product ID: seasoning-001
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-001.png
+Product name (Tên tiếng Việt): Đường vàng Quảng Ngãi gói
+Detail (gram): 1kg
+Price: 33.500đ
+Old price:
+
+Product ID: seasoning-002
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-002.png
+Product name (Tên tiếng Việt): Đường tinh luyện trắng Biên Hòa
+Detail (gram): 1kg
+Price: 38.000đ
+Old price:
+
+Product ID: seasoning-003
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-003.png
+Product name (Tên tiếng Việt): Nước màu dừa bến Tre A Tuấn…
+Detail (gram): 120g
+Price: 15.000đ
+Old price:
+
+Product ID: seasoning-004
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-004.png
+Product name (Tên tiếng Việt): Nước màu thốt nốt nguyên chấ…
+Detail (gram): 90ml
+Price: 13.000đ
+Old price:
+
+Product ID: seasoning-005
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-005.png
+Product name (Tên tiếng Việt): Nghệ bột Viper hũ
+Detail (gram): 35g
+Price: 10.900đ
+Old price:
+
+Product ID: seasoning-006
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-006.png
+Product name (Tên tiếng Việt): Hoa hồi Viper hũ
+Detail (gram): 15g
+Price: 9.600đ
+Old price:
+
+Product ID: seasoning-007
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-007.png
+Product name (Tên tiếng Việt): Quế cây Viper hũ
+Detail (gram): 20g
+Price: 10.900đ
+Old price:
+
+Product ID: seasoning-008
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-008.png
+Product name (Tên tiếng Việt): Bột điều Thành Lộc gói
+Detail (gram): 20g
+Price: 9.300đ
+Old price:
+
+Product ID: seasoning-009
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-009.png
+Product name (Tên tiếng Việt): Bột tỏi Thành Lộc gói
+Detail (gram): 20g
+Price: 11.000đ
+Old price:
+
+Product ID: seasoning-010
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-010.png
+Product name (Tên tiếng Việt): Bột ngũ vị hương Thành Lộc gói
+Detail (gram): 20g
+Price: 9.000đ
+Old price:
+
+
+Product ID: seasoning-011
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-011.png
+Product name (Tên tiếng Việt): Dầu mè thơm hảo hãng Meizan…
+Detail (gram): 250ml
+Price: 59.000đ
+Old price:
+
+Product ID: seasoning-012
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-012.png
+Product name (Tên tiếng Việt): Dầu ăn thượng hạng Neptune…
+Detail (gram): 1L
+Price: 59.000đ
+Old price: 65.000đ
+
+Product ID: seasoning-013
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-013.png
+Product name (Tên tiếng Việt): Bột ngọt Meizan gói
+Detail (gram): 400g
+Price: 32.000đ
+Old price:
+
+Product ID: seasoning-014
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-014.png
+Product name (Tên tiếng Việt): Hạt nêm Knorr thịt thăn, xương…
+Detail (gram): 900g
+Price: 65.000đ
+Old price: 86.000đ
+
+Product ID: seasoning-015
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-015.png
+Product name (Tên tiếng Việt): Nước tương Ông Chà Và 707 vị…
+Detail (gram): 500ml
+Price: 15.500đ
+Old price:
+
+Product ID: seasoning-016
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-016.png
+Product name (Tên tiếng Việt): 2 chai nước mắm cốt nhĩ 35%...
+Detail (gram): 500ml
+Price: 53.000đ
+Old price: 106.000đ
+
+Product ID: seasoning-017
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-017.png
+Product name (Tên tiếng Việt): Dầu hào Maggi đậm đặc chai
+Detail (gram): 530g
+Price: 38.000đ
+Old price:
+
+Product ID: seasoning-018
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-018.png
+Product name (Tên tiếng Việt): Giấm gạo lên men Ajinomoto…
+Detail (gram): 400ml
+Price: 18.000đ
+Old price:
+
+Product ID: seasoning-019
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-019.png
+Product name (Tên tiếng Việt): Tương ớt Nam Dương Hàng Vi…
+Detail (gram): 800g
+Price: 19.000đ
+Old price: 25.000đ
+
+Product ID: seasoning-020
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-020.png
+Product name (Tên tiếng Việt): Tương cà Chinsu chai
+Detail (gram): 250g
+Price: 18.500đ
+Old price: 
+
+Product ID: seasoning-021
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-021.png
+Product name (Tên tiếng Việt): Xốt mayonnaise Simply hương…
+Detail (gram): 230g
+Price: 27.000đ
+Old price: 37.000đ 
+
+Product ID: seasoning-022
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-022.png
+Product name (Tên tiếng Việt): Ớt khô sa tế Cholimex hũ
+Detail (gram): 100g
+Price: 19.500đ
+Old price:
+
+Product ID: seasoning-023
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-023.png
+Product name (Tên tiếng Việt): Tiêu đen xay Fadely hũ
+Detail (gram): 45g
+Price: 22.000đ
+Old price: 
+
+Product ID: seasoning-024
+Category: seasoning
+File name (tên đã đặt cho ảnh): seasoning-024.png
+Product name (Tên tiếng Việt): Bột cà ri Vianca gói
+Detail (gram): 10g
+Price: 5.500đ
+Old price:

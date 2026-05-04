@@ -1,0 +1,191 @@
+Product ID: dairy-001
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-001.png
+Product name (Tên tiếng Việt): Trứng gà
+Detail (gram): hộp 10 quả
+Price: 28.000đ
+Old price: None
+
+Product ID: dairy-002
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-002.png
+Product name (Tên tiếng Việt): Trứng vịt
+Detail (gram): hộp 10 quả
+Price: 36.000đ
+Old price: 50.500đ
+
+Product ID: dairy-003
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-003.png
+Product name (Tên tiếng Việt): Trứng vịt muối
+Detail (gram): hộp 4 quả từ 240g-280g
+Price: 26.000đ
+Old price: 50.500đ
+
+Product ID: dairy-004
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-004.png
+Product name (Tên tiếng Việt): Trứng vịt bắc thảo
+Detail (gram): hộp 4 quả từ 240g-280g
+Price: 26.000đ
+Old price:
+
+Product ID: dairy-005
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-005.png
+Product name (Tên tiếng Việt): Sữa đậu nành Fami Canxi Ít ...
+Detail (gram): 50 bịch/thùng
+Price: 4.500đ
+Old price:
+
+Product ID: dairy-006
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-006.png
+Product name (Tên tiếng Việt): Sữa tiệt trùng Mlekovita ...
+Detail (gram): 1L
+Price: 29.000đ
+Old price:
+
+Product ID: dairy-007
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-007.png
+Product name (Tên tiếng Việt): Sữa tươi tiệt trùng ít đường Vina...
+Detail (gram): 180ML (Lốc 4 hộp)
+Price: 36.500đ
+Old price:
+
+Product ID: dairy-008
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-008.png
+Product name (Tên tiếng Việt): Sữa tươi tiệt trùng ít đường Dut...
+Detail (gram): 180ML (Lốc 4 hộp)
+Price: 33.500đ
+Old price:
+
+Product ID: dairy-009
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-009.png
+Product name (Tên tiếng Việt): Sữa lúa mạc ít đường Milo A2 ...
+Detail (gram): 180ML (Lốc 4 hộp)
+Price: 33.000đ
+Old price:
+
+Product ID: dairy-010
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-010.png
+Product name (Tên tiếng Việt): Bột pha sẵn Ensure Original vani...
+Detail (gram): 237ML (Lốc 6 chai sữa)
+Price: 250.000đ
+Old price:
+
+Product ID: dairy-011
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-011.png
+Product name (Tên tiếng Việt): Sữa dinh dưỡng pha sẵn Abbo...
+Detail (gram): 110ML (Lốc 4 hộp)
+Price: 54.000đ
+Old price:
+
+Product ID: dairy-012
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-012.png
+Product name (Tên tiếng Việt): Sữa chua ăn Vinamilk...
+Detail (gram): Lốc 4 hộp
+Price: 22.900đ
+Old price:
+
+Product ID: dairy-013
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-013.png
+Product name (Tên tiếng Việt): Sữa chua uống hương dâu Yo...
+Detail (gram): 170ML (Lốc 4 hộp)
+Price: 29.500đ
+Old price:
+
+Product ID: dairy-014
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-014.png
+Product name (Tên tiếng Việt): Sữa chua uống hương nho Fristi
+Detail (gram): 80ML (Lốc 6 chai)
+Price: 25.000đ
+Old price:
+
+Product ID: dairy-015
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-015.png
+Product name (Tên tiếng Việt): Sữa đặc có đường Ông Thọ…
+Detail (gram): 380g (Lon)
+Price: 32.500đ
+Old price:
+
+Product ID: dairy-016
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-016.png
+Product name (Tên tiếng Việt): Sữa đặc có đường Ông Thọ…
+Detail (gram): 380g (Hộp)
+Price: 26.500đ
+Old price:
+
+Product ID: dairy-017
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-017.png
+Product name (Tên tiếng Việt): Sữa đặc có đường Ông Thọ…
+Detail (gram): 165g (Tuýp)
+Price: 19.400đ
+Old price:
+
+Product ID: dairy-018
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-018.png
+Product name (Tên tiếng Việt): Kem ốc quế vani Celano cây
+Detail (gram): 66g
+Price: 20.000đ
+Old price:
+
+Product ID: dairy-019
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-019.png
+Product name (Tên tiếng Việt): Kem socola và hạt socola…
+Detail (gram): 307g
+Price: 85.000đ
+Old price:
+
+Product ID: dairy-020
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-020.png
+Product name (Tên tiếng Việt): Bột phô mai StFood
+Detail (gram): gói 100g
+Price: 45.000đ
+Old price:
+
+Product ID: dairy-021
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-021.png
+Product name (Tên tiếng Việt): Phô mai sợi Paysan Breton
+Detail (gram): gói 70g
+Price: 53.000đ
+Old price:
+
+Product ID: dairy-022
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-022.png
+Product name (Tên tiếng Việt): Phô mai vị truyền thống Con B…
+Detail (gram): 224g (16 miếng)
+Price: 64.000đ
+Old price: 65.5000đ
+
+Product ID: dairy-023
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-023.png
+Product name (Tên tiếng Việt): Phô mai vị dâu Con Bò Cười B…
+Detail (gram): 78g (15 viên)
+Price: 47.500đ
+Old price: 50.5000đ
+
+Product ID: dairy-024
+Category: egg-dairy
+File name (tên đã đặt cho ảnh): dairy-024.png
+Product name (Tên tiếng Việt): Bơ thực vật Tường An vị bơ sữa…
+Detail (gram): 80g
+Price: 9.000đ
+Old price:

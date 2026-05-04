@@ -1,0 +1,192 @@
+Product ID: meat-001
+Category: meat
+File name (tên đã đặt cho ảnh): meat-001.png
+Product name (Tên tiếng Việt): Ba Rọi Heo
+Detail (gram): 1kg
+Price: 242.000đ
+Old price:
+
+Product ID: meat-002
+Category: meat
+File name (tên đã đặt cho ảnh): meat-002.png
+Product name (Tên tiếng Việt): Cốt Lết Heo Thảo Mộc Đóng Vi
+Detail (gram): 1kg
+Price: 156.000đ
+Old price: 195.000đ
+
+Product ID: meat-003
+Category: meat
+File name (tên đã đặt cho ảnh): meat-003.png
+Product name (Tên tiếng Việt): Nạc dăm heo
+Detail (gram): 700g
+Price: 129.500đ
+Old price: 136.500đ
+
+Product ID: meat-004
+Category: meat
+File name (tên đã đặt cho ảnh): meat-004.png
+Product name (Tên tiếng Việt): Sườn Non Heo
+Detail (gram): 700g
+Price: 208.600đ
+Old price:
+
+Product ID: meat-005
+Category: meat
+File name (tên đã đặt cho ảnh): meat-005.png
+Product name (Tên tiếng Việt): Thăn Bò
+Detail (gram): 700g
+Price: 226.100đ
+Old price:
+
+Product ID: meat-006
+Category: meat
+File name (tên đã đặt cho ảnh): meat-006.png
+Product name (Tên tiếng Việt): Bít Tết Bò Úc
+Detail (gram): 1kg
+Price: 450.000đ
+Old price:
+
+Product ID: meat-007
+Category: meat
+File name (tên đã đặt cho ảnh): meat-007.png
+Product name (Tên tiếng Việt): Bắp Bò
+Detail (gram): 700g
+Price: 215.600đ
+Old price:
+
+Product ID: meat-008
+Category: meat
+File name (tên đã đặt cho ảnh): meat-008.png
+Product name (Tên tiếng Việt): Sườn Bò Việt Nam Khay
+Detail (gram): 1kg
+Price: 268.000đ
+Old price:
+
+Product ID: meat-009
+Category: meat
+File name (tên đã đặt cho ảnh): meat-009.png
+Product name (Tên tiếng Việt): Phi Lê Ức Gà CP
+Detail (gram): 500g
+Price: 55.100đ
+Old price:
+
+Product ID: meat-010
+Category: meat
+File name (tên đã đặt cho ảnh): meat-010.png
+Product name (Tên tiếng Việt): Đùi Tỏi Gà CP
+Detail (gram): 500g
+Price: 56.900đ
+Old price:
+
+Product ID: meat-011
+Category: meat
+File name (tên đã đặt cho ảnh): meat-011.png
+Product name (Tên tiếng Việt): Má Đùi Gà Tươi CP
+Detail (gram): 500g
+Price: 45.000đ
+Old price:
+
+Product ID: meat-012
+Category: meat
+File name (tên đã đặt cho ảnh): meat-012.png
+Product name (Tên tiếng Việt): Cánh gà tươi CP
+Detail (gram): 500g
+Price: 68.000đ
+Old price:
+
+Product ID: meat-013
+Category: meat
+File name (tên đã đặt cho ảnh): meat-013.png
+Product name (Tên tiếng Việt): Cá Bông Lau Cắt Khoanh
+Detail (gram): 600g
+Price: 255.500đ
+Old price:
+
+Product ID: meat-014
+Category: meat
+File name (tên đã đặt cho ảnh): meat-014.png
+Product name (Tên tiếng Việt): Cá Basa Cắt Khoanh Đóng Vỉ
+Detail (gram): 600g
+Price: 88.000đ
+Old price:
+
+Product ID: meat-015
+Category: meat
+File name (tên đã đặt cho ảnh): meat-015.png
+Product name (Tên tiếng Việt): Cá Bạc má
+Detail (gram): 600g
+Price: 32.500đ
+Old price:
+
+Product ID: meat-016
+Category: meat
+File name (tên đã đặt cho ảnh): meat-016.png
+Product name (Tên tiếng Việt): Cá Thu
+Detail (gram): 600g
+Price: 289.500đ
+Old price:
+
+Product ID: meat-017
+Category: meat
+File name (tên đã đặt cho ảnh): meat-017.png
+Product name (Tên tiếng Việt): Mực Muối Hồng Hương
+Detail (gram): 600g
+Price: 129.000đ
+Old price:
+
+Product ID: meat-018
+Category: meat
+File name (tên đã đặt cho ảnh): meat-018.png
+Product name (Tên tiếng Việt):Phi Lê Cá Hồi Còn Da
+Detail (gram): 400g
+Price: 648.000đ
+Old price:
+
+Product ID: meat-019
+Category: meat
+File name (tên đã đặt cho ảnh): meat-019.png
+Product name (Tên tiếng Việt): Cá Bớp Cắt Khoanh
+Detail (gram): 400g
+Price: 489.000đ
+Old price:
+
+Product ID: meat-020
+Category: meat
+File name (tên đã đặt cho ảnh): meat-020.png
+Product name (Tên tiếng Việt): Cá Chim Trắng Nguyên Con 
+Detail (gram): 700g
+Price: 249.000đ
+Old price:
+
+Product ID: meat-021
+Category: meat
+File name (tên đã đặt cho ảnh): meat-021.png
+Product name (Tên tiếng Việt): Tôm Thẻ Tươi Size 30-40 Con
+Detail (gram): 300g
+Price: 309.000đ
+Old price: 
+
+Product ID: meat-022
+Category: meat
+File name (tên đã đặt cho ảnh): meat-022.png
+Product name (Tên tiếng Việt): Nộm Sứa Tĩnh Gia
+Detail (gram): 350g
+Price: 25.900đ
+Old price:
+
+Product ID: meat-023
+Category: meat
+File name (tên đã đặt cho ảnh): meat-023.png
+Product name (Tên tiếng Việt): Chả Cá Chiên Thoại An
+Detail (gram): 300g
+Price: 42.000đ
+Old price: 48.000đ
+
+Product ID: meat-024
+Category: meat
+File name (tên đã đặt cho ảnh): meat-024.png
+Product name (Tên tiếng Việt): Cá Viên Thì Là
+Detail (gram): 500g
+Price: 57.000đ
+Old price: 50.500đ
+
