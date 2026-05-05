@@ -423,17 +423,6 @@ export function ScanWorkflow() {
 
   return (
     <div className="relative min-h-[100dvh] overflow-hidden bg-[#ebf1a0] text-black">
-      {!selectedRecipeView ? (
-      <div className="fixed left-6 top-6 z-50">
-        <AppImageButton
-          buttonId="button-007"
-          href="#scan-history"
-          size={76}
-          className="flex h-[76px] w-[76px] items-center justify-center rounded-full text-black"
-        />
-      </div>
-      ) : null}
-
       <div className="fixed right-6 top-6 z-50">
         <AppImageButton
           buttonId="button-009"
