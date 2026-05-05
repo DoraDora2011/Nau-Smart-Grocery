@@ -37,11 +37,278 @@ function normalizeIngredientName(name: string) {
   return name.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
+function normalizeSearchName(name: string) {
+  return normalizeIngredientName(name)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function toDisplayName(normalizedName: string) {
   return normalizedName
     .split(" ")
     .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
     .join(" ");
+}
+
+function isCinnamonLike(name: string) {
+  const normalized = normalizeSearchName(name);
+
+  return normalized === "cinnamon" || normalized === "que" || normalized.includes("cinnamon");
+}
+
+function isPorkLike(name: string) {
+  const normalized = normalizeSearchName(name);
+
+  return (
+    normalized.includes("pork") ||
+    normalized.includes("thit heo") ||
+    normalized.includes("thit lon") ||
+    normalized.includes("heo") ||
+    normalized.includes("lon")
+  );
+}
+
+function isPreparedPorkRollLike(name: string) {
+  const normalized = normalizeSearchName(name);
+
+  return (
+    normalized.includes("cha que") ||
+    normalized.includes("cha lua") ||
+    normalized.includes("gio lua") ||
+    normalized.includes("vietnamese pork roll") ||
+    normalized.includes("cinnamon pork roll")
+  );
+}
+
+const vietnameseFoodCanonicalNames: Array<{
+  canonical: string;
+  category: string;
+  aliases: string[];
+}> = [
+  {
+    canonical: "nem chua",
+    category: "fermented_food",
+    aliases: ["nem chua", "fermented pork", "fermented pork roll", "sour pork sausage"]
+  },
+  {
+    canonical: "chả lụa",
+    category: "prepared_food",
+    aliases: ["cha lua", "chả lụa", "gio lua", "giò lụa", "pork roll", "vietnamese pork roll"]
+  },
+  {
+    canonical: "chả quế",
+    category: "prepared_food",
+    aliases: ["cha que", "chả quế", "cinnamon pork roll", "vietnamese cinnamon pork roll"]
+  },
+  {
+    canonical: "giò sống",
+    category: "prepared_food",
+    aliases: ["gio song", "giò sống", "raw pork paste", "pork paste"]
+  },
+  {
+    canonical: "chả cá",
+    category: "prepared_food",
+    aliases: ["cha ca", "chả cá", "fish cake", "vietnamese fish cake"]
+  },
+  {
+    canonical: "bò viên",
+    category: "prepared_food",
+    aliases: ["bo vien", "bò viên", "beef ball", "beef balls"]
+  },
+  {
+    canonical: "cá viên",
+    category: "prepared_food",
+    aliases: ["ca vien", "cá viên", "fish ball", "fish balls"]
+  },
+  {
+    canonical: "đậu hũ",
+    category: "protein",
+    aliases: ["dau hu", "đậu hũ", "dau phu", "đậu phụ", "tofu"]
+  },
+  {
+    canonical: "tàu hũ ky",
+    category: "protein",
+    aliases: ["tau hu ky", "tàu hũ ky", "tofu skin", "bean curd skin"]
+  },
+  {
+    canonical: "bánh tráng",
+    category: "grain",
+    aliases: ["banh trang", "bánh tráng", "rice paper", "rice paper wrapper"]
+  },
+  {
+    canonical: "bánh phở",
+    category: "noodle",
+    aliases: ["banh pho", "bánh phở", "pho noodle", "rice noodle sheet"]
+  },
+  {
+    canonical: "bún",
+    category: "noodle",
+    aliases: ["bun", "bún", "rice vermicelli", "vermicelli noodle"]
+  },
+  {
+    canonical: "miến",
+    category: "noodle",
+    aliases: ["mien", "miến", "glass noodle", "cellophane noodle"]
+  },
+  {
+    canonical: "bánh canh",
+    category: "noodle",
+    aliases: ["banh canh", "bánh canh", "thick tapioca noodle"]
+  },
+  {
+    canonical: "mắm tôm",
+    category: "sauce",
+    aliases: ["mam tom", "mắm tôm", "shrimp paste"]
+  },
+  {
+    canonical: "mắm ruốc",
+    category: "sauce",
+    aliases: ["mam ruoc", "mắm ruốc", "fermented shrimp paste"]
+  },
+  {
+    canonical: "nước mắm",
+    category: "sauce",
+    aliases: ["nuoc mam", "nước mắm", "fish sauce"]
+  },
+  {
+    canonical: "tương ớt",
+    category: "sauce",
+    aliases: ["tuong ot", "tương ớt", "chili sauce"]
+  },
+  {
+    canonical: "dưa cải chua",
+    category: "fermented_food",
+    aliases: ["dua cai chua", "dưa cải chua", "pickled mustard greens"]
+  },
+  {
+    canonical: "đồ chua",
+    category: "fermented_food",
+    aliases: ["do chua", "đồ chua", "vietnamese pickles", "pickled carrot and daikon"]
+  },
+  {
+    canonical: "củ kiệu",
+    category: "fermented_food",
+    aliases: ["cu kieu", "củ kiệu", "pickled scallion head", "pickled leek"]
+  },
+  {
+    canonical: "rau răm",
+    category: "herb",
+    aliases: ["rau ram", "rau răm", "vietnamese coriander"]
+  },
+  {
+    canonical: "tía tô",
+    category: "herb",
+    aliases: ["tia to", "tía tô", "perilla", "shiso"]
+  },
+  {
+    canonical: "kinh giới",
+    category: "herb",
+    aliases: ["kinh gioi", "kinh giới", "vietnamese balm"]
+  },
+  {
+    canonical: "ngò gai",
+    category: "herb",
+    aliases: ["ngo gai", "ngò gai", "sawtooth coriander", "culantro"]
+  },
+  {
+    canonical: "bạc hà",
+    category: "vegetable",
+    aliases: ["bac ha", "bạc hà", "doc mung", "dọc mùng", "elephant ear stem", "taro stem"]
+  },
+  {
+    canonical: "giá đỗ",
+    category: "vegetable",
+    aliases: ["gia do", "giá đỗ", "bean sprout", "bean sprouts"]
+  },
+  {
+    canonical: "đậu bắp",
+    category: "vegetable",
+    aliases: ["dau bap", "đậu bắp", "okra"]
+  },
+  {
+    canonical: "khổ qua",
+    category: "vegetable",
+    aliases: ["kho qua", "khổ qua", "bitter melon"]
+  },
+  {
+    canonical: "thơm",
+    category: "fruit",
+    aliases: ["thom", "thơm", "dua", "dứa", "pineapple"]
+  },
+  {
+    canonical: "sả",
+    category: "aromatic",
+    aliases: ["sa", "sả", "lemongrass"]
+  },
+  {
+    canonical: "riềng",
+    category: "aromatic",
+    aliases: ["rieng", "riềng", "galangal"]
+  },
+  {
+    canonical: "nghệ",
+    category: "aromatic",
+    aliases: ["nghe", "nghệ", "turmeric"]
+  },
+  {
+    canonical: "me vắt",
+    category: "spice",
+    aliases: ["me vat", "me vắt", "tamarind pulp", "tamarind paste"]
+  }
+];
+
+function canonicalizeVietnameseFood(item: DetectedIngredient): DetectedIngredient {
+  const normalizedName = normalizeSearchName(item.name);
+  const match = vietnameseFoodCanonicalNames.find((entry) =>
+    entry.aliases.some((alias) => {
+      const normalizedAlias = normalizeSearchName(alias);
+
+      return (
+        normalizedName === normalizedAlias ||
+        (normalizedAlias.length > 3 && normalizedName.includes(normalizedAlias)) ||
+        (normalizedName.length > 3 && normalizedAlias.includes(normalizedName))
+      );
+    })
+  );
+
+  if (!match) {
+    return item;
+  }
+
+  return {
+    ...item,
+    name: match.canonical,
+    category: match.category
+  };
+}
+
+function applyVietnamesePreparedFoodCorrections(items: DetectedIngredient[]) {
+  const canonicalItems = items.map(canonicalizeVietnameseFood);
+  const hasCinnamon = canonicalItems.some((item) => isCinnamonLike(item.name));
+  const hasPork = canonicalItems.some((item) => isPorkLike(item.name));
+  const hasPreparedPorkRoll = canonicalItems.some((item) => isPreparedPorkRollLike(item.name));
+
+  if (!hasCinnamon || !hasPork || hasPreparedPorkRoll) {
+    return canonicalItems;
+  }
+
+  const correctedItems = canonicalItems.filter((item) => !isCinnamonLike(item.name));
+  const porkConfidence =
+    canonicalItems.find((item) => isPorkLike(item.name))?.confidence ??
+    canonicalItems.find((item) => isCinnamonLike(item.name))?.confidence ??
+    0.78;
+
+  correctedItems.push({
+    name: "chả quế",
+    confidence: Math.min(0.94, Math.max(0.72, porkConfidence)),
+    category: "prepared_food"
+  });
+
+  return correctedItems;
 }
 
 function toAppIngredients(items: DetectedIngredient[]): Ingredient[] {
@@ -131,7 +398,9 @@ function buildRequestBody(input: GeminiScanInput) {
     "Confidence must be a number from 0 to 1.",
     "Category should be a short food category like vegetable, protein, herb, fruit, grain, dairy, spice, aromatic, noodle, sauce, fermented_food, prepared_food, or packaged_food.",
     "Important: if a culturally specific Vietnamese food is recognizable, include the full item name, not only its visible components.",
-    "Examples of Vietnamese-specific items to recognize when visible: nem chua, chả lụa, giò sống, chả cá, bò viên, cá viên, đậu hũ, tàu hũ ky, bún, phở, mì, miến, bánh tráng, bánh phở, bánh canh, bột chiên, mắm tôm, mắm ruốc, nước mắm, tương ớt, dưa cải chua, củ kiệu, đồ chua, rau răm, tía tô, kinh giới, húng quế, ngò gai, bạc hà/dọc mùng, giá đỗ, bông điên điển, rau muống, cải thìa, khổ qua, đậu bắp, thơm/dứa, sả, riềng, nghệ, me vắt.",
+    "Examples of Vietnamese-specific items to recognize when visible: nem chua, chả lụa, chả quế, giò sống, chả cá, bò viên, cá viên, đậu hũ, tàu hũ ky, bún, phở, mì, miến, bánh tráng, bánh phở, bánh canh, bột chiên, mắm tôm, mắm ruốc, nước mắm, tương ớt, dưa cải chua, củ kiệu, đồ chua, rau răm, tía tô, kinh giới, húng quế, ngò gai, bạc hà/dọc mùng, giá đỗ, bông điên điển, rau muống, cải thìa, khổ qua, đậu bắp, thơm/dứa, sả, riềng, nghệ, me vắt.",
+    "Never translate chả quế into cinnamon. Chả quế is a Vietnamese prepared pork roll/sausage and must be output as chả quế with category prepared_food.",
+    "Only output cinnamon/quế when a cinnamon stick, cinnamon powder, or spice package is clearly visible. Do not label a brown cooked pork roll, sausage, loaf, or chả as cinnamon.",
     "For prepared Vietnamese foods such as nem chua, output both the full food item and clearly visible add-ons if present, for example nem chua, tỏi, ớt, lá chuối.",
     "For packaged food, you may use readable label text to identify the food type, but do not output brand names, logos, nutrition text, or marketing words.",
     "Do not invent hidden ingredients. Only include known internal ingredients when the full prepared food is visually or textually recognizable.",
@@ -316,11 +585,13 @@ export async function scanIngredientsWithGemini(
       );
     }
 
-    const ingredientsDetected = parsed.data.ingredientsDetected.map((ingredient) => ({
-      name: normalizeIngredientName(ingredient.name),
-      confidence: ingredient.confidence,
-      category: ingredient.category.trim().toLowerCase()
-    }));
+    const ingredientsDetected = applyVietnamesePreparedFoodCorrections(
+      parsed.data.ingredientsDetected.map((ingredient) => ({
+        name: normalizeIngredientName(ingredient.name),
+        confidence: ingredient.confidence,
+        category: ingredient.category.trim().toLowerCase()
+      }))
+    );
 
     return {
       ingredients: toAppIngredients(ingredientsDetected),
