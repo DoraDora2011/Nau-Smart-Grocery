@@ -54,7 +54,6 @@ function normalizeName(value: string) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/đ/g, "d")
-    .replace(/đ/g, "d")
     .replace(/[^a-z0-9\s]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -73,6 +72,9 @@ const ingredientSynonyms: Record<string, string[]> = {
   "thit ga": ["chicken", "ga", "thit ga"],
   "thit bo": ["beef", "bo", "thit bo"],
   "thit heo": ["pork", "heo", "thit heo", "thit ba chi", "ba chi"],
+  "nem chua": ["nem chua", "fermented pork", "fermented pork roll", "sour pork sausage"],
+  "cha lua": ["cha lua", "gio lua", "pork roll", "vietnamese pork roll"],
+  "cha ca": ["cha ca", "fish cake", "vietnamese fish cake"],
   "dau hu": ["tofu", "dau hu", "dau phu"],
   "hung que": ["basil", "thai basil", "hung que"],
   gao: ["rice", "gao", "com"],
@@ -140,6 +142,103 @@ function ingredientMatches(confirmedIngredient: string, dishIngredient: string) 
   }
 
   return false;
+}
+
+function textMentionsIngredient(text: string, ingredient: string) {
+  const normalizedText = normalizeName(text);
+  const aliases = expandIngredientAliases(ingredient);
+
+  for (const alias of aliases) {
+    if (alias.length > 2 && normalizedText.includes(alias)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getRequiredScanMatchCount(confirmedIngredientCount: number) {
+  if (confirmedIngredientCount >= 3) {
+    return 2;
+  }
+
+  return 1;
+}
+
+function sanitizeSuggestionAgainstScan(
+  suggestion: DishSuggestion,
+  confirmedIngredients: string[]
+): DishSuggestion | null {
+  const normalizedConfirmedIngredients = Array.from(
+    new Set(confirmedIngredients.map((ingredient) => ingredient.trim()).filter(Boolean))
+  );
+  const searchableSuggestionText = [
+    suggestion.name,
+    suggestion.summary,
+    suggestion.cuisine,
+    ...suggestion.reasons
+  ].join(" ");
+  const matchedIngredients = normalizedConfirmedIngredients.filter(
+    (confirmedIngredient) =>
+      suggestion.matchedIngredients.some((matchedIngredient) =>
+        ingredientMatches(confirmedIngredient, matchedIngredient)
+      ) || textMentionsIngredient(searchableSuggestionText, confirmedIngredient)
+  );
+  const requiredMatchCount = getRequiredScanMatchCount(normalizedConfirmedIngredients.length);
+
+  if (matchedIngredients.length < requiredMatchCount) {
+    return null;
+  }
+
+  const missingIngredients = suggestion.missingIngredients.filter(
+    (missingIngredient) =>
+      !normalizedConfirmedIngredients.some((confirmedIngredient) =>
+        ingredientMatches(confirmedIngredient, missingIngredient)
+      )
+  );
+  const recalculatedMatchScore = Math.min(
+    1,
+    Math.max(
+      0.35,
+      Number((matchedIngredients.length / Math.max(1, normalizedConfirmedIngredients.length)).toFixed(2))
+    )
+  );
+
+  return {
+    ...suggestion,
+    matchedIngredients,
+    missingIngredients,
+    matchScore: Math.min(suggestion.matchScore, recalculatedMatchScore),
+    reasons: [
+      `Món này được giữ lại vì dùng trực tiếp: ${matchedIngredients.join(", ")}.`,
+      ...suggestion.reasons
+    ]
+  };
+}
+
+function sanitizeSuggestionsAgainstScan(
+  suggestions: DishSuggestion[],
+  confirmedIngredients: string[],
+  limit: number
+) {
+  const uniqueSuggestions = new Map<string, DishSuggestion>();
+
+  suggestions.forEach((suggestion) => {
+    const sanitized = sanitizeSuggestionAgainstScan(suggestion, confirmedIngredients);
+
+    if (!sanitized) {
+      console.warn(
+        `[Suggest Dishes] Dropped unrelated suggestion "${suggestion.name}" for scan ingredients: ${confirmedIngredients.join(", ")}`
+      );
+      return;
+    }
+
+    uniqueSuggestions.set(normalizeName(sanitized.name), sanitized);
+  });
+
+  return Array.from(uniqueSuggestions.values())
+    .sort((left, right) => right.matchedIngredients.length - left.matchedIngredients.length)
+    .slice(0, limit);
 }
 
 function buildReasons(
@@ -217,9 +316,11 @@ function buildMockSuggestions(
     })
     .sort((left, right) => right.matchScore - left.matchScore);
 
-  const suggestions = rankedSuggestions
-    .filter((item) => item.matchScore > 0)
-    .slice(0, limit);
+  const suggestions = sanitizeSuggestionsAgainstScan(
+    rankedSuggestions.filter((item) => item.matchScore > 0),
+    normalizedIngredients,
+    limit
+  );
 
   return {
     suggestions:
@@ -318,6 +419,11 @@ ${confirmedIngredients.map((ingredient) => `- ${ingredient}`).join("\n")}
 Hãy gợi ý đúng ${limit} món có thể nấu dựa trên chính các nguyên liệu này.
 
 YÊU CẦU QUAN TRỌNG:
+- Mỗi món bắt buộc phải dùng trực tiếp ít nhất ${getRequiredScanMatchCount(confirmedIngredients.length)} nguyên liệu trong danh sách scan làm nguyên liệu chính hoặc thành phần nổi bật.
+- Không được gợi ý món chỉ vì đó là món phổ biến nếu món đó không dùng nguyên liệu scan.
+- Không được đưa nguyên liệu không có trong ảnh vào matchedIngredients.
+- Nếu cần thêm nguyên liệu ngoài ảnh, chỉ đưa vào missingIngredients và không đặt tên món xoay quanh nguyên liệu đang thiếu.
+- Ví dụ: nếu scan có "chả lụa, dưa leo, rau răm, tương ớt" thì món phù hợp là "gỏi chả lụa dưa leo", "bánh mì chả lụa dưa leo", không phải "rau muống xào tỏi".
 - Không dùng danh sách món mặc định.
 - Không lặp lại cùng một món.
 - Ưu tiên món Việt Nam hoặc món gia đình Việt dễ nấu.
@@ -378,7 +484,7 @@ async function suggestDishesWithGemini(
         ],
         generationConfig: {
           responseMimeType: "application/json",
-          temperature: 0.75
+          temperature: 0.35
         }
       }),
       cache: "no-store"
@@ -396,11 +502,15 @@ async function suggestDishesWithGemini(
   const parsedResponse = JSON.parse(responseText) as GeminiResponse;
   const jsonText = extractJsonObject(getGeminiText(parsedResponse));
   const payload = gemmaSuggestResponseSchema.parse(JSON.parse(jsonText));
-  const suggestions = payload.suggestions.slice(0, limit).map((suggestion, index) => ({
-    ...suggestion,
-    id: suggestion.id?.trim() ? suggestion.id : createDynamicDishId(suggestion.name, index),
-    matchScore: Math.min(1, Math.max(0, Number(suggestion.matchScore.toFixed(2))))
-  }));
+  const suggestions = sanitizeSuggestionsAgainstScan(
+    payload.suggestions.map((suggestion, index) => ({
+      ...suggestion,
+      id: suggestion.id?.trim() ? suggestion.id : createDynamicDishId(suggestion.name, index),
+      matchScore: Math.min(1, Math.max(0, Number(suggestion.matchScore.toFixed(2))))
+    })),
+    confirmedIngredients,
+    limit
+  );
 
   if (suggestions.length === 0) {
     throw new Error("Gemini returned an empty dish suggestion list.");

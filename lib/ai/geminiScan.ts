@@ -123,13 +123,20 @@ function shouldTryNextModel(status: number) {
 
 function buildRequestBody(input: GeminiScanInput) {
   const prompt = [
-    "Detect only clearly visible cooking ingredients in this image.",
+    "You are a Vietnamese grocery and home-cooking vision model.",
+    "Detect clearly visible cooking ingredients, market foods, Vietnamese prepared ingredients, and recognizable packaged food items in this image.",
     "Return JSON only.",
-    'Use the exact shape: {"ingredientsDetected":[{"name":"tomato","confidence":0.94,"category":"vegetable"}]}.',
-    "Ingredient names must be lowercase singular nouns when possible.",
+    'Use the exact shape: {"ingredientsDetected":[{"name":"cà chua","confidence":0.94,"category":"vegetable"}]}.',
+    "Use Vietnamese ingredient names when the item is common in Vietnam. Use lowercase names.",
     "Confidence must be a number from 0 to 1.",
-    "Category should be a short food category like vegetable, protein, herb, fruit, grain, dairy, spice, or aromatic.",
-    "Ignore cookware, utensils, logos, labels, packaging text, and non-food objects.",
+    "Category should be a short food category like vegetable, protein, herb, fruit, grain, dairy, spice, aromatic, noodle, sauce, fermented_food, prepared_food, or packaged_food.",
+    "Important: if a culturally specific Vietnamese food is recognizable, include the full item name, not only its visible components.",
+    "Examples of Vietnamese-specific items to recognize when visible: nem chua, chả lụa, giò sống, chả cá, bò viên, cá viên, đậu hũ, tàu hũ ky, bún, phở, mì, miến, bánh tráng, bánh phở, bánh canh, bột chiên, mắm tôm, mắm ruốc, nước mắm, tương ớt, dưa cải chua, củ kiệu, đồ chua, rau răm, tía tô, kinh giới, húng quế, ngò gai, bạc hà/dọc mùng, giá đỗ, bông điên điển, rau muống, cải thìa, khổ qua, đậu bắp, thơm/dứa, sả, riềng, nghệ, me vắt.",
+    "For prepared Vietnamese foods such as nem chua, output both the full food item and clearly visible add-ons if present, for example nem chua, tỏi, ớt, lá chuối.",
+    "For packaged food, you may use readable label text to identify the food type, but do not output brand names, logos, nutrition text, or marketing words.",
+    "Do not invent hidden ingredients. Only include known internal ingredients when the full prepared food is visually or textually recognizable.",
+    "Ignore cookware, utensils, plates, hands, table surfaces, and non-food objects.",
+    "Prefer 3 to 12 useful grocery/cooking items. Avoid duplicates and overly generic names like food, meat, vegetable, or package when a specific Vietnamese name is possible.",
     "If nothing is clearly identifiable, return an empty ingredientsDetected array."
   ].join(" ");
 
@@ -151,6 +158,8 @@ function buildRequestBody(input: GeminiScanInput) {
     ],
     generationConfig: {
       responseMimeType: "application/json",
+      temperature: 0.2,
+      candidateCount: 1,
       responseJsonSchema: {
         type: "object",
         properties: {
