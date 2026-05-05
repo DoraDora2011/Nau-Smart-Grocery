@@ -9,6 +9,12 @@ import type {
 
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta";
 const DEFAULT_GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_SCAN_FALLBACK_MODELS = (
+  process.env.GEMINI_SCAN_FALLBACK_MODELS || "gemini-flash-latest,gemini-2.5-flash-lite"
+)
+  .split(",")
+  .map((model) => model.trim())
+  .filter(Boolean);
 
 const geminiIngredientSchema = z.object({
   ingredientsDetected: z.array(
@@ -107,6 +113,14 @@ function extractCandidateText(payload: unknown) {
   );
 }
 
+function getScanModelCandidates() {
+  return Array.from(new Set([DEFAULT_GEMINI_MODEL, ...GEMINI_SCAN_FALLBACK_MODELS]));
+}
+
+function shouldTryNextModel(status: number) {
+  return status === 429 || status === 500 || status === 502 || status === 503 || status === 504;
+}
+
 function buildRequestBody(input: GeminiScanInput) {
   const prompt = [
     "Detect only clearly visible cooking ingredients in this image.",
@@ -159,12 +173,12 @@ function buildRequestBody(input: GeminiScanInput) {
   };
 }
 
-async function requestGeminiScan(input: GeminiScanInput, apiKey: string) {
+async function requestGeminiScan(input: GeminiScanInput, apiKey: string, model: string) {
   const requestBody = buildRequestBody(input);
 
   // GEMINI API INTEGRATION: image understanding for ingredient detection
   const response = await fetch(
-    `${GEMINI_API_URL}/models/${DEFAULT_GEMINI_MODEL}:generateContent`,
+    `${GEMINI_API_URL}/models/${model}:generateContent`,
     {
       method: "POST",
       headers: {
@@ -184,6 +198,7 @@ async function requestGeminiScan(input: GeminiScanInput, apiKey: string) {
 
     return {
       ok: false as const,
+      model,
       status: response.status,
       responseText
     };
@@ -191,6 +206,7 @@ async function requestGeminiScan(input: GeminiScanInput, apiKey: string) {
 
   return {
     ok: true as const,
+    model,
     responseText
   };
 }
@@ -208,12 +224,35 @@ export async function scanIngredientsWithGemini(
   }
 
   try {
-    const result = await requestGeminiScan(input, apiKey);
+    let result: Awaited<ReturnType<typeof requestGeminiScan>> | null = null;
+
+    for (const model of getScanModelCandidates()) {
+      result = await requestGeminiScan(input, apiKey, model);
+
+      if (result.ok) {
+        break;
+      }
+
+      if (!shouldTryNextModel(result.status)) {
+        break;
+      }
+
+      console.warn(
+        `[Gemini Scan] Model ${model} failed with status ${result.status}. Trying next scan model if available.`
+      );
+    }
+
+    if (!result) {
+      return createFallbackScanResult(
+        input,
+        "Gemini scan could not start. Using safe structured fallback response."
+      );
+    }
 
     if (!result.ok) {
       return createFallbackScanResult(
         input,
-        `Gemini request failed with status ${result.status}. Using safe structured fallback response.`
+        `Gemini request failed with status ${result.status} on ${result.model}. Using safe structured fallback response.`
       );
     }
 
@@ -277,7 +316,7 @@ export async function scanIngredientsWithGemini(
     return {
       ingredients: toAppIngredients(ingredientsDetected),
       ingredientsDetected,
-      model: DEFAULT_GEMINI_MODEL,
+      model: result.model,
       warnings:
         ingredientsDetected.length === 0
           ? ["No clear ingredients were detected in the image."]
