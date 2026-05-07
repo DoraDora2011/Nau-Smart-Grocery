@@ -21,7 +21,16 @@
         <div id="loadingText" class="loading-text">Loading character...</div>
       </section>
 
-      <aside class="controls-panel" aria-label="Outfit controls">
+      <button
+        id="toolbarToggle"
+        class="toolbar-toggle"
+        type="button"
+        aria-controls="outfitControlsPanel"
+        aria-expanded="true"
+        aria-label="Ẩn thanh công cụ thay đồ"
+      ></button>
+
+      <aside id="outfitControlsPanel" class="controls-panel" aria-label="Outfit controls">
         <div class="brand-block">
           <p class="eyebrow">Character Viewer</p>
           <h1>Dress-Up Studio</h1>
@@ -44,6 +53,6 @@
       </aside>
     </main>
 
-    <script type="module" src="./script.js?v=16"></script>
+    <script type="module" src="./script.js?v=17"></script>
   </body>
 </html>

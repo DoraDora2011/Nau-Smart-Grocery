@@ -37,7 +37,7 @@ export function RecipeForm({
     return (
       <Card className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold">Bước 1 - Nhập tên món</h2>
+          <h2 className="text-base font-semibold leading-snug sm:text-lg">Bước 1 - Nhập tên món</h2>
           <p className="text-sm text-[var(--color-ink-soft)]">
             Hãy cho hệ thống biết món ăn bạn muốn nấu.
           </p>
@@ -64,7 +64,7 @@ export function RecipeForm({
   return (
     <Card className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold">Bước 2 - Khẩu phần và dị ứng</h2>
+        <h2 className="text-base font-semibold leading-snug sm:text-lg">Bước 2 - Khẩu phần và dị ứng</h2>
         <p className="text-sm text-[var(--color-ink-soft)]">
           Hệ thống sẽ kiểm tra nguy cơ dị ứng trước khi tạo công thức nấu ăn.
         </p>

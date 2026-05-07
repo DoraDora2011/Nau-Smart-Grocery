@@ -22,7 +22,7 @@ export function RecipeCard({ recipe }: { recipe: Recipe }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm text-[var(--color-accent)]">{recipe.cuisine}</p>
-          <h2 className="text-2xl font-semibold">{recipe.dishName}</h2>
+          <h2 className="text-xl font-semibold leading-tight sm:text-2xl">{recipe.dishName}</h2>
           <p className="mt-2 text-sm text-[var(--color-ink-soft)]">{recipe.summary}</p>
         </div>
         <Badge>{getDifficultyLabel(recipe.difficulty)}</Badge>
@@ -34,21 +34,21 @@ export function RecipeCard({ recipe }: { recipe: Recipe }) {
             <Users className="h-4 w-4" />
             Khẩu phần
           </div>
-          <p className="mt-2 text-xl">{recipe.servings}</p>
+          <p className="mt-2 text-lg leading-tight sm:text-xl">{recipe.servings}</p>
         </div>
         <div className="rounded-2xl bg-[var(--color-muted)] p-4">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Clock3 className="h-4 w-4" />
             Prep
           </div>
-          <p className="mt-2 text-xl">{recipe.prepTimeMinutes} phút</p>
+          <p className="mt-2 text-lg leading-tight sm:text-xl">{recipe.prepTimeMinutes} phút</p>
         </div>
         <div className="rounded-2xl bg-[var(--color-muted)] p-4">
           <div className="flex items-center gap-2 text-sm font-semibold">
             <Soup className="h-4 w-4" />
             Nấu
           </div>
-          <p className="mt-2 text-xl">{recipe.cookTimeMinutes} phút</p>
+          <p className="mt-2 text-lg leading-tight sm:text-xl">{recipe.cookTimeMinutes} phút</p>
         </div>
       </div>
 

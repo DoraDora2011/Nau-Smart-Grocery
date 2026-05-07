@@ -63,7 +63,7 @@ export function IngredientEditor({
           <p className="text-sm font-black uppercase tracking-wide text-[#b46a1f]">
             Kết quả quét
           </p>
-          <h2 className="text-2xl font-black">Xác nhận nguyên liệu</h2>
+          <h2 className="text-xl font-black leading-tight sm:text-2xl">Xác nhận nguyên liệu</h2>
           <p className="mt-1 text-sm font-bold text-black/55">
             Chỉnh lại tên nguyên liệu trước khi Nấu gợi ý món phù hợp.
           </p>
@@ -117,7 +117,7 @@ export function IngredientEditor({
       <Button
         onClick={onConfirm}
         disabled={ingredients.length === 0 || isLoading || ingredients.some((item) => !item.name.trim())}
-        className="h-14 w-full rounded-full bg-[#69bf7b] text-base font-black text-black hover:bg-[#69bf7b]/90"
+        className="h-12 w-full rounded-full bg-[#69bf7b] text-sm font-black leading-tight text-black hover:bg-[#69bf7b]/90 sm:h-14 sm:text-base"
       >
         <CheckCircle2 className="mr-2 h-5 w-5" />
         {isLoading ? "Đang lưu danh sách..." : "Xác nhận danh sách nguyên liệu"}

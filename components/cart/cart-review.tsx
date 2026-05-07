@@ -24,7 +24,7 @@ export function CartReview({
   return (
     <Card className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold">Rà soát giỏ hàng grocery</h2>
+        <h2 className="text-base font-semibold leading-snug sm:text-lg">Rà soát giỏ hàng grocery</h2>
         <p className="text-sm text-[var(--color-ink-soft)]">
           Lớp mapping này là deterministic và tách biệt hoàn toàn khỏi logic AI.
         </p>

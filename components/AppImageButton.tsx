@@ -17,6 +17,7 @@ interface AppImageButtonProps {
   size?: number | string;
   href?: ComponentProps<typeof Link>["href"] | `#${string}`;
   type?: ButtonType;
+  "data-tour-id"?: string;
 }
 
 const baseOuterStyle: CSSProperties = {
@@ -52,7 +53,8 @@ export function AppImageButton({
   disabled,
   size = 48,
   href,
-  type = "button"
+  type = "button",
+  "data-tour-id": dataTourId
 }: AppImageButtonProps) {
   const asset = getButtonAsset(buttonId);
   const imageSize = typeof size === "number" ? size : 128;
@@ -82,6 +84,7 @@ export function AppImageButton({
         aria-label={asset.label}
         aria-disabled={disabled}
         className={className}
+        data-tour-id={dataTourId}
         style={outerStyle}
         onClick={(event) => {
           if (disabled) {
@@ -104,6 +107,7 @@ export function AppImageButton({
         aria-label={asset.label}
         aria-disabled={disabled}
         className={className}
+        data-tour-id={dataTourId}
         style={outerStyle}
         onClick={(event) => {
           if (disabled) {
@@ -125,6 +129,7 @@ export function AppImageButton({
       aria-label={asset.label}
       disabled={disabled}
       className={className}
+      data-tour-id={dataTourId}
       style={outerStyle}
       onClick={onClick}
     >

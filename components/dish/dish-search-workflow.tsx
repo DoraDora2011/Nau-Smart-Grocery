@@ -36,7 +36,7 @@ function DishSuggestionCard({ suggestion }: { suggestion: DishSuggestion }) {
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm text-[var(--color-accent)]">{suggestion.cuisine}</p>
-          <h2 className="mt-1 text-xl font-semibold">{suggestion.name}</h2>
+          <h2 className="mt-1 text-lg font-semibold leading-tight sm:text-xl">{suggestion.name}</h2>
           <p className="mt-2 text-sm text-[var(--color-ink-soft)]">{suggestion.summary}</p>
         </div>
         <div className="rounded-2xl bg-[var(--color-muted)] px-3 py-2 text-right">
@@ -195,7 +195,7 @@ export function DishSearchWorkflow() {
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white">
                 <Sparkles className="h-5 w-5" />
               </div>
-              <h2 className="mt-4 text-xl font-semibold">Dish suggestions will appear here</h2>
+              <h2 className="mt-4 text-lg font-semibold leading-tight sm:text-xl">Dish suggestions will appear here</h2>
               <p className="mt-2 text-sm text-[var(--color-ink-soft)]">
                 Enter the ingredients you already confirmed from the scan flow, then request dish
                 suggestions.

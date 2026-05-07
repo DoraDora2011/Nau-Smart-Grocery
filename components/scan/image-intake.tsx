@@ -116,7 +116,7 @@ export function ImageIntake({
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-4 px-8 text-center text-black/45">
               <ImagePlus className="h-16 w-16" />
-              <p className="text-xl font-black">Chạm để chọn hoặc chụp ảnh</p>
+              <p className="text-base font-black leading-snug sm:text-xl">Chạm để chọn hoặc chụp ảnh</p>
             </div>
           )}
 
@@ -135,7 +135,7 @@ export function ImageIntake({
       </button>
 
       <div className="mx-auto mt-10 w-full max-w-[680px] text-center">
-        <p className="text-2xl font-black text-black/40">
+        <p className="text-lg font-black leading-snug text-black/40 sm:text-2xl">
           Đưa nguyên liệu vào khung quét rồi nhấn chụp
         </p>
         {selectedFile ? (
@@ -160,7 +160,7 @@ export function ImageIntake({
           type="button"
           onClick={handleScanButton}
           disabled={isLoading}
-          className="flex min-h-24 min-w-24 flex-col items-center justify-center gap-1 rounded-[34px] border-[3px] border-black bg-white px-4 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 lg:min-h-28 lg:min-w-36"
+          className="flex min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] border-[3px] border-black bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:min-h-28 lg:min-w-36"
           aria-label={selectedFile ? "Phân tích ảnh nguyên liệu" : "Chọn ảnh để quét"}
         >
           {selectedFile ? (

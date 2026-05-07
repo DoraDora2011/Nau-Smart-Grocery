@@ -159,7 +159,7 @@ function CartItemRow({
             stroke={favorite ? "#CD6CFD" : "currentColor"}
           />
         </button>
-        <p className="text-right text-xl font-black leading-none text-black">{formatPrice(subtotal)}</p>
+        <p className="text-right text-lg font-black leading-none text-black sm:text-xl">{formatPrice(subtotal)}</p>
       </div>
     </article>
   );
@@ -168,7 +168,7 @@ function CartItemRow({
 function EmptyCartState() {
   return (
     <div className="rounded-[24px] bg-white px-6 py-12 text-center shadow-[0_18px_36px_rgba(46,46,18,0.08)]">
-      <p className="text-2xl font-black">Giỏ hàng đang trống</p>
+      <p className="text-xl font-black leading-tight sm:text-2xl">Giỏ hàng đang trống</p>
       <p className="mt-3 text-sm font-semibold leading-6 text-black/60">
         Sản phẩm bạn bấm thêm ở Trang chủ, mục Tất cả hoặc các Category sẽ tự xuất hiện tại đây.
       </p>
@@ -371,7 +371,7 @@ export function CartPageView() {
             type="button"
             onClick={handleClearCart}
             disabled={items.length === 0}
-            className="rounded-[20px] border-[3px] border-black bg-transparent px-5 py-3 text-base font-black text-black disabled:opacity-40"
+            className="rounded-[20px] border-[3px] border-black bg-transparent px-4 py-2.5 text-sm font-black leading-tight text-black disabled:opacity-40 sm:px-5 sm:py-3 sm:text-base"
           >
             Xoá giỏ
           </button>
@@ -379,14 +379,14 @@ export function CartPageView() {
             type="button"
             onClick={handleCheckout}
             disabled={items.length === 0}
-            className="rounded-[24px] bg-[#cd6cfd] px-8 py-5 text-2xl font-black text-white shadow-[0_0_0_3px_#000000,0_14px_26px_rgba(0,0,0,0.16)]"
+            className="rounded-[24px] bg-[#cd6cfd] px-6 py-3.5 text-base font-black leading-tight text-white shadow-[0_0_0_3px_#000000,0_14px_26px_rgba(0,0,0,0.16)] sm:px-8 sm:py-4 sm:text-lg"
           >
             Mua Hàng ({checkoutQuantity})
           </button>
         </div>
 
         <section className="mt-10 min-h-[calc(100dvh-8rem)] rounded-t-[28px] bg-[#ffe467] px-6 pb-48 pt-6 shadow-[0_-12px_30px_rgba(0,0,0,0.08)]">
-          <h1 className="mb-6 text-center text-2xl font-black">Có thể bạn cần</h1>
+          <h1 className="mb-6 text-center text-xl font-black leading-tight sm:text-2xl">Có thể bạn cần</h1>
           <ProductGrid
             products={suggestionItems}
             favoriteIds={favoriteIds}

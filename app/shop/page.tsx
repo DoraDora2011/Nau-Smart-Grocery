@@ -11,7 +11,7 @@ export default function ShopPage() {
     <div className="space-y-8">
       <div className="space-y-3">
         <Badge>Siêu thị</Badge>
-        <h1 className="font-heading text-3xl leading-tight sm:text-4xl">
+        <h1 className="font-heading text-2xl leading-tight sm:text-3xl md:text-4xl">
           Xem các danh mục siêu thị tĩnh
         </h1>
         <p className="max-w-2xl text-sm text-[var(--color-ink-soft)] sm:text-base">
@@ -22,7 +22,7 @@ export default function ShopPage() {
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Danh mục</h2>
+          <h2 className="text-xl font-semibold leading-tight sm:text-2xl">Danh mục</h2>
           <p className="text-sm text-[var(--color-ink-soft)]">
             Bắt đầu từ một ngành hàng và giữ logic duyệt catalog hoàn toàn deterministic.
           </p>
@@ -32,7 +32,7 @@ export default function ShopPage() {
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Sản phẩm nổi bật</h2>
+          <h2 className="text-xl font-semibold leading-tight sm:text-2xl">Sản phẩm nổi bật</h2>
           <p className="text-sm text-[var(--color-ink-soft)]">
             Các mặt hàng này cũng được lấy trực tiếp từ nguồn dữ liệu catalog tĩnh.
           </p>

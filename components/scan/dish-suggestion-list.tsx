@@ -28,7 +28,7 @@ export function DishSuggestionList({
                 <ChefHat className="h-4 w-4" />
                 {suggestion.cuisine}
               </div>
-              <h3 className="mt-2 text-lg font-semibold">{suggestion.name}</h3>
+              <h3 className="mt-2 text-base font-semibold leading-snug sm:text-lg">{suggestion.name}</h3>
               <p className="mt-2 text-sm text-[var(--color-ink-soft)]">{suggestion.summary}</p>
             </div>
             <Badge>Khớp {Math.round(suggestion.matchScore * 100)}%</Badge>

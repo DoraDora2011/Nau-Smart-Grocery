@@ -42,7 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-heading text-lg">{dictionary.common.appName}</p>
+              <p className="font-heading text-base leading-tight sm:text-lg">{dictionary.common.appName}</p>
               <p className="text-xs text-[var(--color-ink-soft)]">
                 {dictionary.header.tagline}
               </p>

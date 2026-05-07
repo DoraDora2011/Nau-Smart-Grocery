@@ -126,7 +126,7 @@ export function CartWorkflow() {
           ) : (
             <Card className="overflow-hidden p-0">
               <div className="bg-[linear-gradient(135deg,rgba(255,250,241,0.95),rgba(237,243,232,0.98))] p-6">
-                <h2 className="text-xl font-semibold">Mapping giỏ hàng deterministic</h2>
+                <h2 className="text-lg font-semibold leading-tight sm:text-xl">Mapping giỏ hàng deterministic</h2>
                 <p className="mt-2 text-sm text-[var(--color-ink-soft)]">
                   Tên nguyên liệu được map sang sản phẩm siêu thị chỉ bằng catalog mock cục bộ và
                   file JSON ingredient-product.
@@ -154,7 +154,7 @@ export function CartWorkflow() {
 
       <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Giỏ hàng hiện tại</h2>
+          <h2 className="text-xl font-semibold leading-tight sm:text-2xl">Giỏ hàng hiện tại</h2>
           <p className="text-sm text-[var(--color-ink-soft)]">
             Rà soát các mặt hàng đã thêm, chỉnh số lượng hoặc xóa bớt trước khi có bước thanh toán.
           </p>

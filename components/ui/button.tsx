@@ -10,9 +10,9 @@ const variants = {
 };
 
 const sizes = {
-  sm: "h-10 px-3 text-sm",
-  md: "h-11 px-4 text-sm",
-  lg: "h-12 px-5 text-base"
+  sm: "h-9 px-3 text-xs leading-none sm:h-10 sm:text-sm",
+  md: "h-10 px-4 text-sm leading-none sm:h-11 sm:text-base",
+  lg: "h-11 px-5 text-sm leading-none sm:h-12 sm:text-base md:text-lg"
 };
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

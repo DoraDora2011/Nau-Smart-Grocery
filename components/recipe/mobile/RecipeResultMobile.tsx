@@ -104,10 +104,10 @@ export function RecipeResultMobile({
 
         <div className="mt-5 flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-[26px] font-black leading-tight">
+            <h1 className="text-2xl font-black leading-tight sm:text-[26px]">
               Công thức nấu {recipe.dish || "(tên món ăn)"}
             </h1>
-            <p className="mt-2 text-base font-bold">Dành cho {recipe.servings} người</p>
+            <p className="mt-2 text-sm font-bold leading-snug sm:text-base">Dành cho {recipe.servings} người</p>
           </div>
           <button
             type="button"
@@ -135,7 +135,7 @@ export function RecipeResultMobile({
         ) : null}
 
         <div className="mt-7">
-          <h2 className="text-xl font-black">Các loại nguyên liệu chính:</h2>
+          <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
           <div className="mt-4 grid grid-cols-2 gap-4">
             {reviewIngredients.map((ingredient, index) => {
               const isConflict = isConflictingIngredient(ingredient.name);
@@ -181,7 +181,7 @@ export function RecipeResultMobile({
           type="button"
           onClick={onAddReviewedIngredientsToCart}
           disabled={cartLoading || reviewIngredients.length === 0}
-          className="mt-7 w-full rounded-full bg-[#6fbd7d] px-5 py-4 text-base font-black text-black disabled:opacity-60"
+          className="mt-7 w-full rounded-full bg-[#6fbd7d] px-5 py-3 text-sm font-black leading-tight text-black disabled:opacity-60 sm:py-4 sm:text-base"
         >
           {cartLoading ? "Đang thêm vào giỏ..." : "Thêm danh sách vào giỏ hàng"}
         </button>
@@ -191,7 +191,7 @@ export function RecipeResultMobile({
         ) : null}
 
         <div className="mt-7">
-          <h2 className="text-xl font-black">Cách làm</h2>
+          <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
           <div className="mt-3 space-y-3">
             {recipe.steps?.map((step, index) => (
               <p key={`${step}-${index}`} className="rounded-2xl bg-white/80 px-4 py-3 text-sm font-semibold">

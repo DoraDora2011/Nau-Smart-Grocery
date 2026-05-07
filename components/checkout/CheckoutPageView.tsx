@@ -127,7 +127,7 @@ function CheckoutItemRow({
         </div>
       </div>
 
-      <p className="self-center whitespace-nowrap text-right text-xl font-black">
+      <p className="self-center whitespace-nowrap text-right text-lg font-black sm:text-xl">
         {formatPrice(item.estimatedPrice * item.quantity)}
       </p>
     </article>
@@ -169,12 +169,12 @@ function PaymentLoadingOverlay({ status }: { status: Exclude<PaymentStatus, "idl
         {status === "processing" ? (
           <>
             <div className="payment-spinner" aria-hidden="true" />
-            <p className="text-[26px] font-black leading-none">Đang Thanh Toán</p>
+            <p className="text-xl font-black leading-tight sm:text-[26px]">Đang Thanh Toán</p>
           </>
         ) : (
           <>
             <Check className="h-36 w-36 stroke-[#6be17d] stroke-[1.5]" aria-hidden="true" />
-            <p className="text-[26px] font-black leading-none">Thanh Toán Thành Công</p>
+            <p className="text-xl font-black leading-tight sm:text-[26px]">Thanh Toán Thành Công</p>
           </>
         )}
       </div>
@@ -274,7 +274,7 @@ function FinalBillPage({
         </section>
 
         <section className="rounded-[14px] bg-white px-5 py-6 shadow-sm">
-          <h1 className="flex items-center justify-center gap-2 text-center text-[22px] font-black leading-tight">
+          <h1 className="flex items-center justify-center gap-2 text-center text-xl font-black leading-tight sm:text-[22px]">
             <PackageCheck className="h-6 w-6" />
             Quá trình vận chuyển :
           </h1>
@@ -393,9 +393,9 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
 
         <section>
           <div className="relative z-10 flex items-end justify-center gap-3 text-center">
-            <h1 className="pb-5 text-[25px] font-black leading-none">Tóm tắt</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Tóm tắt</h1>
             <img src={logoMascot.src} alt="Mascot Nấu" className="h-20 w-20 object-contain" />
-            <h1 className="pb-5 text-[25px] font-black leading-none">Đơn hàng</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Đơn hàng</h1>
           </div>
 
           <div className="-mt-3 max-h-[258px] space-y-2 overflow-y-auto rounded-[18px] bg-white p-3">
@@ -471,7 +471,7 @@ function PaymentDetailsCard({ order }: { order: OrderSnapshot }) {
         <h2 className="font-black">Chi tiết Thanh toán</h2>
       </div>
 
-      <div className="space-y-5 text-base font-bold">
+      <div className="space-y-5 text-sm font-bold leading-6 sm:text-base">
         <div className="flex justify-between gap-4 text-left">
           <span>Tổng tiền hàng</span>
           <span className="text-right">{formatPrice(order.subtotal)}</span>
@@ -752,9 +752,9 @@ export function CheckoutPageView() {
 
         <section className="-mt-1">
           <div className="relative z-10 flex items-end justify-center gap-4 text-center">
-            <h1 className="pb-5 text-[28px] font-black leading-none">Tóm tắt</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Tóm tắt</h1>
             <img src={logoMascot.src} alt="Mascot Nấu" className="h-24 w-24 object-contain" />
-            <h1 className="pb-5 text-[28px] font-black leading-none">Đơn hàng</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Đơn hàng</h1>
           </div>
 
           <div className="-mt-4 max-h-[258px] space-y-2 overflow-y-auto rounded-[18px] bg-white p-3">
@@ -880,7 +880,7 @@ export function CheckoutPageView() {
             <h2 className="font-black">Chi tiết Thanh toán</h2>
           </div>
 
-          <div className="space-y-5 text-base font-bold">
+          <div className="space-y-5 text-sm font-bold leading-6 sm:text-base">
             <div className="flex justify-between gap-4 text-left">
               <span>Tổng tiền hàng</span>
               <span className="text-right">{formatPrice(subtotal)}</span>

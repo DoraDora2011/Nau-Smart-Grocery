@@ -77,6 +77,7 @@ export function HomeMobileLayout({
             href="/profile"
             size={56}
             className="flex h-14 w-14 items-center justify-center rounded-full text-black"
+            data-tour-id="user-profile"
           />
         </div>
 
@@ -89,6 +90,7 @@ export function HomeMobileLayout({
           />
           <Link
             href="/dish"
+            data-tour-id="recipe-mvp"
             className="flex min-h-14 flex-1 items-center gap-3 rounded-full border-0 bg-white px-4 text-sm font-bold shadow-[0_0_0_2.5px_#000000] transition active:scale-[0.98]"
           >
             <Image
@@ -178,6 +180,7 @@ export function HomeMobileLayout({
             href="/scan"
             size={82}
             className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
+            data-tour-id="scan-mvp"
           />
           <AppImageButton
             buttonId="button-006"

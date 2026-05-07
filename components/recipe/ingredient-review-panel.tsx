@@ -87,7 +87,7 @@ export function IngredientReviewPanel({
     <div className="space-y-5">
       <Card className="space-y-5">
         <div>
-          <h2 className="text-xl font-semibold">Bước 5 - Rà soát nguyên liệu</h2>
+          <h2 className="text-lg font-semibold leading-tight sm:text-xl">Bước 5 - Rà soát nguyên liệu</h2>
           <p className="text-sm text-[var(--color-ink-soft)]">
             Điều chỉnh số lượng trước khi thêm danh sách nguyên liệu cuối cùng vào giỏ hàng.
           </p>
@@ -202,7 +202,7 @@ export function IngredientReviewPanel({
       {upsellSuggestions.length > 0 ? (
         <Card className="space-y-4">
           <div>
-            <h2 className="text-xl font-semibold">Bước 6 - Bạn có thể muốn mua thêm</h2>
+            <h2 className="text-lg font-semibold leading-tight sm:text-xl">Bước 6 - Bạn có thể muốn mua thêm</h2>
             <p className="text-sm text-[var(--color-ink-soft)]">
               Đây là các món mua thêm tùy chọn và được tách riêng khỏi nguyên liệu bắt buộc của công thức.
             </p>

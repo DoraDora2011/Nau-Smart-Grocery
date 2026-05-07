@@ -103,6 +103,7 @@ export function HomeDesktopLayout({
               href="/profile"
               size={48}
               className="flex h-12 w-12 items-center justify-center rounded-full text-black transition hover:scale-105"
+              data-tour-id="user-profile"
             />
             <Link
               href="/cart"
@@ -128,6 +129,7 @@ export function HomeDesktopLayout({
               <div className="group">
                 <Link
                   href="/scan"
+                  data-tour-id="scan-mvp"
                   className="inline-flex min-w-52 justify-center rounded-full border-2 border-black bg-[linear-gradient(135deg,#cd6cfd,#ffffff)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
                   Quét nguyên liệu
@@ -140,6 +142,7 @@ export function HomeDesktopLayout({
               <div className="group">
                 <Link
                   href="/dish"
+                  data-tour-id="recipe-mvp"
                   className="inline-flex min-w-52 justify-center rounded-full border-2 border-black bg-[linear-gradient(135deg,#d7fdd9,#ffe467)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
                   Hỏi Nâu đầu bếp
@@ -160,7 +163,7 @@ export function HomeDesktopLayout({
               className="relative h-[360px] w-auto object-contain"
               priority
             />
-            <div className="absolute right-8 top-16 rounded-[999px] bg-white px-9 py-6 text-2xl font-bold shadow-sm">
+            <div className="absolute right-8 top-16 rounded-[999px] bg-white px-9 py-6 text-xl font-bold leading-snug shadow-sm xl:text-2xl">
               Chào nha,
               <br />
               mình là Nâu

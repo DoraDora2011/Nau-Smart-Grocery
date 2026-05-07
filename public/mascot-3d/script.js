@@ -28,6 +28,8 @@ const solidMaterialCache = new Map();
 const canvas = document.querySelector("#characterCanvas");
 const loadingText = document.querySelector("#loadingText");
 const outfitButtons = document.querySelectorAll(".outfit-button");
+const appShell = document.querySelector(".app");
+const toolbarToggle = document.querySelector("#toolbarToggle");
 const urlParams = new URLSearchParams(window.location.search);
 const isPreviewMode = urlParams.get("preview") === "1";
 const initialOutfitKey = getValidOutfitKey(urlParams.get("outfit"));
@@ -101,6 +103,7 @@ canvas.addEventListener("keydown", handleCanvasKeyDown);
 
 loadCharacter();
 bindOutfitButtons();
+bindToolbarToggle();
 setActiveButton(document.querySelector(`[data-outfit="${initialOutfitKey}"]`) ?? document.querySelector(".outfit-button.active"));
 animate();
 
@@ -340,6 +343,25 @@ function bindOutfitButtons() {
       selectOutfit(button.dataset.outfit);
       setActiveButton(button);
     });
+  });
+}
+
+function bindToolbarToggle() {
+  if (!toolbarToggle || !appShell || isPreviewMode) {
+    return;
+  }
+
+  toolbarToggle.addEventListener("click", () => {
+    const isCollapsed = !appShell.classList.contains("controls-collapsed");
+    appShell.classList.toggle("controls-collapsed", isCollapsed);
+    toolbarToggle.setAttribute("aria-expanded", String(!isCollapsed));
+    toolbarToggle.setAttribute(
+      "aria-label",
+      isCollapsed ? "Hiện thanh công cụ thay đồ" : "Ẩn thanh công cụ thay đồ",
+    );
+
+    resizeRenderer();
+    window.setTimeout(resizeRenderer, 220);
   });
 }
 

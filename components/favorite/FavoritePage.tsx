@@ -27,7 +27,7 @@ function EmptyFavoriteState({ type }: { type: FavoriteTab }) {
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#ffe467] text-black">
         <Heart className="h-7 w-7" />
       </div>
-      <h2 className="mt-5 text-xl font-black">
+      <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">
         Chưa có {type === "products" ? "sản phẩm" : "công thức"} yêu thích
       </h2>
       <p className="mt-3 text-sm font-semibold leading-6 text-black/65">
@@ -87,7 +87,7 @@ function FavoriteProductCard({
 
         <div className="flex items-center justify-between gap-2 pt-1">
           <div className="min-w-0">
-            <p className="text-2xl font-black leading-none text-black">
+            <p className="text-xl font-black leading-none text-black sm:text-2xl">
               {formatPrice(product.price)}
             </p>
             {product.oldPrice ? (
@@ -169,7 +169,7 @@ function RecipeFavoriteCard({
         <Trash2 className="h-4 w-4" />
       </button>
 
-      <h2 className="pr-8 text-2xl font-black leading-tight">{recipe.name}</h2>
+      <h2 className="pr-8 text-xl font-black leading-tight sm:text-2xl">{recipe.name}</h2>
       <div className="mt-3 space-y-1 text-[11px] font-semibold leading-5 text-black/55">
         <p>Mô tả món ăn:</p>
         <p className="line-clamp-2">{recipe.description}</p>
@@ -262,7 +262,7 @@ function FavoriteRecipeOverlay({
         </button>
 
         <div className="mt-5">
-          <h1 className="text-[26px] font-black leading-tight">Công thức nấu {recipe.name}</h1>
+          <h1 className="text-2xl font-black leading-tight sm:text-[26px]">Công thức nấu {recipe.name}</h1>
           {recipe.servings ? (
             <p className="mt-2 text-base font-bold">Dành cho {recipe.servings} người</p>
           ) : null}
@@ -289,7 +289,7 @@ function FavoriteRecipeOverlay({
         </div>
 
         <div className="mt-7">
-          <h2 className="text-xl font-black">Các loại nguyên liệu chính:</h2>
+          <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
           <div className="mt-4 grid grid-cols-2 gap-4">
             {(ingredients.length > 0 ? ingredients : ["Chưa có danh sách nguyên liệu"]).map(
               (ingredient, index) => (
@@ -309,7 +309,7 @@ function FavoriteRecipeOverlay({
 
         {recipe.steps && recipe.steps.length > 0 ? (
           <div className="mt-7">
-            <h2 className="text-xl font-black">Cách làm</h2>
+            <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
             <div className="mt-3 space-y-3">
               {recipe.steps.map((step, index) => (
                 <p

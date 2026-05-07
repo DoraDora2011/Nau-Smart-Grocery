@@ -64,7 +64,7 @@ export function ProductCard({
 
         <div className="flex items-center justify-between gap-2 pt-1">
           <div className="min-w-0">
-            <p className={`${!desktop && quantity > 0 ? "text-lg" : "text-2xl"} font-black leading-none text-black transition-[font-size]`}>
+            <p className={`${!desktop && quantity > 0 ? "text-base sm:text-lg" : "text-xl sm:text-2xl"} font-black leading-none text-black transition-[font-size]`}>
               {formatPrice(product.price)}
             </p>
             {product.oldPrice ? (

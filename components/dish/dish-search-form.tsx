@@ -23,7 +23,7 @@ export function DishSearchForm({
   return (
     <Card className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold">Confirmed ingredients</h2>
+        <h2 className="text-base font-semibold leading-snug sm:text-lg">Confirmed ingredients</h2>
         <p className="text-sm text-[var(--color-ink-soft)]">
           Paste the ingredients the user has already confirmed from the scan flow.
         </p>

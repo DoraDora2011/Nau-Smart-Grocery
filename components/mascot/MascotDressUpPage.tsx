@@ -98,7 +98,7 @@ export function MascotDressUpPage() {
             <p className="text-sm font-black uppercase tracking-wide text-black/55">
               Mascot đại diện
             </p>
-            <h1 className="mt-1 text-3xl font-black leading-tight lg:text-5xl">
+            <h1 className="mt-1 text-2xl font-black leading-tight sm:text-3xl lg:text-5xl">
               Phòng thay đồ của Nâu
             </h1>
           </div>
@@ -116,7 +116,7 @@ export function MascotDressUpPage() {
               type="button"
               onClick={handleConfirmMascot}
               disabled={isSaving}
-              className="w-full rounded-full border-[3px] border-black bg-[#cd6cfd] px-8 py-4 text-xl font-black text-white shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:brightness-105 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full rounded-full border-[3px] border-black bg-[#cd6cfd] px-5 py-3 text-sm font-black leading-tight text-white shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:brightness-105 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:py-4 sm:text-base lg:text-lg"
             >
               {isSaving ? "Đang lưu..." : "Xác nhận"}
             </button>

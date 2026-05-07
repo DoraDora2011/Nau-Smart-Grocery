@@ -16,7 +16,7 @@ export function ProductGrid({ products }: { products: GroceryProduct[] }) {
           <div className="space-y-3 p-5">
             <div>
               <p className="text-sm text-[var(--color-accent)]">{product.category}</p>
-              <h2 className="text-lg font-semibold">{product.name}</h2>
+              <h2 className="text-base font-semibold leading-snug sm:text-lg">{product.name}</h2>
               <p className="text-sm text-[var(--color-ink-soft)]">{product.brand}</p>
             </div>
             <div className="flex items-center justify-between gap-3">

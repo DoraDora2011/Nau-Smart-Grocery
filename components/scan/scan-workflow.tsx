@@ -491,7 +491,7 @@ export function ScanWorkflow() {
               <p className="text-sm font-black uppercase tracking-wide text-black/55">
                 Gợi ý từ ảnh quét
               </p>
-              <h2 className="mt-1 text-3xl font-black">Món có thể nấu</h2>
+              <h2 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">Món có thể nấu</h2>
               <p className="mt-2 text-sm font-bold text-black/60">
                 {scanSummary ?? `Đã xác định ${ingredients.length} nguyên liệu.`}
               </p>
@@ -557,7 +557,7 @@ export function ScanWorkflow() {
                             onClick={() => openScanRecipeView(suggestion)}
                             className="min-w-0 flex-1 text-left"
                           >
-                            <h3 className="text-2xl font-black">{display.name}</h3>
+                            <h3 className="text-xl font-black leading-tight sm:text-2xl">{display.name}</h3>
                             <p className="mt-3 text-xs font-bold text-black/45">Mô tả món ăn:</p>
                             <p className="mt-1 line-clamp-2 text-sm font-bold leading-5 text-black/55">
                               {display.summary}
@@ -641,11 +641,11 @@ export function ScanWorkflow() {
 
           <main className="mx-auto min-h-[100dvh] max-w-md">
             <section className="px-11 pb-8 pt-28">
-              <h1 className="text-4xl font-black leading-tight">{selectedRecipeView.display.name}</h1>
-              <p className="mt-9 text-base font-bold leading-7 text-black/80">
+              <h1 className="text-3xl font-black leading-tight sm:text-4xl">{selectedRecipeView.display.name}</h1>
+              <p className="mt-7 text-sm font-bold leading-6 text-black/80 sm:mt-9 sm:text-base sm:leading-7">
                 {selectedRecipeView.display.summary}
               </p>
-              <p className="mt-6 text-base font-bold leading-7 text-black/80">
+              <p className="mt-5 text-sm font-bold leading-6 text-black/80 sm:mt-6 sm:text-base sm:leading-7">
                 Công thức này ưu tiên các nguyên liệu đã nhận diện được từ ảnh quét. Bạn có thể xem nhanh cách nấu,
                 sau đó mua thêm các sản phẩm phù hợp ở phần bên dưới.
               </p>
@@ -658,13 +658,13 @@ export function ScanWorkflow() {
                   </div>
                 ) : null}
                 {selectedRecipeView.steps.map((step, index) => (
-                  <p key={`${step}-${index}`} className="text-base font-bold leading-7 text-black/85">
+                  <p key={`${step}-${index}`} className="text-sm font-bold leading-6 text-black/85 sm:text-base sm:leading-7">
                     {index + 1}. {step}
                   </p>
                 ))}
               </div>
 
-              <p className="mt-8 text-base font-bold">
+              <p className="mt-8 text-sm font-bold leading-6 sm:text-base">
                 Link các video hướng dẫn tại Youtube:{" "}
                 <a
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
@@ -698,7 +698,7 @@ export function ScanWorkflow() {
 
             <section className="min-h-[58dvh] rounded-t-[28px] bg-[#ffe467] px-6 pb-40 pt-7">
               <div className="rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_45%,#cd6cfd_100%)] px-7 py-4">
-                <p className="text-base font-black leading-6">
+                <p className="text-sm font-black leading-6 sm:text-base">
                   Món ăn của bạn sẽ hoàn hảo hơn nếu có thêm các nguyên liệu sau:
                 </p>
               </div>
@@ -741,7 +741,7 @@ export function ScanWorkflow() {
 
                       <div className="mt-4 flex items-end justify-between gap-2">
                         <div>
-                          <p className="text-xl font-black leading-none">{formatPrice(product.price)}</p>
+                          <p className="text-lg font-black leading-none sm:text-xl">{formatPrice(product.price)}</p>
                           {product.oldPrice ? (
                             <p className="mt-1 text-[10px] font-bold text-black/45 line-through">
                               {formatPrice(product.oldPrice)}
@@ -755,7 +755,7 @@ export function ScanWorkflow() {
                             <button
                               type="button"
                               onClick={() => addUpsellProductToCart(product)}
-                              className="text-lg font-black leading-none"
+                              className="text-base font-black leading-none sm:text-lg"
                               aria-label={`Tăng số lượng ${product.name}`}
                             >
                               +
@@ -780,7 +780,7 @@ export function ScanWorkflow() {
               <button
                 type="button"
                 onClick={() => setSelectedRecipeView(null)}
-                className="mx-auto mt-8 block rounded-full border-[3px] border-black bg-[#69bf7b] px-14 py-4 text-xl font-black shadow-[0_10px_20px_rgba(0,0,0,0.22)]"
+                className="mx-auto mt-8 block rounded-full border-[3px] border-black bg-[#69bf7b] px-10 py-3 text-base font-black leading-tight shadow-[0_10px_20px_rgba(0,0,0,0.22)] sm:px-14 sm:py-4 sm:text-lg"
               >
                 Hoàn tất
               </button>

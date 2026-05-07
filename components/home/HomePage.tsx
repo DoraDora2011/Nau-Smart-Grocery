@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { HomeDesktopLayout } from "@/components/home/HomeDesktopLayout";
 import { HomeMobileLayout } from "@/components/home/HomeMobileLayout";
+import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useFavorites } from "@/components/providers/favorite-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import {
@@ -205,6 +206,8 @@ export function HomePage() {
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
       />
+
+      <OnboardingTour />
     </div>
   );
 }

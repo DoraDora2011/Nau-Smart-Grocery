@@ -13,7 +13,7 @@ export default function RecipePage() {
     <div className="space-y-5">
       <div className="space-y-3">
         <Badge>{dictionary.recipePage.badge}</Badge>
-        <h1 className="font-heading text-3xl leading-tight sm:text-4xl">
+        <h1 className="font-heading text-2xl leading-tight sm:text-3xl md:text-4xl">
           {dictionary.recipePage.title}
         </h1>
         <p className="max-w-2xl text-sm text-[var(--color-ink-soft)] sm:text-base">

@@ -30,7 +30,7 @@ export function ProductSection({
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between gap-4">
-        <h2 className="text-2xl font-bold text-black">{title}</h2>
+        <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">{title}</h2>
         {onToggleViewAll ? (
           <button
             type="button"

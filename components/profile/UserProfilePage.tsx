@@ -102,7 +102,7 @@ export function UserProfilePage() {
         <section className="space-y-7 px-5 pt-6 lg:px-8 lg:pt-10">
           <Link
             href="/mascot"
-            className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full border-[2.5px] border-solid border-black bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-xl"
+            className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full border-[2.5px] border-solid border-black bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
             aria-label="Mở phòng thay đồ mascot 3D"
           >
             Nhấn vào đây để thay đồ cho bé Nâu của bạn nhé!
@@ -110,7 +110,7 @@ export function UserProfilePage() {
 
           <Link
             href="#membership"
-            className="group flex min-h-10 items-center justify-between rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_36%,#cd6cfd_100%)] px-7 text-[22px] font-black shadow-sm transition duration-200 hover:brightness-110 hover:shadow-[0_10px_22px_rgba(205,108,253,0.26)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#cd6cfd] active:scale-[0.99] active:brightness-110 lg:min-h-20 lg:px-8 lg:text-[30px]"
+            className="group flex min-h-10 items-center justify-between rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_36%,#cd6cfd_100%)] px-5 text-lg font-black leading-tight shadow-sm transition duration-200 hover:brightness-110 hover:shadow-[0_10px_22px_rgba(205,108,253,0.26)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#cd6cfd] active:scale-[0.99] active:brightness-110 sm:px-7 sm:text-[22px] lg:min-h-20 lg:px-8 lg:text-[26px]"
           >
             Membership
             <ChevronRight className="h-7 w-7 stroke-[2.3] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-10 lg:w-10" />
@@ -121,7 +121,7 @@ export function UserProfilePage() {
               <Link
                 key={item.label}
                 href={item.href}
-                className="group flex min-h-12 items-center justify-between rounded-full px-7 text-[22px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] lg:min-h-16 lg:text-[30px]"
+                className="group flex min-h-12 items-center justify-between rounded-full px-5 text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
               >
                 <span>{item.label}</span>
                 <ChevronRight className="h-7 w-7 shrink-0 stroke-[2.4] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-9 lg:w-9" />

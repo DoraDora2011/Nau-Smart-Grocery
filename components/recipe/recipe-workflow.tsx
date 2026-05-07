@@ -495,7 +495,7 @@ export function RecipeWorkflow() {
       <div className="space-y-5">
         <Card className="space-y-4">
           <div>
-            <h2 className="text-xl font-semibold">Nháº­p mÃ³n Äƒn</h2>
+            <h2 className="text-lg font-semibold leading-tight sm:text-xl">Nháº­p mÃ³n Äƒn</h2>
             <p className="mt-1 text-sm text-[var(--color-ink-soft)]">
               Nháº­p tÃªn mÃ³n, sá»‘ ngÆ°á»i Äƒn vÃ  nguyÃªn liá»‡u dá»‹ á»©ng náº¿u cÃ³.
             </p>
@@ -589,7 +589,7 @@ export function RecipeWorkflow() {
                 <p className="text-sm font-semibold text-[var(--color-accent)]">
                   CÃ´ng thá»©c cho {recipe.servings} ngÆ°á»i
                 </p>
-                <h2 className="mt-1 text-2xl font-semibold">{recipe.dish}</h2>
+                <h2 className="mt-1 text-xl font-semibold leading-tight sm:text-2xl">{recipe.dish}</h2>
               </div>
             </div>
 
@@ -618,7 +618,7 @@ export function RecipeWorkflow() {
             )}
 
             <div>
-              <h4 className="text-lg font-semibold">Danh sÃ¡ch nguyÃªn liá»‡u chuáº©n bá»‹ thÃªm vÃ o giá»</h4>
+              <h4 className="text-base font-semibold leading-snug sm:text-lg">Danh sÃ¡ch nguyÃªn liá»‡u chuáº©n bá»‹ thÃªm vÃ o giá»</h4>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {reviewIngredients.map((ingredient, index) => {
                   const isConflict = isConflictingIngredient(ingredient.name);
@@ -680,7 +680,7 @@ export function RecipeWorkflow() {
             ) : null}
 
             <div>
-              <h4 className="text-lg font-semibold">CÃ¡ch lÃ m</h4>
+              <h4 className="text-base font-semibold leading-snug sm:text-lg">CÃ¡ch lÃ m</h4>
               <div className="mt-3 space-y-3">
                 {recipe.steps?.map((step, index) => (
                   <p key={`${step}-${index}`} className="rounded-2xl bg-white px-4 py-3 text-sm">
@@ -697,7 +697,7 @@ export function RecipeWorkflow() {
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white">
               <Soup className="h-5 w-5" />
             </div>
-            <h2 className="text-xl font-semibold">CÃ´ng thá»©c sáº½ hiá»ƒn thá»‹ á»Ÿ Ä‘Ã¢y</h2>
+            <h2 className="text-lg font-semibold leading-tight sm:text-xl">CÃ´ng thá»©c sáº½ hiá»ƒn thá»‹ á»Ÿ Ä‘Ã¢y</h2>
             <p className="text-sm text-[var(--color-ink-soft)]">
               Sau khi nháº­p tÃªn mÃ³n, sá»‘ ngÆ°á»i Äƒn vÃ  dá»‹ á»©ng náº¿u cÃ³, há»‡ thá»‘ng sáº½ táº¡o sáºµn cÃ¡c card
               nguyÃªn liá»‡u. Náº¿u phÃ¡t hiá»‡n xung Ä‘á»™t dá»‹ á»©ng, báº¡n cÃ³ thá»ƒ xoÃ¡ nguyÃªn liá»‡u Ä‘Ã³ trÆ°á»›c khi

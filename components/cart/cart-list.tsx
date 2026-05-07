@@ -39,7 +39,7 @@ export function CartList() {
             <div className="flex-1">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-lg font-semibold">{item.productName}</h2>
+                  <h2 className="text-base font-semibold leading-snug sm:text-lg">{item.productName}</h2>
                   <p className="text-sm text-[var(--color-ink-soft)]">
                     {item.brand} · {item.category || "Chưa phân loại"}
                   </p>
@@ -71,7 +71,7 @@ export function CartList() {
       <Card className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm text-[var(--color-ink-soft)]">Tạm tính ước lượng</p>
-          <p className="text-2xl font-semibold">${total.toFixed(2)}</p>
+          <p className="text-xl font-semibold leading-tight sm:text-2xl">${total.toFixed(2)}</p>
         </div>
         <Button variant="secondary" onClick={clearCart}>
           Xóa giỏ hàng
