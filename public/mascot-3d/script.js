@@ -22,12 +22,25 @@ const ALL_OUTFIT_NAMES = [...new Set(Object.values(OUTFITS).flat())];
 const HEAD_BASE_MATERIAL_NAMES = ["Head base"];
 const HEAD_BASE_ALPHA_TEST = 0.82;
 const MODEL_SATURATION = 0.82;
+const JUMP_ANIMATION_NAME = "Jump";
 const solidMaterialCache = new Map();
 
 const canvas = document.querySelector("#characterCanvas");
 const loadingText = document.querySelector("#loadingText");
 const outfitButtons = document.querySelectorAll(".outfit-button");
+const urlParams = new URLSearchParams(window.location.search);
+const isPreviewMode = urlParams.get("preview") === "1";
+const initialOutfitKey = getValidOutfitKey(urlParams.get("outfit"));
+const clock = new THREE.Clock();
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const pointerStart = { x: 0, y: 0 };
+
+document.documentElement.classList.toggle("preview-mode", isPreviewMode);
 canvas.style.filter = `saturate(${MODEL_SATURATION})`;
+canvas.tabIndex = 0;
+canvas.setAttribute("role", "button");
+canvas.setAttribute("aria-label", "Play mascot jump animation");
 
 const scene = new THREE.Scene();
 scene.background = null;
@@ -54,6 +67,15 @@ controls.minDistance = 1;
 controls.maxDistance = 12;
 controls.target.set(0, 1, 0);
 
+if (isPreviewMode) {
+  controls.enabled = true;
+  controls.enablePan = false;
+  controls.enableRotate = true;
+  controls.enableZoom = true;
+  controls.minDistance = 2.45;
+  controls.maxDistance = 8;
+}
+
 const characterParts = {
   body: [],
   outfitBase: [],
@@ -67,14 +89,19 @@ const characterParts = {
 };
 let characterRoot = null;
 let selectedOutfitKey = "default";
+let animationMixer = null;
+let jumpAction = null;
 
 setupLights();
 resizeRenderer();
 window.addEventListener("resize", resizeRenderer);
+canvas.addEventListener("pointerdown", handleCanvasPointerDown);
+canvas.addEventListener("pointerup", handleCanvasPointerUp);
+canvas.addEventListener("keydown", handleCanvasKeyDown);
 
 loadCharacter();
 bindOutfitButtons();
-setActiveButton(document.querySelector(".outfit-button.active"));
+setActiveButton(document.querySelector(`[data-outfit="${initialOutfitKey}"]`) ?? document.querySelector(".outfit-button.active"));
 animate();
 
 function setupLights() {
@@ -102,9 +129,10 @@ function loadCharacter() {
       scene.add(characterRoot);
 
       prepareModel(characterRoot);
+      setupCharacterAnimations(gltf.animations);
       collectCharacterParts(characterRoot);
       hideAllOutfits();
-      selectOutfit("default");
+      selectOutfit(initialOutfitKey);
       fitCameraToObject(characterRoot);
 
       loadingText.classList.add("hidden");
@@ -146,6 +174,100 @@ function prepareModel(root) {
         : solidMaterials[0];
     }
   });
+}
+
+function setupCharacterAnimations(animations) {
+  const jumpClip = THREE.AnimationClip.findByName(animations, JUMP_ANIMATION_NAME);
+
+  if (!characterRoot || !jumpClip) {
+    console.info(`Missing animation clip: ${JUMP_ANIMATION_NAME}`);
+    return;
+  }
+
+  animationMixer = new THREE.AnimationMixer(characterRoot);
+  jumpAction = animationMixer.clipAction(jumpClip);
+  jumpAction.setLoop(THREE.LoopOnce, 1);
+  jumpAction.clampWhenFinished = false;
+
+  animationMixer.addEventListener("finished", (event) => {
+    if (event.action === jumpAction) {
+      jumpAction.stop();
+    }
+  });
+}
+
+function playJumpAnimation() {
+  if (!jumpAction) {
+    return;
+  }
+
+  jumpAction.reset();
+  jumpAction.setLoop(THREE.LoopOnce, 1);
+  jumpAction.clampWhenFinished = false;
+  jumpAction.play();
+}
+
+function handleCanvasPointerDown(event) {
+  pointerStart.x = event.clientX;
+  pointerStart.y = event.clientY;
+}
+
+function handleCanvasPointerUp(event) {
+  const movedDistance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+
+  if (movedDistance > 8 || !isPointerOnCharacter(event.clientX, event.clientY)) {
+    return;
+  }
+
+  playJumpAnimation();
+}
+
+function handleCanvasKeyDown(event) {
+  if (event.key !== "Enter" && event.key !== " ") {
+    return;
+  }
+
+  event.preventDefault();
+  playJumpAnimation();
+}
+
+function isPointerOnCharacter(clientX, clientY) {
+  if (!characterRoot) {
+    return false;
+  }
+
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+
+  return raycaster.intersectObjects(getVisibleCharacterMeshes(), false).length > 0;
+}
+
+function getVisibleCharacterMeshes() {
+  const meshes = [];
+
+  characterRoot.traverse((object) => {
+    if ((object.isMesh || object.isSkinnedMesh) && isObjectVisible(object)) {
+      meshes.push(object);
+    }
+  });
+
+  return meshes;
+}
+
+function isObjectVisible(object) {
+  let current = object;
+
+  while (current) {
+    if (!current.visible) {
+      return false;
+    }
+
+    current = current.parent;
+  }
+
+  return true;
 }
 
 function createSolidMaterial(material) {
@@ -316,6 +438,12 @@ function isMatchingBlenderName(actualName, expectedName) {
   );
 }
 
+function getValidOutfitKey(outfitKey) {
+  return outfitKey && Object.prototype.hasOwnProperty.call(OUTFITS, outfitKey)
+    ? outfitKey
+    : "default";
+}
+
 function setActiveButton(activeButton) {
   outfitButtons.forEach((button) => {
     const isActive = button === activeButton;
@@ -338,7 +466,7 @@ function fitCameraToObject(object) {
   const fitHeightDistance =
     maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360));
   const fitWidthDistance = fitHeightDistance / camera.aspect;
-  const distance = Math.max(fitHeightDistance, fitWidthDistance) * 1.25;
+  const distance = Math.max(fitHeightDistance, fitWidthDistance) * (isPreviewMode ? 1.65 : 1.25);
   const direction = new THREE.Vector3(0, 0.18, 1).normalize();
 
   camera.position.copy(center).add(direction.multiplyScalar(distance));
@@ -369,6 +497,7 @@ function resizeRenderer() {
 
 function animate() {
   requestAnimationFrame(animate);
+  animationMixer?.update(clock.getDelta());
   controls.update();
   renderer.render(scene, camera);
 }

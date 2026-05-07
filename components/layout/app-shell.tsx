@@ -17,10 +17,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isScanPage = pathname === "/scan";
   const isFavoritePage = pathname === "/favorite";
   const isCartPage = pathname === "/cart";
+  const isCheckoutPage = pathname === "/checkout";
   const isProfilePage = pathname === "/profile";
   const isMascotPage = pathname === "/mascot";
   const isFullScreenAppPage =
-    isDishPage || isScanPage || isFavoritePage || isCartPage || isProfilePage || isMascotPage;
+    isDishPage || isScanPage || isFavoritePage || isCartPage || isCheckoutPage || isProfilePage || isMascotPage;
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-ink)]">

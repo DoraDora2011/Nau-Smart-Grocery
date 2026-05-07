@@ -17,6 +17,8 @@ const suggestionItems = homeProducts
   .filter((product) => product.section === "best-deal")
   .slice(0, 6);
 
+const CHECKOUT_SELECTION_STORAGE_KEY = "nau-smart-grocery:checkout-selection";
+
 function formatPrice(value: number) {
   return new Intl.NumberFormat("vi-VN").format(value) + "đ";
 }
@@ -204,6 +206,11 @@ export function CartPageView() {
       ),
     [items, selectedIds]
   );
+  const totalCartQuantity = useMemo(
+    () => items.reduce((total, item) => total + item.quantity, 0),
+    [items]
+  );
+  const checkoutQuantity = selectedQuantity > 0 ? selectedQuantity : totalCartQuantity;
 
   const toggleSelected = (id: string) => {
     setSelectedIds((current) => {
@@ -310,6 +317,21 @@ export function CartPageView() {
     setSelectedIds(new Set());
   };
 
+  const handleCheckout = () => {
+    const selectedItems = items.filter((item) => selectedIds.has(item.id));
+    const checkoutItems = selectedItems.length > 0 ? selectedItems : items;
+
+    if (checkoutItems.length === 0) {
+      return;
+    }
+
+    window.sessionStorage.setItem(
+      CHECKOUT_SELECTION_STORAGE_KEY,
+      JSON.stringify(checkoutItems.map((item) => item.id))
+    );
+    router.push("/checkout");
+  };
+
   return (
     <div className="min-h-[100dvh] bg-[#ebf1a0] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
       <main className="mx-auto max-w-md pt-6 lg:max-w-5xl">
@@ -355,9 +377,11 @@ export function CartPageView() {
           </button>
           <button
             type="button"
+            onClick={handleCheckout}
+            disabled={items.length === 0}
             className="rounded-[24px] bg-[#cd6cfd] px-8 py-5 text-2xl font-black text-white shadow-[0_0_0_3px_#000000,0_14px_26px_rgba(0,0,0,0.16)]"
           >
-            Mua Hàng ({selectedQuantity})
+            Mua Hàng ({checkoutQuantity})
           </button>
         </div>
 

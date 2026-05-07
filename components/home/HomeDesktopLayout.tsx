@@ -33,6 +33,7 @@ interface HomeDesktopLayoutProps {
   onDecreaseQuantity: (productId: string) => void;
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
+  deliveryAddress: string;
 }
 
 const desktopNavItems = [
@@ -68,7 +69,8 @@ export function HomeDesktopLayout({
   onAddToCart,
   onDecreaseQuantity,
   expandedSections,
-  onToggleSection
+  onToggleSection,
+  deliveryAddress
 }: HomeDesktopLayoutProps) {
   return (
     <div className="hidden min-h-screen bg-[#ebf1a0] text-black lg:block">
@@ -188,7 +190,7 @@ export function HomeDesktopLayout({
           />
           <div className="flex items-center gap-2 text-sm font-bold text-black">
             <LocationBadgeIcon className="h-12 w-12" />
-            Location
+            <span className="max-w-[210px] truncate">{deliveryAddress}</span>
           </div>
         </div>
       </section>

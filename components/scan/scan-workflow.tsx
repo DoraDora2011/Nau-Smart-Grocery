@@ -427,8 +427,8 @@ export function ScanWorkflow() {
         <AppImageButton
           buttonId="button-009"
           href="/"
-          size={76}
-          className="flex h-[76px] w-[76px] items-center justify-center rounded-full text-black"
+          size={58}
+          className="flex h-[58px] w-[58px] items-center justify-center rounded-full text-black"
         />
       </div>
 

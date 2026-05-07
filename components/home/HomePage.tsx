@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { HomeDesktopLayout } from "@/components/home/HomeDesktopLayout";
 import { HomeMobileLayout } from "@/components/home/HomeMobileLayout";
@@ -13,6 +13,7 @@ import {
   type HomeProduct,
   type HomeProductSection
 } from "@/data/home-products";
+import { readStoredDeliveryAddress } from "@/lib/utils/delivery-address";
 import type { CartItem } from "@/types";
 
 function normalizeText(value: string) {
@@ -31,6 +32,20 @@ export function HomePage() {
   const [expandedSections, setExpandedSections] = useState<Set<HomeProductSection>>(new Set());
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cartMessage, setCartMessage] = useState<string | null>(null);
+  const [deliveryAddress, setDeliveryAddress] = useState("Location");
+
+  useEffect(() => {
+    const updateAddress = () => setDeliveryAddress(readStoredDeliveryAddress());
+
+    updateAddress();
+    window.addEventListener("storage", updateAddress);
+    window.addEventListener("nau-smart-grocery:delivery-address-updated", updateAddress);
+
+    return () => {
+      window.removeEventListener("storage", updateAddress);
+      window.removeEventListener("nau-smart-grocery:delivery-address-updated", updateAddress);
+    };
+  }, []);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = normalizeText(searchQuery.trim());
@@ -167,6 +182,7 @@ export function HomePage() {
         onDecreaseQuantity={decreaseQuantity}
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
+        deliveryAddress={deliveryAddress}
       />
 
       <HomeDesktopLayout
@@ -187,6 +203,7 @@ export function HomePage() {
         onDecreaseQuantity={decreaseQuantity}
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
+        deliveryAddress={deliveryAddress}
       />
     </div>
   );

@@ -22,6 +22,11 @@ body {
   overflow: hidden;
 }
 
+html.preview-mode,
+html.preview-mode body {
+  background: transparent;
+}
+
 button {
   font: inherit;
 }
@@ -167,6 +172,25 @@ h1 {
     inset 0 -4px 0 rgba(17, 115, 125, 0.24),
     0 14px 28px rgba(21, 114, 128, 0.2);
   color: #0f4550;
+}
+
+html.preview-mode .app {
+  display: block;
+  min-height: 100vh;
+  background: transparent;
+}
+
+html.preview-mode .viewer-panel {
+  min-height: 100vh;
+}
+
+html.preview-mode .controls-panel {
+  display: none;
+}
+
+html.preview-mode .loading-text {
+  width: min(220px, calc(100% - 32px));
+  font-size: 0.8rem;
 }
 
 @media (max-width: 820px) {

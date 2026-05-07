@@ -32,6 +32,7 @@ interface HomeMobileLayoutProps {
   onDecreaseQuantity: (productId: string) => void;
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
+  deliveryAddress: string;
 }
 
 export function HomeMobileLayout({
@@ -51,7 +52,8 @@ export function HomeMobileLayout({
   onAddToCart,
   onDecreaseQuantity,
   expandedSections,
-  onToggleSection
+  onToggleSection,
+  deliveryAddress
 }: HomeMobileLayoutProps) {
   return (
     <div className="min-h-screen bg-[#ebf1a0] pb-28 lg:hidden">
@@ -68,7 +70,7 @@ export function HomeMobileLayout({
         <div className="mt-2 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LocationBadgeIcon className="h-16 w-16" />
-            <span className="text-2xl font-bold">Location</span>
+            <span className="max-w-[220px] truncate text-base font-bold leading-tight">{deliveryAddress}</span>
           </div>
           <AppImageButton
             buttonId="button-023"

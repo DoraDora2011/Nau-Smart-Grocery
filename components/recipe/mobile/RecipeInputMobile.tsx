@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, ClipboardClock, Mic, Utensils } from "lucide-react";
+import { ArrowRight, Mic, Utensils } from "lucide-react";
 
 import logoMascot from "@/assets/brand_logo/logo-mascot.png";
 import { AppImageButton } from "@/components/AppImageButton";
@@ -40,14 +40,12 @@ export function RecipeInputMobile({
   return (
     <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#ebf1a0] px-6 pt-6 text-black lg:hidden">
       <div className="flex items-center justify-between">
-        <button
-          type="button"
+        <AppImageButton
+          buttonId="button-007"
           onClick={onHistoryOpen}
-          className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-[#ffe467]"
-          aria-label="Lịch sử món ăn"
-        >
-          <ClipboardClock className="h-7 w-7" />
-        </button>
+          size={56}
+          className="flex h-14 w-14 items-center justify-center rounded-full"
+        />
         <AppImageButton
           buttonId="button-009"
           onClick={onBack}

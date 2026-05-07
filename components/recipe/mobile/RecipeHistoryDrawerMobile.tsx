@@ -1,6 +1,8 @@
 "use client";
 
-import { ClipboardClock, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
+
+import { AppImageButton } from "@/components/AppImageButton";
 
 type RecipeIngredient = {
   name: string;
@@ -105,13 +107,11 @@ export function RecipeHistoryDrawerMobile({
 
       <aside className="relative flex h-[100dvh] w-[70vw] max-w-[294px] flex-col overflow-hidden rounded-r-[28px] bg-white shadow-2xl">
         <div className="px-6 pt-6">
-          <button
-            type="button"
-            className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-black bg-[#ffe467]"
-            aria-label="Lịch sử tìm kiếm"
-          >
-            <ClipboardClock className="h-7 w-7" />
-          </button>
+          <AppImageButton
+            buttonId="button-007"
+            size={56}
+            className="flex h-14 w-14 items-center justify-center rounded-full"
+          />
         </div>
 
         <div className="mt-3 flex min-h-11 items-center justify-between bg-gradient-to-r from-[#cd6cfd] via-[#f3d6ff] to-white px-8">

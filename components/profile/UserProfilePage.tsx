@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
-import logoMascot from "@/assets/brand_logo/logo-mascot.png";
 
 const MASCOT_PROFILE_STORAGE_KEY = "nau-smart-grocery:mascot-profile";
 
@@ -61,6 +59,9 @@ function ProfileBottomNav() {
 
 export function UserProfilePage() {
   const [mascotPreview, setMascotPreview] = useState<MascotProfilePreview | null>(null);
+  const mascotPreviewSrc = `/mascot-3d/index.html?preview=1&outfit=${encodeURIComponent(
+    mascotPreview?.outfit ?? "default",
+  )}`;
 
   useEffect(() => {
     try {
@@ -84,35 +85,29 @@ export function UserProfilePage() {
     <div className="min-h-[100dvh] bg-[#ebf1a0] text-black lg:px-8 lg:py-10">
       <main className="mx-auto max-w-md px-0 pb-32 lg:max-w-3xl">
         <div className="px-1 pt-2">
-          <Link
-            href="/mascot"
-            className="block overflow-hidden rounded-b-[42px] rounded-t-[48px] bg-[linear-gradient(180deg,#d7fdd9_0%,#edc7ff_52%,#cd6cfd_100%)] px-4 pb-3 pt-9 shadow-[0_10px_18px_rgba(0,0,0,0.24)] transition active:scale-[0.99] lg:rounded-b-[54px] lg:rounded-t-[88px] lg:pb-6 lg:pt-12"
+          <section
+            className="rounded-b-[42px] rounded-t-[48px] bg-[linear-gradient(180deg,#d7fdd9_0%,#edc7ff_52%,#cd6cfd_100%)] px-2 pb-3 pt-5 shadow-[0_10px_18px_rgba(0,0,0,0.24)] lg:rounded-b-[54px] lg:rounded-t-[88px] lg:px-4 lg:pb-5 lg:pt-8"
             aria-label="Mở phòng thay đồ mascot 3D"
           >
-            <div className="relative flex min-h-[258px] items-center justify-center lg:min-h-[380px]">
-              {mascotPreview?.imageDataUrl ? (
-                <Image
-                  src={mascotPreview.imageDataUrl}
-                  alt={`Mascot Nâu đang chọn: ${mascotPreview.outfit}`}
-                  width={420}
-                  height={420}
-                  className="mt-2 h-64 w-auto object-contain lg:mt-0 lg:h-96"
-                  unoptimized
-                  priority
-                />
-              ) : (
-                <Image
-                  src={logoMascot}
-                  alt="Mascot Nâu đại diện"
-                  className="mt-8 h-52 w-auto object-contain lg:mt-0 lg:h-96"
-                  priority
-                />
-              )}
+            <div className="flex min-h-[235px] items-center justify-center lg:min-h-[360px]">
+              <iframe
+                src={mascotPreviewSrc}
+                title={`Mascot Nâu ${mascotPreview?.outfit ?? "default"}`}
+                className="h-[235px] w-full border-0 bg-transparent lg:h-[360px]"
+              />
             </div>
-          </Link>
+          </section>
         </div>
 
-        <section className="space-y-7 px-5 pt-9 lg:px-8 lg:pt-14">
+        <section className="space-y-7 px-5 pt-6 lg:px-8 lg:pt-10">
+          <Link
+            href="/mascot"
+            className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full border-[2.5px] border-solid border-black bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-xl"
+            aria-label="Mở phòng thay đồ mascot 3D"
+          >
+            Nhấn vào đây để thay đồ cho bé Nâu của bạn nhé!
+          </Link>
+
           <Link
             href="#membership"
             className="group flex min-h-10 items-center justify-between rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_36%,#cd6cfd_100%)] px-7 text-[22px] font-black shadow-sm transition duration-200 hover:brightness-110 hover:shadow-[0_10px_22px_rgba(205,108,253,0.26)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#cd6cfd] active:scale-[0.99] active:brightness-110 lg:min-h-20 lg:px-8 lg:text-[30px]"
