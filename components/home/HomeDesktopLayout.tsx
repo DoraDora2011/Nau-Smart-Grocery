@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBasket } from "lucide-react";
+import { BookOpen, ShoppingBasket } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
@@ -34,6 +34,7 @@ interface HomeDesktopLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  onReplayOnboarding: () => void;
 }
 
 const desktopNavItems = [
@@ -70,7 +71,8 @@ export function HomeDesktopLayout({
   onDecreaseQuantity,
   expandedSections,
   onToggleSection,
-  deliveryAddress
+  deliveryAddress,
+  onReplayOnboarding
 }: HomeDesktopLayoutProps) {
   return (
     <div className="hidden min-h-screen bg-[#ebf1a0] text-black lg:block">
@@ -105,6 +107,15 @@ export function HomeDesktopLayout({
               className="flex h-12 w-12 items-center justify-center rounded-full text-black transition hover:scale-105"
               data-tour-id="user-profile"
             />
+            <button
+              type="button"
+              onClick={onReplayOnboarding}
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-[#ffe467] px-4 text-sm font-black leading-tight text-black shadow-[0_0_0_2px_#000000] transition hover:scale-105"
+              aria-label="Xem lại hướng dẫn"
+            >
+              <BookOpen className="h-5 w-5" strokeWidth={2.6} />
+              Hướng dẫn
+            </button>
             <Link
               href="/cart"
               className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ffe467] text-black transition hover:scale-105"

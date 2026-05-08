@@ -124,7 +124,7 @@ export function AppLoadingOverlay() {
           autoPlay
         />
         <p className="absolute inset-x-0 top-[77%] mx-auto w-full px-6 text-center text-[24px] font-black leading-tight text-white drop-shadow-[0_3px_8px_rgba(0,0,0,0.38)]">
-          Let&apos;s Nâu help you Nấu!
+          Let Nâu help you Nấu!
         </p>
       </div>
     </div>

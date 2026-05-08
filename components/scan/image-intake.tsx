@@ -136,7 +136,7 @@ export function ImageIntake({
 
       <div className="mx-auto mt-10 w-full max-w-[680px] text-center">
         <p className="text-lg font-black leading-snug text-black/40 sm:text-2xl">
-          Đưa nguyên liệu vào khung quét rồi nhấn chụp
+          Sắp xếp nguyên liệu rõ ràng để hệ thống nhận diện tốt hơn
         </p>
         {selectedFile ? (
           <p className="mt-2 truncate text-sm font-bold text-black/45">{selectedFile.name}</p>

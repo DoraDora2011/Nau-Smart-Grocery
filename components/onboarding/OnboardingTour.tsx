@@ -263,7 +263,7 @@ export function OnboardingTour() {
         </div>
 
         <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">
-          Bước {currentStep + 1} / {steps.length}
+          Chức năng {currentStep + 1} / {steps.length}
         </p>
         <h2 id="onboarding-title" className="mt-2 text-xl font-black leading-tight sm:text-2xl">
           {step.title}

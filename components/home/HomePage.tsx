@@ -157,6 +157,10 @@ export function HomePage() {
     });
   };
 
+  const replayOnboarding = () => {
+    window.dispatchEvent(new Event("nau-smart-grocery:replay-onboarding"));
+  };
+
   return (
     <div className="relative min-h-screen w-full bg-[#ebf1a0] text-black">
       {cartMessage ? (
@@ -184,6 +188,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        onReplayOnboarding={replayOnboarding}
       />
 
       <HomeDesktopLayout
@@ -205,6 +210,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        onReplayOnboarding={replayOnboarding}
       />
 
       <OnboardingTour />

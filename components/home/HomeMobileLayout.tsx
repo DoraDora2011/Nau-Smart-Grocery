@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BookOpen } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
@@ -33,6 +34,7 @@ interface HomeMobileLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  onReplayOnboarding: () => void;
 }
 
 export function HomeMobileLayout({
@@ -53,7 +55,8 @@ export function HomeMobileLayout({
   onDecreaseQuantity,
   expandedSections,
   onToggleSection,
-  deliveryAddress
+  deliveryAddress,
+  onReplayOnboarding
 }: HomeMobileLayoutProps) {
   return (
     <div className="min-h-screen bg-[#ebf1a0] pb-28 lg:hidden">
@@ -68,17 +71,28 @@ export function HomeMobileLayout({
         </div>
 
         <div className="mt-2 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-3">
             <LocationBadgeIcon className="h-16 w-16" />
-            <span className="max-w-[220px] truncate text-base font-bold leading-tight">{deliveryAddress}</span>
+            <span className="min-w-0 max-w-[170px] truncate text-base font-bold leading-tight">{deliveryAddress}</span>
           </div>
-          <AppImageButton
-            buttonId="button-023"
-            href="/profile"
-            size={56}
-            className="flex h-14 w-14 items-center justify-center rounded-full text-black"
-            data-tour-id="user-profile"
-          />
+          <div className="flex shrink-0 items-center gap-2">
+            <AppImageButton
+              buttonId="button-023"
+              href="/profile"
+              size={56}
+              className="flex h-14 w-14 items-center justify-center rounded-full text-black"
+              data-tour-id="user-profile"
+            />
+            <button
+              type="button"
+              onClick={onReplayOnboarding}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black shadow-[0_0_0_2.5px_#000000] transition active:scale-[0.96]"
+              aria-label="Xem lại hướng dẫn"
+              title="Xem lại hướng dẫn"
+            >
+              <BookOpen className="h-5 w-5" strokeWidth={2.6} />
+            </button>
+          </div>
         </div>
 
         <div className="mt-5 flex items-center gap-3">
