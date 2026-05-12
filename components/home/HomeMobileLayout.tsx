@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
@@ -92,15 +91,6 @@ export function HomeMobileLayout({
               className="flex h-14 w-14 items-center justify-center rounded-full text-black"
               data-tour-id="user-profile"
             />
-            <button
-              type="button"
-              onClick={onReplayOnboarding}
-              className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-black shadow-[0_0_0_2.5px_#000000] transition active:scale-[0.96]"
-              aria-label="Xem lại hướng dẫn"
-              title="Xem lại hướng dẫn"
-            >
-              <BookOpen className="h-5 w-5" strokeWidth={2.6} />
-            </button>
           </div>
         </div>
 

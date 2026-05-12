@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChefHat, Clock, Heart, LoaderCircle, Plus, ShoppingBasket, Sparkles } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
@@ -229,6 +229,7 @@ export function ScanWorkflow() {
   const [cartMessage, setCartMessage] = useState<string | null>(null);
   const [upsellQuantities, setUpsellQuantities] = useState<Record<string, number>>({});
   const dragStartYRef = useRef<number | null>(null);
+  const lastAutoScanKeyRef = useRef<string | null>(null);
 
   const handleToggleSuggestedDishFavorite = (suggestion: DishSuggestion) => {
     const display = getDishDisplay(suggestion);
@@ -325,7 +326,7 @@ export function ScanWorkflow() {
     return () => URL.revokeObjectURL(objectUrl);
   }, [selectedFile]);
 
-  const resetScanResults = () => {
+  const resetScanResults = useCallback(() => {
     setIngredients([]);
     setDishSuggestions([]);
     setWarning(null);
@@ -333,9 +334,9 @@ export function ScanWorkflow() {
     setScanSummary(null);
     setSuggestionMessage(null);
     setIsSuggestionSheetOpen(false);
-  };
+  }, []);
 
-  const suggestDishesFromIngredients = async (detectedIngredients: Ingredient[]) => {
+  const suggestDishesFromIngredients = useCallback(async (detectedIngredients: Ingredient[]) => {
     const confirmedIngredients = detectedIngredients
       .map((ingredient) => getLocalizedIngredientName(ingredient.normalizedName || ingredient.name, locale))
       .filter(Boolean);
@@ -377,9 +378,9 @@ export function ScanWorkflow() {
     } finally {
       setIsSuggesting(false);
     }
-  };
+  }, [locale]);
 
-  const handleScan = async () => {
+  const handleScan = useCallback(async () => {
     if (!selectedFile) {
       setErrorMessage("Vui lòng chọn hoặc chụp ảnh trước khi bắt đầu quét.");
       return;
@@ -419,7 +420,27 @@ export function ScanWorkflow() {
     } finally {
       setIsScanning(false);
     }
-  };
+  }, [resetScanResults, selectedFile, source, suggestDishesFromIngredients]);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      lastAutoScanKeyRef.current = null;
+      return;
+    }
+
+    if (isScanning) {
+      return;
+    }
+
+    const scanKey = `${source}:${selectedFile.name}:${selectedFile.size}:${selectedFile.lastModified}`;
+
+    if (lastAutoScanKeyRef.current === scanKey) {
+      return;
+    }
+
+    lastAutoScanKeyRef.current = scanKey;
+    void handleScan();
+  }, [handleScan, isScanning, selectedFile, source]);
 
   return (
     <div className="relative min-h-[100dvh] overflow-hidden bg-[#ebf1a0] text-black">
