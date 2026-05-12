@@ -5,6 +5,7 @@ import { BookOpen } from "lucide-react";
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { HomeSearchBar } from "@/components/home/HomeSearchBar";
+import { HomeOnboardingCarousel } from "@/components/home/HomeOnboardingCarousel";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
 import { ProductSection } from "@/components/home/ProductSection";
 import type {
@@ -132,7 +133,8 @@ export function HomeMobileLayout({
         />
       </section>
 
-      <section className="space-y-7 px-5 pb-12 pt-6">
+      <section className="space-y-5 px-5 pb-12 pt-5">
+        <HomeOnboardingCarousel onOpenGuide={onReplayOnboarding} />
         <HomeSearchBar value={searchQuery} onChange={onSearchChange} />
 
         {activeCategory ? (
