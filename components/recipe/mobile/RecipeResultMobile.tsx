@@ -48,6 +48,7 @@ export function RecipeResultMobile({
   onCollapse
 }: RecipeResultMobileProps) {
   const dragStartY = useRef<number | null>(null);
+  const didDragHandle = useRef(false);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const youtubeSearchKeyword = recipe.dish || "công thức nấu ăn";
@@ -57,6 +58,7 @@ export function RecipeResultMobile({
 
   const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
     dragStartY.current = event.clientY;
+    didDragHandle.current = false;
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
@@ -66,7 +68,13 @@ export function RecipeResultMobile({
       return;
     }
 
-    setDragY(Math.max(0, event.clientY - dragStartY.current));
+    const nextDragY = Math.max(0, event.clientY - dragStartY.current);
+
+    if (nextDragY > 8) {
+      didDragHandle.current = true;
+    }
+
+    setDragY(nextDragY);
   };
 
   const handlePointerUp = (event: PointerEvent<HTMLButtonElement>) => {
@@ -92,17 +100,25 @@ export function RecipeResultMobile({
       >
         <button
           type="button"
+          onClick={() => {
+            if (didDragHandle.current) {
+              didDragHandle.current = false;
+              return;
+            }
+
+            onCollapse();
+          }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="mx-auto block h-7 w-28 touch-none rounded-full"
+          className="-mx-2 flex h-12 w-[calc(100%+1rem)] touch-none items-start justify-center rounded-t-[28px] pt-2"
           aria-label="Kéo xuống để quay lại khung chat"
         >
-          <span className="mx-auto mt-2 block h-1.5 w-16 rounded-full bg-white" />
+          <span className="block h-1.5 w-16 rounded-full bg-white" />
         </button>
 
-        <div className="mt-5 flex items-start justify-between gap-4">
+        <div className="mt-0 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-2xl font-black leading-tight sm:text-[26px]">
               Công thức nấu {recipe.dish || "(tên món ăn)"}
@@ -136,40 +152,56 @@ export function RecipeResultMobile({
 
         <div className="mt-7">
           <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 space-y-3">
             {reviewIngredients.map((ingredient, index) => {
               const isConflict = isConflictingIngredient(ingredient.name);
 
               return (
                 <article
                   key={`${ingredient.name}-${index}`}
-                  className="min-h-[250px] rounded-[28px] bg-white p-3.5"
+                  className={`rounded-[24px] bg-white p-3.5 ${
+                    isConflict ? "border-2 border-[#8c4d2b]/30" : ""
+                  }`}
                 >
-                  <div className="flex aspect-square min-h-[130px] items-center justify-center rounded-[24px] bg-[#edc7ff] p-3 text-center text-xs font-black leading-tight">
-                    {ingredient.name}
-                  </div>
-                  <p className="mt-4 line-clamp-2 text-sm font-black leading-tight">{ingredient.name}</p>
-                  <p className="mt-2 text-sm font-semibold text-black/70">{ingredient.amount}</p>
-                  <div className="mt-4 flex items-center justify-between">
-                    {isConflict ? (
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-[20px] bg-[#edc7ff] p-2 text-center text-[10px] font-black leading-tight text-black sm:h-20 sm:w-20">
+                      <span className="line-clamp-3">{ingredient.name}</span>
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="line-clamp-2 text-sm font-black leading-tight sm:text-base">{ingredient.name}</p>
+                      <p className="mt-1.5 text-sm font-semibold leading-tight text-black/70">{ingredient.amount}</p>
+                      {isConflict ? (
+                        <p className="mt-2 text-xs font-bold leading-snug text-[#8c4d2b]">
+                          Có thể gây dị ứng, hãy xoá nếu bạn muốn loại khỏi giỏ.
+                        </p>
+                      ) : null}
+                      {ingredient.alternatives && ingredient.alternatives.length > 0 ? (
+                        <p className="mt-2 line-clamp-2 text-xs font-semibold leading-snug text-black/55">
+                          Có thể thay bằng: {ingredient.alternatives.join(", ")}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <div className="flex shrink-0 flex-col items-center gap-2">
+                      {isConflict ? (
+                        <button
+                          type="button"
+                          onClick={() => onRemoveIngredient(ingredient.name)}
+                          className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff3ea] text-[#8c4d2b]"
+                          aria-label={`Xóa ${ingredient.name}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      ) : null}
                       <button
                         type="button"
-                        onClick={() => onRemoveIngredient(ingredient.name)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff3ea] text-[#8c4d2b]"
-                        aria-label={`Xóa ${ingredient.name}`}
+                        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6fbd7d] text-black"
+                        aria-label="Thêm nguyên liệu"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <ShoppingBasket className="h-5 w-5" />
                       </button>
-                    ) : (
-                      <span />
-                    )}
-                    <button
-                      type="button"
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6fbd7d] text-black"
-                      aria-label="Thêm nguyên liệu"
-                    >
-                      <ShoppingBasket className="h-5 w-5" />
-                    </button>
+                    </div>
                   </div>
                 </article>
               );
