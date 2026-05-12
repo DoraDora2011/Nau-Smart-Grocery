@@ -34,6 +34,7 @@ interface HomeDesktopLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  onChooseDeliveryAddress: () => void;
   onReplayOnboarding: () => void;
 }
 
@@ -72,6 +73,7 @@ export function HomeDesktopLayout({
   expandedSections,
   onToggleSection,
   deliveryAddress,
+  onChooseDeliveryAddress,
   onReplayOnboarding
 }: HomeDesktopLayoutProps) {
   return (
@@ -202,10 +204,16 @@ export function HomeDesktopLayout({
             filterButtonSize={40}
             filterButtonClassName="h-10 w-10"
           />
-          <div className="flex items-center gap-2 text-sm font-bold text-black">
-            <LocationBadgeIcon className="h-12 w-12" />
+          <button
+            type="button"
+            onClick={onChooseDeliveryAddress}
+            className="flex items-center gap-2 border-0 bg-transparent p-0 text-left text-sm font-bold text-black transition hover:scale-[1.02]"
+            aria-label="Nhập địa chỉ giao hàng"
+            title="Nhập địa chỉ giao hàng"
+          >
+            <LocationBadgeIcon className="h-10 w-10" />
             <span className="max-w-[210px] truncate">{deliveryAddress}</span>
-          </div>
+          </button>
         </div>
       </section>
 

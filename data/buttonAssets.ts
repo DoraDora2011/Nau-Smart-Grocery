@@ -65,10 +65,9 @@ function createButtonAsset(
   actionType: ButtonActionType,
   originalFunction: string,
   state: ButtonAsset["state"],
-  developerNote: string
+  developerNote: string,
+  fileName = `${id}.png`
 ): ButtonAsset {
-  const fileName = `${id}.png`;
-
   return {
     id,
     src: `/assets/buttons/${fileName}`,
@@ -110,10 +109,11 @@ export const buttonAssets: Record<ButtonId, ButtonAsset> = {
     "navigation",
     "Khi nhấn nút thì nút dẫn đến trang scan.",
     {
-      default: "button-003.png",
+      default: "scan-button-001.png",
       click: "Dẫn đến trang scan."
     },
-    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan."
+    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan.",
+    "scan-button-001.png"
   ),
   "button-004": createButtonAsset(
     "button-004",

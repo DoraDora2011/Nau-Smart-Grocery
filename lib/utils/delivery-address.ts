@@ -1,6 +1,6 @@
 export const DELIVERY_ADDRESS_STORAGE_KEY = "nau-smart-grocery:delivery-address";
 
-export const DEFAULT_DELIVERY_ADDRESS = "702 Nguyễn Văn Linh...";
+export const DEFAULT_DELIVERY_ADDRESS = "Nhập địa chỉ của bạn";
 
 export function readStoredDeliveryAddress() {
   if (typeof window === "undefined") {

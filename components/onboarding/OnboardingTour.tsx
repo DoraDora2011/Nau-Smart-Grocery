@@ -227,7 +227,7 @@ export function OnboardingTour() {
   }
 
   return (
-    <div className="fixed inset-0 z-[90] text-black" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
+    <div className="pointer-events-none fixed inset-0 z-[90] text-black" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
       {targetRect ? (
         <>
           <div
@@ -248,7 +248,7 @@ export function OnboardingTour() {
       )}
 
       <div
-        className="fixed max-w-[calc(100vw-2rem)] rounded-[26px] border-2 border-black bg-white px-5 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
+        className="pointer-events-auto fixed max-w-[calc(100vw-2rem)] rounded-[26px] border-2 border-black bg-white px-5 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-6"
         style={popupStyle}
       >
         <div className="mb-4 flex items-center gap-2">

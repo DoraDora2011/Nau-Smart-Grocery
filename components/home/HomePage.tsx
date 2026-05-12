@@ -14,7 +14,11 @@ import {
   type HomeProduct,
   type HomeProductSection
 } from "@/data/home-products";
-import { readStoredDeliveryAddress } from "@/lib/utils/delivery-address";
+import {
+  DEFAULT_DELIVERY_ADDRESS,
+  readStoredDeliveryAddress,
+  saveDeliveryAddress
+} from "@/lib/utils/delivery-address";
 import type { CartItem } from "@/types";
 
 function normalizeText(value: string) {
@@ -33,7 +37,7 @@ export function HomePage() {
   const [expandedSections, setExpandedSections] = useState<Set<HomeProductSection>>(new Set());
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cartMessage, setCartMessage] = useState<string | null>(null);
-  const [deliveryAddress, setDeliveryAddress] = useState("Location");
+  const [deliveryAddress, setDeliveryAddress] = useState(DEFAULT_DELIVERY_ADDRESS);
 
   useEffect(() => {
     const updateAddress = () => setDeliveryAddress(readStoredDeliveryAddress());
@@ -161,6 +165,20 @@ export function HomePage() {
     window.dispatchEvent(new Event("nau-smart-grocery:replay-onboarding"));
   };
 
+  const chooseDeliveryAddress = () => {
+    const nextAddress = window.prompt(
+      "Nhập địa chỉ giao hàng của bạn:",
+      deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? "" : deliveryAddress
+    );
+
+    if (!nextAddress?.trim()) {
+      return;
+    }
+
+    saveDeliveryAddress(nextAddress);
+    setDeliveryAddress(nextAddress.trim());
+  };
+
   return (
     <div className="relative min-h-screen w-full bg-[#ebf1a0] text-black">
       {cartMessage ? (
@@ -188,6 +206,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        onChooseDeliveryAddress={chooseDeliveryAddress}
         onReplayOnboarding={replayOnboarding}
       />
 
@@ -210,6 +229,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        onChooseDeliveryAddress={chooseDeliveryAddress}
         onReplayOnboarding={replayOnboarding}
       />
 

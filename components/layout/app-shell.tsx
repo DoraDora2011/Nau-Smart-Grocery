@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Sparkles, ShoppingBasket, Store } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { DesktopSupportWarning } from "@/components/layout/desktop-support-warning";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -72,6 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
 
       {isHomePage || isFullScreenAppPage ? null : <MobileNav />}
+      <DesktopSupportWarning />
     </div>
   );
 }

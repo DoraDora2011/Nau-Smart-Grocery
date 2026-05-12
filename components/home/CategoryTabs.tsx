@@ -38,6 +38,24 @@ export function CategoryTabs({
   const [showIndicator, setShowIndicator] = useState(false);
   const [scales, setScales] = useState<number[]>(() => Array(categories.length + 1).fill(1));
 
+  const centerCategoryItem = (itemIndex: number) => {
+    const container = scrollRef.current;
+    const item = itemRefs.current[itemIndex];
+
+    if (!container || !item) {
+      return;
+    }
+
+    const maxScrollLeft = Math.max(container.scrollWidth - container.clientWidth, 0);
+    const targetScrollLeft =
+      item.offsetLeft - container.clientWidth / 2 + item.clientWidth / 2;
+
+    container.scrollTo({
+      left: Math.min(Math.max(targetScrollLeft, 0), maxScrollLeft),
+      behavior: "smooth"
+    });
+  };
+
   useEffect(() => {
     const container = scrollRef.current;
 
@@ -100,7 +118,10 @@ export function CategoryTabs({
             itemRefs.current[0] = node;
           }}
           type="button"
-          onClick={() => onSelectCategory(null)}
+          onClick={() => {
+            centerCategoryItem(0);
+            onSelectCategory(null);
+          }}
           className="group flex min-w-24 flex-col items-center justify-start gap-2.5 px-2 py-2 text-center text-sm font-semibold transition"
         >
           <span
@@ -112,9 +133,9 @@ export function CategoryTabs({
             )}
             style={{ transform: `scale(${scales[0] ?? 1})` }}
           >
-            {"T\u1ea5t c\u1ea3"}
+            {"Trang chủ"}
           </span>
-          <span className="invisible leading-tight">{"T\u1ea5t c\u1ea3"}</span>
+          <span className="invisible leading-tight">{"Trang chủ"}</span>
         </button>
 
         {categories.map((category, index) => {
@@ -127,7 +148,10 @@ export function CategoryTabs({
                 itemRefs.current[index + 1] = node;
               }}
               type="button"
-              onClick={() => onSelectCategory(category.key)}
+              onClick={() => {
+                centerCategoryItem(index + 1);
+                onSelectCategory(category.key);
+              }}
               className={cn(
                 "group flex min-w-24 flex-col items-center justify-start gap-2.5 rounded-[28px] px-2 py-2 text-center text-sm font-semibold transition",
                 active

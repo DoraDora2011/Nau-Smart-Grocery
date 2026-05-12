@@ -34,6 +34,7 @@ interface HomeMobileLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  onChooseDeliveryAddress: () => void;
   onReplayOnboarding: () => void;
 }
 
@@ -56,6 +57,7 @@ export function HomeMobileLayout({
   expandedSections,
   onToggleSection,
   deliveryAddress,
+  onChooseDeliveryAddress,
   onReplayOnboarding
 }: HomeMobileLayoutProps) {
   return (
@@ -71,10 +73,16 @@ export function HomeMobileLayout({
         </div>
 
         <div className="mt-2 flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-3">
-            <LocationBadgeIcon className="h-16 w-16" />
+          <button
+            type="button"
+            onClick={onChooseDeliveryAddress}
+            className="flex min-w-0 items-center gap-2 border-0 bg-transparent p-0 text-left text-black active:scale-[0.98]"
+            aria-label="Nhập địa chỉ giao hàng"
+            title="Nhập địa chỉ giao hàng"
+          >
+            <LocationBadgeIcon className="h-11 w-11" />
             <span className="min-w-0 max-w-[170px] truncate text-base font-bold leading-tight">{deliveryAddress}</span>
-          </div>
+          </button>
           <div className="flex shrink-0 items-center gap-2">
             <AppImageButton
               buttonId="button-023"
