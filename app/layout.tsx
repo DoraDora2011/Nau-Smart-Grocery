@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 
-import { AppLoadingOverlay } from "@/components/layout/app-loading-overlay";
 import { AppShell } from "@/components/layout/app-shell";
 import { CartProvider } from "@/components/providers/cart-provider";
 import { FavoriteProvider } from "@/components/providers/favorite-provider";
@@ -42,7 +41,6 @@ export default function RootLayout({
           <CartProvider>
             <FavoriteProvider>
               <AppShell>{children}</AppShell>
-              <AppLoadingOverlay />
             </FavoriteProvider>
           </CartProvider>
         </LanguageProvider>

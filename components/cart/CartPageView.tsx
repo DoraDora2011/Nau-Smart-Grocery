@@ -98,7 +98,7 @@ function CartItemRow({
           size={26}
           className="absolute -left-1 -top-1 z-10 flex h-7 w-7 items-center justify-center"
         />
-        <div className="flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#edc7ff] p-2">
+        <div className="flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#EEEEEE] p-2">
           {hasImage ? (
             <img src={item.image} alt={item.productName} className="h-full w-full object-contain" />
           ) : (
@@ -333,7 +333,7 @@ export function CartPageView() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[#ebf1a0] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
+    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
       <main className="mx-auto max-w-md pt-6 lg:max-w-5xl">
         <div className="flex justify-end px-6">
           <AppImageButton

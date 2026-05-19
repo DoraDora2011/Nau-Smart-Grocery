@@ -180,7 +180,7 @@ export function HomePage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#ebf1a0] text-black">
+    <div className="relative min-h-screen w-full bg-[#FFF1AF] text-black">
       {cartMessage ? (
         <div className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-black shadow-lg">
           {cartMessage}

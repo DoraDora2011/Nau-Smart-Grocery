@@ -90,7 +90,7 @@ export function RecipeResultMobile({
   };
 
   return (
-    <section className="min-h-[100dvh] bg-[#ebf1a0] px-0 pb-0 pt-8 text-black lg:hidden">
+    <section className="min-h-[100dvh] bg-[#FFF1AF] px-0 pb-0 pt-8 text-black lg:hidden">
       <div
         className="min-h-[calc(100dvh-2rem)] rounded-t-[32px] bg-[#ffe467] px-6 pb-36 pt-3 shadow-[0_-16px_40px_rgba(0,0,0,0.18)]"
         style={{
@@ -164,7 +164,7 @@ export function RecipeResultMobile({
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-[20px] bg-[#edc7ff] p-2 text-center text-[10px] font-black leading-tight text-black sm:h-20 sm:w-20">
+                    <div className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-[20px] bg-[#EEEEEE] p-2 text-center text-[10px] font-black leading-tight text-black sm:h-20 sm:w-20">
                       <span className="line-clamp-3">{ingredient.name}</span>
                     </div>
 

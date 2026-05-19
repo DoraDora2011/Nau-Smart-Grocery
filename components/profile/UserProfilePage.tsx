@@ -82,7 +82,7 @@ export function UserProfilePage() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] bg-[#ebf1a0] text-black lg:px-8 lg:py-10">
+    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:px-8 lg:py-10">
       <main className="mx-auto max-w-md px-0 pb-32 lg:max-w-3xl">
         <div className="px-1 pt-2">
           <section

@@ -226,7 +226,7 @@ function FinalBillPage({
   onCancelOrder: () => void;
 }) {
   return (
-    <div className="relative min-h-[100dvh] bg-[#ebf1a0] px-6 pb-36 text-black lg:pb-14">
+    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
       <main className="mx-auto max-w-md space-y-14">
         <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-8 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
           <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-24 w-auto object-contain" />
@@ -376,7 +376,7 @@ function MapPreview() {
 
 function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () => void }) {
   return (
-    <div className="relative min-h-[100dvh] bg-[#ebf1a0] px-6 pb-36 text-black lg:pb-14">
+    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
       <div className="fixed right-6 top-6 z-40">
         <AppImageButton
           buttonId="button-009"
@@ -735,7 +735,7 @@ export function CheckoutPageView() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] bg-[#ebf1a0] px-6 pb-36 text-black lg:pb-14">
+    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
       <div className="fixed right-6 top-6 z-40">
         <AppImageButton
           buttonId="button-009"

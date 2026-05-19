@@ -123,7 +123,7 @@ export function RecipeMobileLayout({
   }, [recipe]);
 
   return (
-    <div className="min-h-[100dvh] bg-[#ebf1a0] lg:hidden">
+    <div className="min-h-[100dvh] bg-[#FFF1AF] lg:hidden">
       {recipe && !isResultCollapsed ? (
         <RecipeResultMobile
           recipe={recipe}

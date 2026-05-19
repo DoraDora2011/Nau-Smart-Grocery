@@ -23,7 +23,7 @@ const guideCards: GuideCard[] = [
       "Chụp hoặc tải ảnh nguyên liệu bạn đang có. Nấu sẽ nhận diện thực phẩm và gợi ý món có thể nấu ngay.",
     image: "/assets/buttons/scan-button-001.png",
     imageAlt: "Scan function",
-    cardClassName: "bg-[linear-gradient(135deg,#f0c6ff_0%,#ffe676_100%)]",
+    cardClassName: "bg-[#FFFFFF]",
     imageClassName: "h-[68px] w-[68px]"
   },
   {
@@ -33,8 +33,8 @@ const guideCards: GuideCard[] = [
       "Nhập món ăn và số người dùng bữa. AI sẽ gợi ý công thức, điều chỉnh định lượng và hỗ trợ thêm vào giỏ hàng.",
     image: "/assets/buttons/function1-button-002.png",
     imageAlt: "Typing recipe function",
-    cardClassName: "bg-[linear-gradient(135deg,#fff3b8_0%,#ffd7f2_100%)]",
-    imageClassName: "h-[76px] w-[76px]"
+    cardClassName: "bg-[#FFFFFF]",
+    imageClassName: "h-[62px] w-[62px]"
   },
   {
     eyebrow: "Chức năng 3 / 3",
@@ -43,7 +43,7 @@ const guideCards: GuideCard[] = [
       "Vào User Profile để chọn outfit cho character đại diện của bạn, giúp trải nghiệm mua sắm vui hơn.",
     image: "/assets/buttons/button-023.png",
     imageAlt: "User Profile function",
-    cardClassName: "bg-[linear-gradient(135deg,#f2c6ff_0%,#fff0a8_100%)]",
+    cardClassName: "bg-[#FFFFFF]",
     imageClassName: "h-[70px] w-[70px]"
   }
 ];

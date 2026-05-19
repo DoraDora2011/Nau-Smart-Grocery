@@ -82,7 +82,7 @@ export function MascotDressUpPage() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-[#ebf1a0] px-4 pb-8 pt-5 text-black lg:px-8 lg:py-8">
+    <div className="min-h-[100dvh] bg-[#FFF1AF] px-4 pb-8 pt-5 text-black lg:px-8 lg:py-8">
       <div className="mx-auto flex max-w-6xl justify-end">
         <AppImageButton
           buttonId="button-009"

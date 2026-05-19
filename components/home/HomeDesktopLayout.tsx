@@ -77,7 +77,7 @@ export function HomeDesktopLayout({
   onReplayOnboarding
 }: HomeDesktopLayoutProps) {
   return (
-    <div className="hidden min-h-screen bg-[#ebf1a0] text-black lg:block">
+    <div className="hidden min-h-screen bg-[#FFF1AF] text-black lg:block">
       <header className="fixed inset-x-0 top-0 z-50 bg-white shadow-sm">
         <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-10">
           <Link href="/" className="flex items-center">

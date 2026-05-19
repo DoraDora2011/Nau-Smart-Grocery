@@ -45,7 +45,7 @@ export function ProductCard({
         />
       </button>
 
-      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#edc7ff] p-4">
+      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#EEEEEE] p-4">
         <Image
           src={product.image}
           alt={product.name}

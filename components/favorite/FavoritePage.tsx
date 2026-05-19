@@ -69,7 +69,7 @@ function FavoriteProductCard({
         <Trash2 className="h-4.5 w-4.5" />
       </button>
 
-      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#edc7ff] p-4">
+      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#EEEEEE] p-4">
         {product.image ? (
           <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
         ) : (
@@ -241,7 +241,7 @@ function FavoriteRecipeOverlay({
   };
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#ebf1a0] text-black lg:flex lg:items-start lg:justify-center">
+    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#FFF1AF] text-black lg:flex lg:items-start lg:justify-center">
       <section
         className="min-h-[100dvh] bg-[#ffe467] px-6 pb-32 pt-3 shadow-[0_-16px_40px_rgba(0,0,0,0.18)] lg:mt-8 lg:min-h-0 lg:w-full lg:max-w-xl lg:rounded-[36px]"
         style={{
@@ -297,7 +297,7 @@ function FavoriteRecipeOverlay({
                   key={`${ingredient}-${index}`}
                   className="min-h-[190px] rounded-[28px] bg-white p-3.5"
                 >
-                  <div className="flex aspect-square min-h-[105px] items-center justify-center rounded-[24px] bg-[#edc7ff] p-3 text-center text-xs font-black leading-tight">
+                  <div className="flex aspect-square min-h-[105px] items-center justify-center rounded-[24px] bg-[#EEEEEE] p-3 text-center text-xs font-black leading-tight">
                     {ingredient}
                   </div>
                   <p className="mt-4 line-clamp-3 text-sm font-black leading-tight">{ingredient}</p>
@@ -425,7 +425,7 @@ export function FavoritePage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[#ebf1a0] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
+    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
       {cartMessage ? (
         <div className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold shadow-lg">
           {cartMessage}

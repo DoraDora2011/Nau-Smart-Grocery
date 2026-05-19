@@ -38,7 +38,7 @@ export function RecipeInputMobile({
   const shouldShowGuide = hasChatHistory || (hasSubmittedChat && hasDishText);
 
   return (
-    <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#ebf1a0] px-6 pt-6 text-black lg:hidden">
+    <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#FFF1AF] px-6 pt-6 text-black lg:hidden">
       <div className="flex items-center justify-between">
         <AppImageButton
           buttonId="button-007"

@@ -260,7 +260,7 @@ export function ImageIntake({
   };
 
   return (
-    <section className="flex min-h-[100dvh] flex-col justify-between bg-[#ebf1a0] px-8 pb-36 pt-28 text-black lg:min-h-[calc(100dvh-2rem)] lg:rounded-[42px] lg:px-14 lg:pb-20">
+    <section className="flex min-h-[100dvh] flex-col justify-between bg-[#FFF1AF] px-8 pb-36 pt-28 text-black lg:min-h-[calc(100dvh-2rem)] lg:rounded-[42px] lg:px-14 lg:pb-20">
       <input
         ref={cameraInputRef}
         type="file"

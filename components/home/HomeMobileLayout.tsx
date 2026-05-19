@@ -61,7 +61,7 @@ export function HomeMobileLayout({
   onReplayOnboarding
 }: HomeMobileLayoutProps) {
   return (
-    <div className="min-h-screen bg-[#ebf1a0] pb-28 lg:hidden">
+    <div className="min-h-screen bg-[#FFF1AF] pb-28 lg:hidden">
       <section className="mx-1 rounded-b-[58px] rounded-t-[48px] bg-[linear-gradient(180deg,#ffffff_0%,#f2dcff_36%,#cd6cfd_100%)] px-5 pb-6 pt-5 text-black shadow-sm">
         <div className="mx-auto flex max-w-sm justify-center">
           <Image

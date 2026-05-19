@@ -14,15 +14,17 @@ interface CategoryTabsProps {
 }
 
 const categoryButtonImageByKey: Record<HomeCategoryKey, string> = {
-  vegetables: "/assets/buttons/vegetable-button-001.png",
-  dairy: "/assets/buttons/dairy-button-001.png",
-  "meat-seafood": "/assets/buttons/meat-button-001.png",
-  grains: "/assets/buttons/carb-button-001.png",
-  sauces: "/assets/buttons/seasoning-button-001.png"
+  vegetables: "/assets/buttons/vegetable-002.png",
+  dairy: "/assets/buttons/dairy-002.png",
+  "meat-seafood": "/assets/buttons/meat-002.png",
+  grains: "/assets/buttons/carb-002.png",
+  sauces: "/assets/buttons/seasoning-002.png"
 };
 
+const homeButtonImage = "/assets/buttons/bestdeal-002.png";
+
 const circleClass =
-  "flex h-14 w-14 items-center justify-center rounded-full text-sm font-black text-black shadow-sm ring-2 ring-black transition-transform duration-300 ease-out";
+  "flex h-14 w-14 items-center justify-center rounded-full text-sm font-black text-black shadow-sm transition-transform duration-300 ease-out";
 const imageCircleClass =
   "flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-transparent transition-transform duration-300 ease-out";
 
@@ -133,9 +135,15 @@ export function CategoryTabs({
             )}
             style={{ transform: `scale(${scales[0] ?? 1})` }}
           >
-            {"Trang chủ"}
+            <Image
+              src={homeButtonImage}
+              alt="Best deal"
+              width={56}
+              height={56}
+              className="h-14 w-14 object-contain"
+            />
           </span>
-          <span className="invisible leading-tight">{"Trang chủ"}</span>
+          <span className="leading-tight">{"Best deal"}</span>
         </button>
 
         {categories.map((category, index) => {

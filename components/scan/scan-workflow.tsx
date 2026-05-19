@@ -443,7 +443,7 @@ export function ScanWorkflow() {
   }, [handleScan, isScanning, selectedFile, source]);
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden bg-[#ebf1a0] text-black">
+    <div className="relative min-h-[100dvh] overflow-hidden bg-[#FFF1AF] text-black">
       <div className="fixed right-6 top-6 z-50">
         <AppImageButton
           buttonId="button-009"
@@ -730,7 +730,7 @@ export function ScanWorkflow() {
                     key={product.id}
                     className="w-[152px] shrink-0 snap-start rounded-[26px] bg-white p-2.5 pb-4 shadow-sm"
                   >
-                    <div className="relative flex aspect-square items-center justify-center rounded-[22px] bg-[#edc7ff] p-3">
+                    <div className="relative flex aspect-square items-center justify-center rounded-[22px] bg-[#EEEEEE] p-3">
                       {product.image ? (
                         <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
                       ) : (
