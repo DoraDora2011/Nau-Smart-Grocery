@@ -8,7 +8,7 @@ export function LocationBadgeIcon({ className }: LocationBadgeIconProps) {
   return (
     <span className={`inline-flex items-center justify-center ${className ?? ""}`}>
       <Image
-        src="/assets/buttons/button-028.png"
+        src="/assets/buttons/location-002.png"
         alt="Location"
         width={96}
         height={96}
