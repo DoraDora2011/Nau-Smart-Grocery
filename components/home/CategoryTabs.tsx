@@ -194,8 +194,8 @@ export function CategoryTabs({
               <span
                 key={step}
                 className={cn(
-                  "block h-3 rounded-full transition-all duration-300 ease-out",
-                  active ? "w-16 bg-white/85" : "w-3 bg-white/28"
+                  "block h-2.5 rounded-full transition-all duration-300 ease-out",
+                  active ? "w-7 bg-[#cd6cfd]" : "w-2.5 bg-[#cd6cfd]/25"
                 )}
               />
             );

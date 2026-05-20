@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
@@ -13,7 +14,6 @@ import type {
   HomeProduct,
   HomeProductSection
 } from "@/data/home-products";
-import { homeBrandAssets } from "@/data/home-products";
 
 interface HomeMobileLayoutProps {
   categories: HomeCategory[];
@@ -34,7 +34,7 @@ interface HomeMobileLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
-  onChooseDeliveryAddress: () => void;
+  onUpdateDeliveryAddress: (address: string) => void;
   onReplayOnboarding: () => void;
 }
 
@@ -57,31 +57,44 @@ export function HomeMobileLayout({
   expandedSections,
   onToggleSection,
   deliveryAddress,
-  onChooseDeliveryAddress,
+  onUpdateDeliveryAddress,
   onReplayOnboarding
 }: HomeMobileLayoutProps) {
-  return (
-    <div className="min-h-screen bg-[#FFF1AF] pb-28 lg:hidden">
-      <section className="mx-1 rounded-b-[58px] rounded-t-[48px] bg-[linear-gradient(180deg,#ffffff_0%,#f2dcff_36%,#cd6cfd_100%)] px-5 pb-6 pt-5 text-black shadow-sm">
-        <div className="mx-auto flex max-w-sm justify-center">
-          <Image
-            src={homeBrandAssets.logoText}
-            alt="Nấu Smart Grocery"
-            className="h-20 w-auto object-contain"
-            priority
-          />
-        </div>
+  const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
+  const [addressDraft, setAddressDraft] = useState(deliveryAddress);
 
-        <div className="mt-2 flex items-center justify-between gap-4">
+  const openLocationPopup = () => {
+    setAddressDraft(deliveryAddress);
+    setIsLocationPopupOpen(true);
+  };
+
+  const closeLocationPopup = () => {
+    setIsLocationPopupOpen(false);
+  };
+
+  const saveLocationPopup = () => {
+    const nextAddress = addressDraft.trim();
+
+    if (!nextAddress) {
+      return;
+    }
+
+    onUpdateDeliveryAddress(nextAddress);
+    closeLocationPopup();
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFF1AF] pb-[calc(7rem+env(safe-area-inset-bottom))] lg:hidden">
+      <section className="rounded-b-[30px] bg-[linear-gradient(180deg,#ffffff_0%,#f2dcff_36%,#cd6cfd_100%)] px-5 pb-5 pt-[calc(1rem+env(safe-area-inset-top))] text-black shadow-sm">
+        <div className="flex flex-row-reverse items-center justify-between gap-4">
           <button
             type="button"
-            onClick={onChooseDeliveryAddress}
-            className="flex min-w-0 items-center gap-2 border-0 bg-transparent p-0 text-left text-black active:scale-[0.98]"
+            onClick={openLocationPopup}
+            className="flex shrink-0 items-center border-0 bg-transparent p-0 text-black active:scale-[0.98]"
             aria-label="Nhập địa chỉ giao hàng"
             title="Nhập địa chỉ giao hàng"
           >
             <LocationBadgeIcon className="h-11 w-11" />
-            <span className="min-w-0 max-w-[170px] truncate text-base font-bold leading-tight">{deliveryAddress}</span>
           </button>
           <div className="flex shrink-0 items-center gap-2">
             <AppImageButton
@@ -94,37 +107,111 @@ export function HomeMobileLayout({
           </div>
         </div>
 
-        <div className="mt-5 flex items-center gap-3">
-          <Image
-            src={homeBrandAssets.logoMascotBigsize}
-            alt="Mascot Nâu"
-            className="h-16 w-16 object-contain"
-            priority
-          />
+        <div className="mt-5 grid grid-cols-2 gap-3">
           <Link
             href="/dish"
             data-tour-id="recipe-mvp"
-            className="flex min-h-14 flex-1 items-center gap-3 rounded-full border-0 bg-white px-4 text-sm font-bold shadow-[0_0_0_2.5px_#000000] transition active:scale-[0.98]"
+            className="relative flex min-h-[136px] flex-col justify-between overflow-hidden rounded-[16px] bg-white px-3 py-4 text-black transition active:scale-[0.98]"
           >
+            <span>
+              <span className="block text-sm font-bold leading-tight text-black/38">
+                Chức năng
+              </span>
+              <span className="mt-0.5 block text-base font-black leading-tight">
+                Tra cứu món ăn
+              </span>
+            </span>
             <Image
-              src={homeBrandAssets.mealIcon}
+              src="/assets/buttons/function%201-icon-002.png"
               alt=""
-              className="h-8 w-8 shrink-0 object-contain"
+              width={72}
+              height={72}
+              className="absolute bottom-8 right-2 h-16 w-16 object-contain"
             />
-            Bạn muốn nấu món gì hôm nay?
+            <span className="flex items-center justify-between text-xs font-bold leading-tight">
+              Nhấn vào đây
+              <span className="text-2xl font-normal leading-none" aria-hidden="true">
+                {">"}
+              </span>
+            </span>
+          </Link>
+          <Link
+            href="/scan"
+            data-tour-id="scan-mvp"
+            className="relative flex min-h-[136px] flex-col justify-between overflow-hidden rounded-[16px] bg-[#ffe467] px-3 py-4 text-black transition active:scale-[0.98]"
+          >
+            <span>
+              <span className="block text-sm font-bold leading-tight text-black/38">
+                Chức năng
+              </span>
+              <span className="mt-0.5 block text-base font-black leading-tight">
+                Scan nguyên liệu
+              </span>
+            </span>
+            <Image
+              src="/assets/buttons/function%202-icon-002.png"
+              alt=""
+              width={72}
+              height={72}
+              className="absolute bottom-8 right-2 h-16 w-16 object-contain"
+            />
+            <span className="flex items-center justify-between text-xs font-bold leading-tight">
+              Nhấn vào đây
+              <span className="text-2xl font-normal leading-none" aria-hidden="true">
+                {">"}
+              </span>
+            </span>
           </Link>
         </div>
 
+        <div className="mt-5">
+          <HomeOnboardingCarousel onOpenGuide={onReplayOnboarding} />
+        </div>
+      </section>
+
+      {isLocationPopupOpen ? (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-5">
+          <div className="w-full max-w-sm rounded-[28px] bg-white p-5 text-black shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
+            <h2 className="text-lg font-black leading-tight">Địa chỉ giao hàng</h2>
+            <p className="mt-2 text-sm font-semibold leading-5 text-black/60">
+              Kiểm tra hoặc chỉnh sửa địa chỉ giao hàng của bạn.
+            </p>
+            <label className="mt-5 block text-xs font-black uppercase leading-tight text-black/55">
+              Địa chỉ hiện tại
+            </label>
+            <input
+              value={addressDraft}
+              onChange={(event) => setAddressDraft(event.target.value)}
+              className="mt-2 h-12 w-full rounded-2xl border-2 border-black bg-white px-4 text-sm font-bold outline-none focus:border-[#cd6cfd]"
+              autoFocus
+            />
+            <div className="mt-5 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeLocationPopup}
+                className="rounded-full bg-[#eeeeee] px-5 py-2.5 text-sm font-black leading-tight text-black"
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={saveLocationPopup}
+                className="rounded-full bg-[#6fbd7d] px-5 py-2.5 text-sm font-black leading-tight text-black"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <section className="space-y-5 px-5 pb-12 pt-5">
+        <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">Danh mục mua sắm</h2>
         <CategoryTabs
           categories={categories}
           activeCategory={activeCategory}
           onSelectCategory={onSelectCategory}
-          className="mt-5"
         />
-      </section>
-
-      <section className="space-y-5 px-5 pb-12 pt-5">
-        <HomeOnboardingCarousel onOpenGuide={onReplayOnboarding} />
         <HomeSearchBar value={searchQuery} onChange={onSearchChange} />
 
         {activeCategory ? (
@@ -175,7 +262,7 @@ export function HomeMobileLayout({
         )}
       </section>
 
-      <nav className="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-6 py-4 shadow-[0_-14px_36px_rgba(0,0,0,0.18)]">
+      <nav className="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-[0_-14px_36px_rgba(0,0,0,0.18)]">
         <div className="mx-auto grid max-w-md grid-cols-5 items-center justify-items-center">
           <AppImageButton
             buttonId="button-004"

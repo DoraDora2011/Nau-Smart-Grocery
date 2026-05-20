@@ -211,7 +211,7 @@ export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselPr
             onClick={() => scrollToCard(index)}
             className={cn(
               "h-2.5 rounded-full transition-all",
-              activeIndex === index ? "w-7 bg-[#cd6cfd]" : "w-2.5 bg-black/18"
+              activeIndex === index ? "w-7 bg-white" : "w-2.5 bg-white/35"
             )}
           />
         ))}

@@ -165,18 +165,28 @@ export function HomePage() {
     window.dispatchEvent(new Event("nau-smart-grocery:replay-onboarding"));
   };
 
+  const updateDeliveryAddress = (nextAddress: string) => {
+    const trimmedAddress = nextAddress.trim();
+
+    if (!trimmedAddress) {
+      return;
+    }
+
+    saveDeliveryAddress(trimmedAddress);
+    setDeliveryAddress(trimmedAddress);
+  };
+
   const chooseDeliveryAddress = () => {
     const nextAddress = window.prompt(
       "Nhập địa chỉ giao hàng của bạn:",
       deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? "" : deliveryAddress
     );
 
-    if (!nextAddress?.trim()) {
+    if (!nextAddress) {
       return;
     }
 
-    saveDeliveryAddress(nextAddress);
-    setDeliveryAddress(nextAddress.trim());
+    updateDeliveryAddress(nextAddress);
   };
 
   return (
@@ -206,7 +216,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
-        onChooseDeliveryAddress={chooseDeliveryAddress}
+        onUpdateDeliveryAddress={updateDeliveryAddress}
         onReplayOnboarding={replayOnboarding}
       />
 

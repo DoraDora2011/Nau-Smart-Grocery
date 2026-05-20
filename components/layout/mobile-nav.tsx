@@ -4,7 +4,7 @@ import { AppImageButton } from "@/components/AppImageButton";
 
 export function MobileNav() {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 rounded-t-[28px] bg-white px-6 py-4 shadow-[0_-14px_36px_rgba(0,0,0,0.18)]">
+    <nav className="fixed inset-x-0 bottom-0 z-40 rounded-t-[28px] bg-white px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-[0_-14px_36px_rgba(0,0,0,0.18)]">
       <div className="mx-auto grid max-w-md grid-cols-5 items-center justify-items-center">
         <AppImageButton
           buttonId="button-004"

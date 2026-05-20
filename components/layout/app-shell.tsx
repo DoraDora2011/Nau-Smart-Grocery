@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               ? "flex min-h-screen flex-col"
             : isFullScreenAppPage
               ? "flex min-h-screen flex-col lg:mx-auto lg:max-w-6xl lg:px-8 lg:pb-28 lg:pt-4"
-            : "mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-28 pt-4 sm:px-6 lg:px-8"
+            : "mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:px-8"
         }
       >
         <header className={`${isHomePage || isProfilePage || isMascotPage ? "hidden" : isFullScreenAppPage ? "hidden lg:flex" : "flex"} mb-6 items-center justify-between rounded-[32px] border border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(235,245,234,0.9))] px-5 py-4 shadow-[0_16px_40px_rgba(24,52,41,0.08)]`}>
