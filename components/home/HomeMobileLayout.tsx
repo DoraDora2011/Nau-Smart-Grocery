@@ -8,6 +8,7 @@ import { HomeSearchBar } from "@/components/home/HomeSearchBar";
 import { HomeOnboardingCarousel } from "@/components/home/HomeOnboardingCarousel";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
 import { ProductSection } from "@/components/home/ProductSection";
+import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
 import type {
   HomeCategory,
   HomeCategoryKey,
@@ -288,12 +289,7 @@ export function HomeMobileLayout({
             className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
             data-tour-id="scan-mvp"
           />
-          <AppImageButton
-            buttonId="button-006"
-            href="#notification"
-            size={28}
-            className="flex flex-col items-center gap-1 text-black"
-          />
+          <NotificationNavButton size={28} className="flex flex-col items-center gap-1 text-black" />
           <AppImageButton
             buttonId="button-021"
             href="/cart"

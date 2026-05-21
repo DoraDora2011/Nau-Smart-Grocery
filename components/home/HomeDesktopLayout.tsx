@@ -6,6 +6,7 @@ import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { HomeSearchBar } from "@/components/home/HomeSearchBar";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
+import { NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { ProductSection } from "@/components/home/ProductSection";
 import type {
   HomeCategory,
@@ -42,7 +43,7 @@ interface HomeDesktopLayoutProps {
 const desktopNavItems = [
   { label: "Trang Chủ", href: "/" },
   { label: "Yêu Thích", href: "/favorite" },
-  { label: "Thông Báo", href: "#notification" },
+  { label: "Thông Báo", href: "/notifications" },
   { label: "Chính Sách", href: "#policy" }
 ];
 
@@ -92,15 +93,22 @@ export function HomeDesktopLayout({
           </Link>
 
           <div className="flex items-center gap-14 text-base font-bold text-black">
-            {desktopNavItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="transition hover:-translate-y-0.5 hover:text-black"
-              >
-                {item.label}
-              </a>
-            ))}
+            {desktopNavItems.map((item) =>
+              item.href === "/notifications" ? (
+                <NotificationTextLink
+                  key={item.label}
+                  className="transition hover:-translate-y-0.5 hover:text-black"
+                />
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="transition hover:-translate-y-0.5 hover:text-black"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
           </div>
 
           <div className="flex items-center gap-5">

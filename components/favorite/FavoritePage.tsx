@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } fr
 import { Heart, Minus, Plus, Trash2 } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
 import { useCart } from "@/components/providers/cart-provider";
 import {
   type FavoriteProduct,
@@ -356,12 +357,7 @@ function FavoriteBottomNav() {
           size={82}
           className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
         />
-        <AppImageButton
-          buttonId="button-006"
-          href="#notification"
-          size={28}
-          className="flex justify-center text-black"
-        />
+        <NotificationNavButton size={28} className="flex justify-center text-black" />
         <AppImageButton
           buttonId="button-021"
           href="/cart"
