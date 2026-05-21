@@ -3,12 +3,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 const ONBOARDING_STORAGE_KEY = "nau_onboarding_seen";
+const INTERNAL_REPLAY_HOTKEY = {
+  ctrlKey: true,
+  altKey: true,
+  shiftKey: true,
+  key: "G"
+};
 
 declare global {
   interface Window {
     NauOnboarding?: {
       replay: () => void;
       reset: () => void;
+      openStep: (target: string) => void;
     };
   }
 }
@@ -17,6 +24,12 @@ type TourStep = {
   target: string;
   title: string;
   description: string;
+};
+
+type TourMode = "full" | "single";
+
+type OnboardingReplayDetail = {
+  target?: string;
 };
 
 const steps: TourStep[] = [
@@ -84,32 +97,63 @@ function getPaddedRect(rect: DOMRect): HighlightRect {
 export function OnboardingTour() {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [tourMode, setTourMode] = useState<TourMode>("full");
   const [targetRect, setTargetRect] = useState<HighlightRect | null>(null);
   const step = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
+  const isSingleStep = tourMode === "single";
 
-  const openTour = useCallback(() => {
-    setCurrentStep(0);
+  const openTour = useCallback((target?: string, mode: TourMode = "full") => {
+    const nextStep = target ? steps.findIndex((item) => item.target === target) : 0;
+
+    if (nextStep < 0) {
+      return;
+    }
+
+    setTourMode(mode);
+    setCurrentStep(nextStep);
     setTargetRect(null);
     setIsOpen(true);
   }, []);
 
   useEffect(() => {
-    const replayTour = () => {
+    const replayTour = (event?: Event) => {
+      const detail = event instanceof CustomEvent ? (event.detail as OnboardingReplayDetail | undefined) : undefined;
+
+      if (detail?.target) {
+        openTour(detail.target, "single");
+        return;
+      }
+
       try {
         window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
       } catch {
         // Storage can be unavailable in private contexts; replay still works for this session.
       }
 
-      openTour();
+      openTour(undefined, "full");
     };
 
     window.NauOnboarding = {
-      replay: replayTour,
-      reset: replayTour
+      replay: () => replayTour(),
+      reset: () => replayTour(),
+      openStep: (target: string) => openTour(target, "single")
     };
     window.addEventListener("nau-smart-grocery:replay-onboarding", replayTour);
+
+    const handleInternalReplayHotkey = (event: KeyboardEvent) => {
+      if (
+        event.ctrlKey === INTERNAL_REPLAY_HOTKEY.ctrlKey &&
+        event.altKey === INTERNAL_REPLAY_HOTKEY.altKey &&
+        event.shiftKey === INTERNAL_REPLAY_HOTKEY.shiftKey &&
+        event.key.toUpperCase() === INTERNAL_REPLAY_HOTKEY.key
+      ) {
+        event.preventDefault();
+        openTour(undefined, "full");
+      }
+    };
+
+    window.addEventListener("keydown", handleInternalReplayHotkey);
 
     const url = new URL(window.location.href);
     const shouldReplayFromUrl =
@@ -123,6 +167,7 @@ export function OnboardingTour() {
 
       return () => {
         window.removeEventListener("nau-smart-grocery:replay-onboarding", replayTour);
+        window.removeEventListener("keydown", handleInternalReplayHotkey);
         delete window.NauOnboarding;
       };
     }
@@ -131,17 +176,19 @@ export function OnboardingTour() {
       if (window.localStorage.getItem(ONBOARDING_STORAGE_KEY) === "true") {
         return () => {
           window.removeEventListener("nau-smart-grocery:replay-onboarding", replayTour);
+          window.removeEventListener("keydown", handleInternalReplayHotkey);
           delete window.NauOnboarding;
         };
       }
 
-      openTour();
+      openTour(undefined, "full");
     } catch {
-      openTour();
+      openTour(undefined, "full");
     }
 
     return () => {
       window.removeEventListener("nau-smart-grocery:replay-onboarding", replayTour);
+      window.removeEventListener("keydown", handleInternalReplayHotkey);
       delete window.NauOnboarding;
     };
   }, [openTour]);
@@ -252,14 +299,18 @@ export function OnboardingTour() {
         style={popupStyle}
       >
         <div className="mb-4 flex items-center gap-2">
-          {steps.map((item, index) => (
-            <span
-              key={item.target}
-              className={`h-2.5 rounded-full transition-all ${
-                index === currentStep ? "w-8 bg-[#cd6cfd]" : "w-2.5 bg-black/18"
-              }`}
-            />
-          ))}
+          {isSingleStep ? (
+            <span className="h-2.5 w-8 rounded-full bg-[#cd6cfd]" />
+          ) : (
+            steps.map((item, index) => (
+              <span
+                key={item.target}
+                className={`h-2.5 rounded-full transition-all ${
+                  index === currentStep ? "w-8 bg-[#cd6cfd]" : "w-2.5 bg-black/18"
+                }`}
+              />
+            ))
+          )}
         </div>
 
         <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">
@@ -276,14 +327,16 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={finishTour}
-            className="rounded-full border-2 border-black bg-white px-5 py-2.5 text-sm font-black leading-tight text-black transition active:scale-[0.98]"
+            className={`rounded-full border-2 border-black bg-white px-5 py-2.5 text-sm font-black leading-tight text-black transition active:scale-[0.98] ${
+              isSingleStep ? "hidden" : ""
+            }`}
           >
             Bỏ qua hướng dẫn
           </button>
           <button
             type="button"
             onClick={() => {
-              if (isLastStep) {
+              if (isSingleStep || isLastStep) {
                 finishTour();
                 return;
               }
@@ -292,7 +345,7 @@ export function OnboardingTour() {
             }}
             className="rounded-full border-2 border-black bg-[#ffe467] px-5 py-2.5 text-sm font-black leading-tight text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
           >
-            {isLastStep ? "Hoàn tất" : "Tiếp theo"}
+            {isSingleStep ? "Đã hiểu" : isLastStep ? "Hoàn tất" : "Tiếp theo"}
           </button>
         </div>
       </div>

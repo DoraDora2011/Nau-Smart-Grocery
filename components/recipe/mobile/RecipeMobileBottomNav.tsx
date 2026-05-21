@@ -2,7 +2,11 @@
 
 import { AppImageButton } from "@/components/AppImageButton";
 
-export function RecipeMobileBottomNav() {
+interface RecipeMobileBottomNavProps {
+  onScanClick?: () => void;
+}
+
+export function RecipeMobileBottomNav({ onScanClick }: RecipeMobileBottomNavProps) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 rounded-t-[28px] bg-white px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-[0_-14px_36px_rgba(0,0,0,0.18)] lg:hidden">
       <div className="mx-auto grid max-w-md grid-cols-5 items-center justify-items-center">
@@ -13,12 +17,21 @@ export function RecipeMobileBottomNav() {
           size={28}
           className="flex justify-center text-black"
         />
-        <AppImageButton
-          buttonId="button-003"
-          href="/scan"
-          size={82}
-          className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
-        />
+        {onScanClick ? (
+          <AppImageButton
+            buttonId="button-028"
+            onClick={onScanClick}
+            size={82}
+            className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
+          />
+        ) : (
+          <AppImageButton
+            buttonId="button-003"
+            href="/scan"
+            size={82}
+            className="-mt-12 flex h-[82px] w-[82px] items-center justify-center rounded-full text-black shadow-[0_14px_28px_rgba(0,0,0,0.24)]"
+          />
+        )}
         <AppImageButton
           buttonId="button-006"
           href="#notification"

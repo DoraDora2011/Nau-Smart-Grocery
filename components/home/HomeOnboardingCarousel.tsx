@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils/cn";
 
 type GuideCard = {
+  target: string;
   eyebrow: string;
   title: string;
   description: string;
@@ -21,6 +22,7 @@ const guideCards: GuideCard[] = [
     title: "Quét nguyên liệu",
     description:
       "Chụp hoặc tải ảnh nguyên liệu bạn đang có. Nấu sẽ nhận diện thực phẩm và gợi ý món có thể nấu ngay.",
+    target: "scan-mvp",
     image: "/assets/buttons/scan-button-001.png",
     imageAlt: "Scan function",
     cardClassName: "bg-[#FFFFFF]",
@@ -31,6 +33,7 @@ const guideCards: GuideCard[] = [
     title: "Nhập món ăn bạn muốn nấu",
     description:
       "Nhập món ăn và số người dùng bữa. AI sẽ gợi ý công thức, điều chỉnh định lượng và hỗ trợ thêm vào giỏ hàng.",
+    target: "recipe-mvp",
     image: "/assets/buttons/function1-button-002.png",
     imageAlt: "Typing recipe function",
     cardClassName: "bg-[#FFFFFF]",
@@ -41,6 +44,7 @@ const guideCards: GuideCard[] = [
     title: "Cá nhân hoá nhân vật của bạn",
     description:
       "Vào User Profile để chọn outfit cho character đại diện của bạn, giúp trải nghiệm mua sắm vui hơn.",
+    target: "user-profile",
     image: "/assets/buttons/button-023.png",
     imageAlt: "User Profile function",
     cardClassName: "bg-[#FFFFFF]",
@@ -49,7 +53,7 @@ const guideCards: GuideCard[] = [
 ];
 
 interface HomeOnboardingCarouselProps {
-  onOpenGuide: () => void;
+  onOpenGuide: (target: string) => void;
 }
 
 export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselProps) {
@@ -175,7 +179,7 @@ export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselPr
                 return;
               }
 
-              onOpenGuide();
+              onOpenGuide(card.target);
             }}
           >
             <span className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full">

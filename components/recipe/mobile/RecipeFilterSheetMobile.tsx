@@ -86,7 +86,7 @@ export function RecipeFilterSheetMobile({
         </button>
         <h2 className="mt-5 text-[26px] font-black leading-tight">Chọn lọc theo:</h2>
 
-        <div className="mt-8 space-y-7">
+        <div className="mt-9 space-y-8">
           <div>
             <div className="rounded-full bg-[linear-gradient(90deg,#ffffff_0%,#f2d8ff_46%,#cd6cfd_100%)] px-5 py-4 text-sm font-black shadow-sm">
               Số người ăn:

@@ -52,6 +52,18 @@ export function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!cartMessage) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setCartMessage(null);
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [cartMessage]);
+
   const filteredProducts = useMemo(() => {
     const normalizedQuery = normalizeText(searchQuery.trim());
     const searchTokens = normalizedQuery.split(/\s+/).filter(Boolean);
@@ -161,8 +173,8 @@ export function HomePage() {
     });
   };
 
-  const replayOnboarding = () => {
-    window.dispatchEvent(new Event("nau-smart-grocery:replay-onboarding"));
+  const replayOnboarding = (target?: string) => {
+    window.dispatchEvent(new CustomEvent("nau-smart-grocery:replay-onboarding", { detail: { target } }));
   };
 
   const updateDeliveryAddress = (nextAddress: string) => {

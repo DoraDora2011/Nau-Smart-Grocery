@@ -334,7 +334,7 @@ export function CartPageView() {
 
   return (
     <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
-      <main className="mx-auto max-w-md pt-6 lg:max-w-5xl">
+      <main className="mx-auto max-w-md pt-8 lg:max-w-5xl">
         <div className="flex justify-end px-6">
           <AppImageButton
             buttonId="button-009"
@@ -344,9 +344,9 @@ export function CartPageView() {
           />
         </div>
 
-        <section className="mx-6 mt-7 max-h-[58vh] overflow-y-auto rounded-[16px] bg-white px-3 py-5 shadow-[0_18px_36px_rgba(46,46,18,0.08)] lg:max-h-none">
+        <section className="mx-6 mt-9 max-h-[58vh] overflow-y-auto rounded-[16px] bg-white px-3 py-6 shadow-[0_18px_36px_rgba(46,46,18,0.08)] lg:max-h-none">
           {items.length > 0 ? (
-            <div className="space-y-3">
+            <div className="space-y-5">
               {items.map((item) => (
                 <CartItemRow
                   key={item.id}
@@ -366,7 +366,7 @@ export function CartPageView() {
           )}
         </section>
 
-        <div className="sticky bottom-[104px] z-30 mt-8 flex items-center justify-between gap-4 px-6 lg:static">
+        <div className="sticky bottom-[104px] z-30 mt-10 flex items-center justify-between gap-4 px-6 lg:static">
           <button
             type="button"
             onClick={handleClearCart}
@@ -385,8 +385,8 @@ export function CartPageView() {
           </button>
         </div>
 
-        <section className="mt-10 min-h-[calc(100dvh-8rem)] rounded-t-[28px] bg-[#ffe467] px-6 pb-48 pt-6 shadow-[0_-12px_30px_rgba(0,0,0,0.08)]">
-          <h1 className="mb-6 text-center text-xl font-black leading-tight sm:text-2xl">Có thể bạn cần</h1>
+        <section className="mt-12 min-h-[calc(100dvh-8rem)] rounded-t-[28px] bg-[#ffe467] px-6 pb-48 pt-8 shadow-[0_-12px_30px_rgba(0,0,0,0.08)]">
+          <h1 className="mb-8 text-center text-xl font-black leading-tight sm:text-2xl">Có thể bạn cần</h1>
           <ProductGrid
             products={suggestionItems}
             favoriteIds={favoriteIds}

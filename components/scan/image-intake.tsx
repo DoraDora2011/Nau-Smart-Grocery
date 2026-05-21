@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MutableRefObject } from "react";
 import { Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
@@ -15,6 +15,7 @@ interface ImageIntakeProps {
   onSubmit: () => void;
   isLoading: boolean;
   errorMessage: string | null;
+  scanActionRef?: MutableRefObject<(() => void) | null>;
 }
 
 type CameraStatus = "idle" | "starting" | "ready" | "unsupported" | "error";
@@ -59,6 +60,7 @@ export function ImageIntake({
   onSubmit,
   isLoading,
   errorMessage,
+  scanActionRef,
 }: ImageIntakeProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("idle");
@@ -259,8 +261,20 @@ export function ImageIntake({
     onSubmit();
   };
 
+  useEffect(() => {
+    if (!scanActionRef) {
+      return;
+    }
+
+    scanActionRef.current = handleScanButton;
+
+    return () => {
+      scanActionRef.current = null;
+    };
+  });
+
   return (
-    <section className="flex min-h-[100dvh] flex-col justify-between bg-[#FFF1AF] px-8 pb-36 pt-28 text-black lg:min-h-[calc(100dvh-2rem)] lg:rounded-[42px] lg:px-14 lg:pb-20">
+    <section className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#FFF1AF] px-4 pb-[calc(6.75rem+env(safe-area-inset-bottom))] pt-[clamp(5.25rem,10dvh,6.5rem)] text-black lg:h-auto lg:min-h-[calc(100dvh-2rem)] lg:justify-between lg:overflow-visible lg:rounded-[42px] lg:px-14 lg:pb-20 lg:pt-28">
       <input
         ref={cameraInputRef}
         type="file"
@@ -290,7 +304,7 @@ export function ImageIntake({
         className="mx-auto w-full max-w-[680px] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-8 focus-visible:outline-[#cd6cfd]"
         aria-label="Chọn ảnh nguyên liệu để quét"
       >
-        <div className="relative mx-auto aspect-[0.96] max-h-[48dvh] min-h-[310px] w-full overflow-hidden rounded-[80px] bg-[#f6f3d5] shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+        <div className="relative mx-auto aspect-[0.9] max-h-[min(47dvh,27rem)] min-h-[clamp(17rem,39dvh,24rem)] w-full overflow-hidden rounded-[80px] bg-[#f6f3d5] shadow-[0_18px_40px_rgba(0,0,0,0.08)] lg:aspect-[0.96] lg:max-h-[48dvh] lg:min-h-[310px]">
           {previewUrl ? (
             <Image
               src={previewUrl}
@@ -342,7 +356,7 @@ export function ImageIntake({
 
       {isMobile && !selectedFile ? (
         <div
-          className={`mx-auto mt-5 flex w-full max-w-[680px] items-center gap-3 rounded-full bg-white/75 px-4 py-3 shadow-[0_10px_26px_rgba(0,0,0,0.08)] ${
+          className={`mx-auto mt-4 flex w-full max-w-[680px] items-center gap-3 rounded-full bg-white/75 px-4 py-3 shadow-[0_10px_26px_rgba(0,0,0,0.08)] lg:mt-7 ${
             zoomState.supported ? "" : "opacity-55"
           }`}
         >
@@ -378,8 +392,8 @@ export function ImageIntake({
         </div>
       ) : null}
 
-      <div className="mx-auto mt-10 w-full max-w-[680px] text-center">
-        <p className="text-lg font-black leading-snug text-black/40 sm:text-2xl">
+      <div className="mx-auto mt-7 w-full max-w-[680px] text-center lg:mt-12">
+        <p className="text-base font-black leading-snug text-black/40 sm:text-lg lg:text-2xl">
           Sắp xếp nguyên liệu rõ ràng để hệ thống nhận diện tốt hơn
         </p>
         {selectedFile ? (
@@ -392,19 +406,19 @@ export function ImageIntake({
         ) : null}
       </div>
 
-      <div className="mx-auto mt-12 flex w-full max-w-[680px] items-center justify-between">
+      <div className="mx-auto mt-auto flex w-full max-w-[680px] items-center justify-between pt-6 lg:mt-14 lg:pt-0">
         <AppImageButton
           buttonId="button-008"
           onClick={() => openPicker("upload")}
-          size={96}
-          className="flex h-24 w-24 items-center justify-center transition active:scale-95 lg:h-28 lg:w-28"
+          size={72}
+          className="flex h-[72px] w-[72px] items-center justify-center transition active:scale-95 lg:h-20 lg:w-20"
         />
 
         <button
           type="button"
           onClick={handleScanButton}
           disabled={isLoading}
-          className="flex min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] border-[3px] border-black bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:min-h-28 lg:min-w-36"
+          className="hidden min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] border-[3px] border-black bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:flex lg:min-h-28 lg:min-w-36"
           aria-label={selectedFile ? "Phân tích ảnh nguyên liệu" : "Chọn ảnh để quét"}
         >
           {selectedFile ? (

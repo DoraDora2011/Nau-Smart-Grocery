@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type PointerEvent } from "react";
-import { Heart, ShoppingBasket, Trash2 } from "lucide-react";
+import { ChevronDown, Heart, Minus, ShoppingBasket } from "lucide-react";
 
 type RecipeIngredient = {
   name: string;
@@ -51,6 +51,7 @@ export function RecipeResultMobile({
   const didDragHandle = useRef(false);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [stepsOpen, setStepsOpen] = useState(false);
   const youtubeSearchKeyword = recipe.dish || "công thức nấu ăn";
   const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
     `cách nấu ${youtubeSearchKeyword}`
@@ -152,7 +153,7 @@ export function RecipeResultMobile({
 
         <div className="mt-7">
           <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
-          <div className="mt-4 space-y-3">
+          <div className="mt-5 space-y-5">
             {reviewIngredients.map((ingredient, index) => {
               const isConflict = isConflictingIngredient(ingredient.name);
 
@@ -183,17 +184,15 @@ export function RecipeResultMobile({
                       ) : null}
                     </div>
 
-                    <div className="flex shrink-0 flex-col items-center gap-2">
-                      {isConflict ? (
-                        <button
-                          type="button"
-                          onClick={() => onRemoveIngredient(ingredient.name)}
-                          className="flex h-9 w-9 items-center justify-center rounded-full bg-[#fff3ea] text-[#8c4d2b]"
-                          aria-label={`Xóa ${ingredient.name}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      ) : null}
+                    <div className="flex shrink-0 items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => onRemoveIngredient(ingredient.name)}
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D9D9D9] text-black transition active:scale-95"
+                        aria-label={`Xóa ${ingredient.name} khỏi danh sách`}
+                      >
+                        <Minus className="h-5 w-5" strokeWidth={3} />
+                      </button>
                       <button
                         type="button"
                         className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6fbd7d] text-black"
@@ -223,14 +222,26 @@ export function RecipeResultMobile({
         ) : null}
 
         <div className="mt-7">
-          <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
-          <div className="mt-3 space-y-3">
-            {recipe.steps?.map((step, index) => (
-              <p key={`${step}-${index}`} className="rounded-2xl bg-white/80 px-4 py-3 text-sm font-semibold">
-                {index + 1}. {step}
-              </p>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => setStepsOpen((current) => !current)}
+            className="flex w-full items-center justify-between text-left"
+            aria-expanded={stepsOpen}
+          >
+            <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-black">
+              <ChevronDown className={`h-5 w-5 transition-transform ${stepsOpen ? "rotate-180" : ""}`} />
+            </span>
+          </button>
+          {stepsOpen ? (
+            <div className="mt-4 space-y-5">
+              {recipe.steps?.map((step, index) => (
+                <p key={`${step}-${index}`} className="rounded-2xl bg-white/80 px-4 py-3 text-sm font-semibold">
+                  {index + 1}. {step}
+                </p>
+              ))}
+            </div>
+          ) : null}
           <p className="mt-5 rounded-2xl bg-white/85 px-4 py-3 text-sm font-bold leading-6">
             Tham khảo thêm các công thức đa dạng hơn nếu bạn muốn:{" "}
             <a

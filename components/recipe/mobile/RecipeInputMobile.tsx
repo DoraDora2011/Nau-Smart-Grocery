@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Mic, Utensils } from "lucide-react";
+import { ArrowRight, Mic } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
-import logoMascot from "@/assets/brand_logo/logo-mascot.png";
+import logoMascot from "@/assets/brand_logo/logo-mascot-bigsize.png";
 import { AppImageButton } from "@/components/AppImageButton";
 
 type RecipeChatMessage = {
@@ -11,6 +12,42 @@ type RecipeChatMessage = {
   type: "user" | "recipe";
   text: string;
 };
+
+type SpeechRecognitionResultEvent = {
+  results: {
+    [index: number]: {
+      [index: number]: {
+        transcript: string;
+      };
+    };
+  };
+};
+
+type SpeechRecognitionErrorEvent = {
+  error?: string;
+};
+
+type BrowserSpeechRecognition = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onstart: (() => void) | null;
+  onend: (() => void) | null;
+  onresult: ((event: SpeechRecognitionResultEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+};
+
+type BrowserSpeechRecognitionConstructor = new () => BrowserSpeechRecognition;
+
+declare global {
+  interface Window {
+    SpeechRecognition?: BrowserSpeechRecognitionConstructor;
+    webkitSpeechRecognition?: BrowserSpeechRecognitionConstructor;
+  }
+}
 
 interface RecipeInputMobileProps {
   dishName: string;
@@ -33,9 +70,73 @@ export function RecipeInputMobile({
   onHistoryOpen,
   onBack
 }: RecipeInputMobileProps) {
+  const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceMessage, setVoiceMessage] = useState("");
   const hasDishText = dishName.trim().length > 0;
   const hasChatHistory = chatMessages.length > 0;
   const shouldShowGuide = hasChatHistory || (hasSubmittedChat && hasDishText);
+
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  const handleVoiceInput = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setVoiceMessage("Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognitionRef.current = recognition;
+    recognition.lang = "vi-VN";
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setVoiceMessage("Đang nghe...");
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0]?.[0]?.transcript?.trim();
+
+      if (transcript) {
+        onDishNameChange(dishName.trim() ? `${dishName.trim()} ${transcript}` : transcript);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      setIsListening(false);
+      setVoiceMessage(
+        event.error === "not-allowed" || event.error === "service-not-allowed"
+          ? "Vui lòng cấp quyền micro để sử dụng nhập bằng giọng nói."
+          : "Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói."
+      );
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      setVoiceMessage((current) => (current === "Đang nghe..." ? "" : current));
+    };
+
+    try {
+      recognition.start();
+    } catch {
+      setIsListening(false);
+      setVoiceMessage("Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói.");
+    }
+  };
 
   return (
     <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#FFF1AF] px-6 pt-6 text-black lg:hidden">
@@ -55,9 +156,9 @@ export function RecipeInputMobile({
       </div>
 
       <div className="absolute inset-x-0 bottom-32 px-6">
-        <div className="space-y-6">
+        <div className="space-y-8">
           {hasChatHistory ? (
-            <div className="max-h-[46dvh] space-y-4 overflow-y-auto pr-1">
+            <div className="max-h-[46dvh] space-y-5 overflow-y-auto pr-1">
               {chatMessages.map((message) =>
                 message.type === "user" ? (
                   <div key={message.id} className="flex justify-end">
@@ -70,7 +171,7 @@ export function RecipeInputMobile({
                     <Image
                       src={logoMascot}
                       alt="Mascot NÃ¢u"
-                      className="mt-1 h-12 w-12 shrink-0 object-contain"
+                      className="h-14 w-14 shrink-0 object-contain"
                     />
                     <button
                       type="button"
@@ -97,7 +198,7 @@ export function RecipeInputMobile({
 
           {shouldShowGuide ? (
             <div className="flex items-center gap-3">
-              <Image src={logoMascot} alt="Mascot Nâu" className="h-16 w-16 object-contain" priority />
+              <Image src={logoMascot} alt="Mascot Nâu" className="h-14 w-14 shrink-0 object-contain" priority />
               <button
                 type="button"
                 onClick={onOpenFilter}
@@ -110,9 +211,9 @@ export function RecipeInputMobile({
           ) : null}
 
           <div className="flex items-center gap-3">
-            <Image src={logoMascot} alt="Mascot Nâu" className="h-14 w-14 object-contain" priority />
-            <label className="flex min-h-14 flex-1 items-center gap-3 rounded-full border-2 border-black bg-white px-4 shadow-sm">
-              <Utensils className="h-7 w-7 shrink-0" />
+            <Image src={logoMascot} alt="Mascot Nâu" className="h-14 w-14 shrink-0 object-contain" priority />
+            <div className="flex flex-1 flex-col gap-2">
+              <label className="flex min-h-14 items-center gap-3 rounded-full border-2 border-black bg-white px-4 shadow-sm">
               <input
                 value={dishName}
                 onChange={(event) => onDishNameChange(event.target.value)}
@@ -125,10 +226,19 @@ export function RecipeInputMobile({
                 placeholder="Nhập món ăn ở đây..."
                 className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-black outline-none placeholder:text-black/70"
               />
-              <button type="button" onClick={onSubmitChat} aria-label="Gửi món ăn">
+                <button
+                  type="button"
+                  onClick={handleVoiceInput}
+                  aria-label="Nhập món ăn bằng giọng nói"
+                  className={`shrink-0 rounded-full p-1 transition lg:hidden ${
+                    isListening ? "animate-pulse bg-[#FFE76A] text-black" : "text-black"
+                  }`}
+                >
                 <Mic className="h-7 w-7" />
-              </button>
-            </label>
+                </button>
+              </label>
+              {voiceMessage ? <p className="px-4 text-xs font-bold text-black/70">{voiceMessage}</p> : null}
+            </div>
           </div>
         </div>
       </div>

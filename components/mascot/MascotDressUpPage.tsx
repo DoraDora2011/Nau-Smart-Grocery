@@ -92,7 +92,7 @@ export function MascotDressUpPage() {
         />
       </div>
 
-      <main className="mx-auto mt-4 max-w-6xl space-y-5">
+      <main className="mx-auto mt-6 max-w-6xl space-y-7">
         <section className="rounded-[34px] bg-[linear-gradient(180deg,#ffffff_0%,#fff9d9_42%,#ffe467_100%)] p-4 shadow-[0_14px_28px_rgba(0,0,0,0.18)] lg:p-6">
           <div className="mb-4 px-2">
             <p className="text-sm font-black uppercase tracking-wide text-black/55">
@@ -111,7 +111,7 @@ export function MascotDressUpPage() {
             allow="fullscreen"
           />
 
-          <div className="mt-5 space-y-3 px-1">
+          <div className="mt-7 space-y-4 px-1">
             <button
               type="button"
               onClick={handleConfirmMascot}

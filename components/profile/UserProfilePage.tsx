@@ -99,7 +99,7 @@ export function UserProfilePage() {
           </section>
         </div>
 
-        <section className="space-y-7 px-5 pt-6 lg:px-8 lg:pt-10">
+        <section className="space-y-8 px-5 pt-8 lg:px-8 lg:pt-10">
           <Link
             href="/mascot"
             className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full border-[2.5px] border-solid border-black bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
@@ -116,7 +116,7 @@ export function UserProfilePage() {
             <ChevronRight className="h-7 w-7 stroke-[2.3] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-10 lg:w-10" />
           </Link>
 
-          <div className="space-y-3 px-0 lg:space-y-5 lg:px-4">
+          <div className="space-y-4 px-0 lg:space-y-5 lg:px-4">
             {profileMenuItems.map((item) => (
               <Link
                 key={item.label}

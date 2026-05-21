@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { Heart, Minus, Plus, Trash2 } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
@@ -383,6 +383,18 @@ export function FavoritePage() {
   const [selectedRecipe, setSelectedRecipe] = useState<FavoriteRecipe | null>(null);
   const backHref = searchParams.get("from") === "profile" ? "/profile" : "/";
 
+  useEffect(() => {
+    if (!cartMessage) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setCartMessage(null);
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [cartMessage]);
+
   const addFavoriteProductToCart = (product: FavoriteProduct) => {
     setQuantities((current) => ({
       ...current,
@@ -432,7 +444,7 @@ export function FavoritePage() {
         </div>
       ) : null}
 
-      <main className="mx-auto max-w-md px-6 pb-32 pt-6 lg:max-w-4xl">
+      <main className="mx-auto max-w-md px-6 pb-32 pt-8 lg:max-w-4xl">
         <div className="flex justify-end">
           <AppImageButton
             buttonId="button-009"
@@ -475,10 +487,10 @@ export function FavoritePage() {
           </button>
         </div>
 
-        <section className="mt-10">
+        <section className="mt-12">
           {activeTab === "products" ? (
             products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-7">
                 {products.map((product) => (
                   <FavoriteProductCard
                     key={product.id}
@@ -494,7 +506,7 @@ export function FavoritePage() {
               <EmptyFavoriteState type="products" />
             )
           ) : recipes.length > 0 ? (
-            <div className="space-y-7">
+            <div className="space-y-8">
               {recipes.map((recipe) => (
                 <RecipeFavoriteCard
                   key={recipe.id}

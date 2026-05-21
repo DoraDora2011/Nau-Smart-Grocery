@@ -386,7 +386,7 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-8">
+      <main className="mx-auto max-w-md space-y-10">
         <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-10 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
           <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-24 w-auto object-contain" />
         </section>
@@ -398,14 +398,14 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Đơn hàng</h1>
           </div>
 
-          <div className="-mt-3 max-h-[258px] space-y-2 overflow-y-auto rounded-[18px] bg-white p-3">
+          <div className="-mt-3 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
             {order.items.map((item) => (
               <ReadOnlyItemRow key={item.id} item={item} />
             ))}
           </div>
         </section>
 
-        <section className="space-y-4 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="grid grid-cols-[40px_minmax(0,1fr)_minmax(0,1.35fr)] items-center gap-3 border-b border-black/55 pb-4">
             <CheckoutIcon src="/assets/buttons/address-001.png" alt="Địa chỉ" />
             <span className="font-black">Địa Chỉ</span>
@@ -432,7 +432,7 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
           </div>
         </section>
 
-        <section className="space-y-4 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="flex w-full items-center gap-3 text-left">
             <CheckoutIcon src="/assets/buttons/voucher-001.png" alt="Voucher" />
             <span className="font-black">Voucher</span>
@@ -745,7 +745,7 @@ export function CheckoutPageView() {
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-8">
+      <main className="mx-auto max-w-md space-y-10">
         <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-11 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
           <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-28 w-auto object-contain" />
         </section>
@@ -757,7 +757,7 @@ export function CheckoutPageView() {
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Đơn hàng</h1>
           </div>
 
-          <div className="-mt-4 max-h-[258px] space-y-2 overflow-y-auto rounded-[18px] bg-white p-3">
+          <div className="-mt-4 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
             {checkoutItems.length > 0 ? (
               checkoutItems.map((item) => (
                 <CheckoutItemRow
@@ -776,7 +776,7 @@ export function CheckoutPageView() {
           </div>
         </section>
 
-        <section className="space-y-4 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <button
             type="button"
             onClick={handleChooseDeliveryAddress}
@@ -806,7 +806,7 @@ export function CheckoutPageView() {
           </button>
 
           {paymentOpen ? (
-            <div className="space-y-4 pl-10 text-left">
+            <div className="space-y-5 pl-10 text-left">
               {paymentOptions.map((option) => {
                 const isActive = option.id === paymentMethod;
 
@@ -828,7 +828,7 @@ export function CheckoutPageView() {
           ) : null}
         </section>
 
-        <section className="space-y-4 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <button
             type="button"
             onClick={() => setVoucherOpen((current) => !current)}

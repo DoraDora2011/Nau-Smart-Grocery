@@ -28,7 +28,7 @@ export function ProductSection({
   onToggleViewAll
 }: ProductSectionProps) {
   return (
-    <section className="space-y-4">
+    <section className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">{title}</h2>
         {onToggleViewAll ? (

@@ -35,7 +35,7 @@ interface HomeMobileLayoutProps {
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
   onUpdateDeliveryAddress: (address: string) => void;
-  onReplayOnboarding: () => void;
+  onReplayOnboarding: (target?: string) => void;
 }
 
 export function HomeMobileLayout({
@@ -85,7 +85,7 @@ export function HomeMobileLayout({
 
   return (
     <div className="min-h-screen bg-[#FFF1AF] pb-[calc(7rem+env(safe-area-inset-bottom))] lg:hidden">
-      <section className="rounded-b-[30px] bg-[linear-gradient(180deg,#ffffff_0%,#f2dcff_36%,#cd6cfd_100%)] px-5 pb-5 pt-[calc(1rem+env(safe-area-inset-top))] text-black shadow-sm">
+      <section className="rounded-b-[30px] bg-[linear-gradient(180deg,#ffffff_0%,#f2dcff_36%,#cd6cfd_100%)] px-5 pb-5 pt-[calc(2rem+env(safe-area-inset-top))] text-black shadow-sm">
         <div className="flex flex-row-reverse items-center justify-between gap-4">
           <button
             type="button"
@@ -107,64 +107,64 @@ export function HomeMobileLayout({
           </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        <div className="mt-6 grid grid-cols-2 gap-3">
           <Link
             href="/dish"
             data-tour-id="recipe-mvp"
-            className="relative flex min-h-[136px] flex-col justify-between overflow-hidden rounded-[16px] bg-white px-3 py-4 text-black transition active:scale-[0.98]"
+            className="flex min-h-[136px] flex-col overflow-hidden rounded-[16px] bg-white text-black transition active:scale-[0.98]"
           >
-            <span>
-              <span className="block text-sm font-bold leading-tight text-black/38">
+            <span className="relative flex flex-1 flex-col px-3.5 pb-2 pt-4">
+              <span className="block pr-14 text-sm font-bold leading-tight text-black/38">
                 Chức năng
               </span>
-              <span className="mt-0.5 block text-base font-black leading-tight">
+              <span className="mt-0.5 block pr-14 text-base font-black leading-[1.05]">
                 Tra cứu món ăn
               </span>
+              <Image
+                src="/assets/buttons/function%201-icon-002.png"
+                alt=""
+                width={72}
+                height={72}
+                className="absolute right-2 top-1/2 h-14 w-14 -translate-y-[12%] object-contain"
+              />
             </span>
-            <Image
-              src="/assets/buttons/function%201-icon-002.png"
-              alt=""
-              width={72}
-              height={72}
-              className="absolute bottom-8 right-2 h-16 w-16 object-contain"
-            />
-            <span className="flex items-center justify-between text-xs font-bold leading-tight">
+            <span className="flex h-10 items-center justify-between bg-[#f3f3f3] px-3.5 text-xs font-bold leading-none">
               Nhấn vào đây
               <span className="text-2xl font-normal leading-none" aria-hidden="true">
-                {">"}
+                ›
               </span>
             </span>
           </Link>
           <Link
             href="/scan"
             data-tour-id="scan-mvp"
-            className="relative flex min-h-[136px] flex-col justify-between overflow-hidden rounded-[16px] bg-[#ffe467] px-3 py-4 text-black transition active:scale-[0.98]"
+            className="flex min-h-[136px] flex-col overflow-hidden rounded-[16px] bg-[#FFE76A] text-black transition active:scale-[0.98]"
           >
-            <span>
-              <span className="block text-sm font-bold leading-tight text-black/38">
+            <span className="relative flex flex-1 flex-col px-3.5 pb-2 pt-4">
+              <span className="block pr-14 text-sm font-bold leading-tight text-black/38">
                 Chức năng
               </span>
-              <span className="mt-0.5 block text-base font-black leading-tight">
+              <span className="mt-0.5 block pr-14 text-base font-black leading-[1.05]">
                 Scan nguyên liệu
               </span>
+              <Image
+                src="/assets/buttons/function%202-icon-002.png"
+                alt=""
+                width={72}
+                height={72}
+                className="absolute right-2 top-1/2 h-14 w-14 -translate-y-[12%] object-contain"
+              />
             </span>
-            <Image
-              src="/assets/buttons/function%202-icon-002.png"
-              alt=""
-              width={72}
-              height={72}
-              className="absolute bottom-8 right-2 h-16 w-16 object-contain"
-            />
-            <span className="flex items-center justify-between text-xs font-bold leading-tight">
+            <span className="flex h-10 items-center justify-between bg-[#ffef9d] px-3.5 text-xs font-bold leading-none">
               Nhấn vào đây
               <span className="text-2xl font-normal leading-none" aria-hidden="true">
-                {">"}
+                ›
               </span>
             </span>
           </Link>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-6">
           <HomeOnboardingCarousel onOpenGuide={onReplayOnboarding} />
         </div>
       </section>
@@ -205,7 +205,7 @@ export function HomeMobileLayout({
         </div>
       ) : null}
 
-      <section className="space-y-5 px-5 pb-12 pt-5">
+      <section className="space-y-7 px-5 pb-12 pt-7">
         <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">Danh mục mua sắm</h2>
         <CategoryTabs
           categories={categories}

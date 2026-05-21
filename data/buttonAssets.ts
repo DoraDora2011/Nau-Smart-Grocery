@@ -57,7 +57,8 @@ export type ButtonId =
   | "button-024"
   | "button-025"
   | "button-026"
-  | "button-027";
+  | "button-027"
+  | "button-028";
 
 function createButtonAsset(
   id: ButtonId,
@@ -154,10 +155,11 @@ export const buttonAssets: Record<ButtonId, ButtonAsset> = {
     "navigation",
     "Khi nhấn vào thì nút dẫn đến trang lịch sử các món đã xem.",
     {
-      default: "button-007.png",
+      default: "history-button-001.png",
       click: "Dẫn đến trang lịch sử các món đã xem."
     },
-    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan."
+    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan.",
+    "history-button-001.png"
   ),
   "button-008": createButtonAsset(
     "button-008",
@@ -165,10 +167,11 @@ export const buttonAssets: Record<ButtonId, ButtonAsset> = {
     "native-file-picker",
     "Khi nhấn vào thì nút dẫn đến thư viện ảnh trong máy bạn.",
     {
-      default: "button-008.png",
+      default: "gallery-button-001.png",
       click: "Dẫn đến thư viện ảnh trong máy bạn."
     },
-    "Giữ nguyên logic chọn file/native file picker hiện có."
+    "Giữ nguyên logic chọn file/native file picker hiện có.",
+    "gallery-button-001.png"
   ),
   "button-009": createButtonAsset(
     "button-009",
@@ -176,10 +179,11 @@ export const buttonAssets: Record<ButtonId, ButtonAsset> = {
     "navigation/back",
     "Khi nhấn vào thì nút quay trở về trang trước hoặc trang home.",
     {
-      default: "button-009.png",
+      default: "back-button-001.png",
       click: "Quay trở về trang trước hoặc trang home."
     },
-    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan."
+    "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan.",
+    "back-button-001.png"
   ),
   "button-010": createButtonAsset(
     "button-010",
@@ -378,6 +382,18 @@ export const buttonAssets: Record<ButtonId, ButtonAsset> = {
       click: "Xác nhận một hành động."
     },
     "Chỉ dùng Product ID để map đúng ảnh PNG và không thay đổi logic không liên quan."
+  ),
+  "button-028": createButtonAsset(
+    "button-028",
+    "Nut chup anh",
+    "native-file-picker",
+    "Chup anh nguyen lieu o trang scan.",
+    {
+      default: "camera-button-001.png",
+      click: "Chup anh nguyen lieu."
+    },
+    "Keep the existing scan camera flow and map the requested PNG asset only.",
+    "camera-button-001.png"
   )
 };
 

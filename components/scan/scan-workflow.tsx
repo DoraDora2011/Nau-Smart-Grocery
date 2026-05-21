@@ -230,6 +230,19 @@ export function ScanWorkflow() {
   const [upsellQuantities, setUpsellQuantities] = useState<Record<string, number>>({});
   const dragStartYRef = useRef<number | null>(null);
   const lastAutoScanKeyRef = useRef<string | null>(null);
+  const scanCaptureActionRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    if (!cartMessage) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setCartMessage(null);
+    }, 1800);
+
+    return () => window.clearTimeout(timer);
+  }, [cartMessage]);
 
   const handleToggleSuggestedDishFavorite = (suggestion: DishSuggestion) => {
     const display = getDishDisplay(suggestion);
@@ -443,7 +456,7 @@ export function ScanWorkflow() {
   }, [handleScan, isScanning, selectedFile, source]);
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden bg-[#FFF1AF] text-black">
+    <div className="relative h-[100dvh] min-h-0 overflow-hidden bg-[#FFF1AF] text-black lg:h-auto lg:min-h-[100dvh]">
       <div className="fixed right-6 top-6 z-50">
         <AppImageButton
           buttonId="button-009"
@@ -456,6 +469,7 @@ export function ScanWorkflow() {
       <ImageIntake
         selectedFile={selectedFile}
         previewUrl={previewUrl}
+        scanActionRef={scanCaptureActionRef}
         onFileChange={(file, nextSource) => {
           setSelectedFile(file);
           setSource(nextSource);
@@ -555,7 +569,7 @@ export function ScanWorkflow() {
             ) : null}
 
             {!isSuggesting && dishSuggestions.length > 0 ? (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {dishSuggestions.map((suggestion) => (
                   (() => {
                     const display = getDishDisplay(suggestion);
@@ -724,7 +738,7 @@ export function ScanWorkflow() {
                 </p>
               </div>
 
-              <div className="mt-9 flex snap-x gap-5 overflow-x-auto pb-3">
+              <div className="mt-10 flex snap-x gap-6 overflow-x-auto pb-3">
                 {selectedRecipeView.upsellProducts.map((product) => (
                   <article
                     key={product.id}
@@ -810,7 +824,7 @@ export function ScanWorkflow() {
         </div>
       ) : null}
 
-      <RecipeMobileBottomNav />
+      <RecipeMobileBottomNav onScanClick={() => scanCaptureActionRef.current?.()} />
     </div>
   );
 }
