@@ -34,6 +34,7 @@ interface HomeMobileLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  customerName: string;
   onUpdateDeliveryAddress: (address: string) => void;
   onReplayOnboarding: (target?: string) => void;
 }
@@ -57,6 +58,7 @@ export function HomeMobileLayout({
   expandedSections,
   onToggleSection,
   deliveryAddress,
+  customerName,
   onUpdateDeliveryAddress,
   onReplayOnboarding
 }: HomeMobileLayoutProps) {
@@ -96,7 +98,7 @@ export function HomeMobileLayout({
           >
             <LocationBadgeIcon className="h-11 w-11" />
           </button>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex min-w-0 shrink items-center gap-3">
             <AppImageButton
               buttonId="button-023"
               href="/profile"
@@ -104,6 +106,9 @@ export function HomeMobileLayout({
               className="flex h-14 w-14 items-center justify-center rounded-full text-black"
               data-tour-id="user-profile"
             />
+            {customerName ? (
+              <span className="max-w-[9rem] truncate text-base font-black leading-tight">{customerName}</span>
+            ) : null}
           </div>
         </div>
 

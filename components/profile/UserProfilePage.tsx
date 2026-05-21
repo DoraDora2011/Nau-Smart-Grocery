@@ -5,6 +5,11 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import {
+  readStoredUserProfile,
+  USER_PROFILE_UPDATED_EVENT,
+  type StoredUserProfile
+} from "@/lib/utils/user-profile";
 
 const MASCOT_PROFILE_STORAGE_KEY = "nau-smart-grocery:mascot-profile";
 
@@ -59,6 +64,8 @@ function ProfileBottomNav() {
 
 export function UserProfilePage() {
   const [mascotPreview, setMascotPreview] = useState<MascotProfilePreview | null>(null);
+  const [userProfile, setUserProfile] = useState<StoredUserProfile | null>(null);
+  const [isPersonalInfoOpen, setIsPersonalInfoOpen] = useState(false);
   const mascotPreviewSrc = `/mascot-3d/index.html?preview=1&outfit=${encodeURIComponent(
     mascotPreview?.outfit ?? "default",
   )}`;
@@ -79,6 +86,19 @@ export function UserProfilePage() {
     } catch {
       setMascotPreview(null);
     }
+  }, []);
+
+  useEffect(() => {
+    const updateUserProfile = () => setUserProfile(readStoredUserProfile());
+
+    updateUserProfile();
+    window.addEventListener("storage", updateUserProfile);
+    window.addEventListener(USER_PROFILE_UPDATED_EVENT, updateUserProfile);
+
+    return () => {
+      window.removeEventListener("storage", updateUserProfile);
+      window.removeEventListener(USER_PROFILE_UPDATED_EVENT, updateUserProfile);
+    };
   }, []);
 
   return (
@@ -117,16 +137,48 @@ export function UserProfilePage() {
           </Link>
 
           <div className="space-y-4 px-0 lg:space-y-5 lg:px-4">
-            {profileMenuItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="group flex min-h-12 items-center justify-between rounded-full px-5 text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
-              >
-                <span>{item.label}</span>
-                <ChevronRight className="h-7 w-7 shrink-0 stroke-[2.4] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-9 lg:w-9" />
-              </Link>
-            ))}
+            {profileMenuItems.map((item) =>
+              item.href === "#personal-info" ? (
+                <section key={item.label} id="personal-info" className="rounded-[28px]">
+                  <button
+                    type="button"
+                    onClick={() => setIsPersonalInfoOpen((current) => !current)}
+                    aria-expanded={isPersonalInfoOpen}
+                    className="group flex min-h-12 w-full items-center justify-between rounded-full px-5 text-left text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
+                  >
+                    <span>{item.label}</span>
+                    <ChevronRight
+                      className={`h-7 w-7 shrink-0 stroke-[2.4] transition lg:h-9 lg:w-9 ${
+                        isPersonalInfoOpen ? "rotate-90" : "group-hover:translate-x-1 group-focus-visible:translate-x-1"
+                      }`}
+                    />
+                  </button>
+
+                  {isPersonalInfoOpen && userProfile ? (
+                    <div className="mt-3 space-y-3 rounded-[28px] bg-white/85 px-5 py-5 text-sm font-bold leading-6 shadow-sm sm:px-7 lg:text-base">
+                      <p>
+                        <span className="text-black/52">Tên:</span> {userProfile.name}
+                      </p>
+                      <p>
+                        <span className="text-black/52">Địa chỉ:</span> {userProfile.address}
+                      </p>
+                      <p className="break-all">
+                        <span className="text-black/52">Gmail:</span> {userProfile.email}
+                      </p>
+                    </div>
+                  ) : null}
+                </section>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="group flex min-h-12 items-center justify-between rounded-full px-5 text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
+                >
+                  <span>{item.label}</span>
+                  <ChevronRight className="h-7 w-7 shrink-0 stroke-[2.4] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-9 lg:w-9" />
+                </Link>
+              )
+            )}
           </div>
         </section>
       </main>

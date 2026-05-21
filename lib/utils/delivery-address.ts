@@ -1,3 +1,8 @@
+import {
+  readStoredUserProfile,
+  updateStoredUserProfileAddress
+} from "@/lib/utils/user-profile";
+
 export const DELIVERY_ADDRESS_STORAGE_KEY = "nau-smart-grocery:delivery-address";
 
 export const DEFAULT_DELIVERY_ADDRESS = "Nhập địa chỉ của bạn";
@@ -8,8 +13,9 @@ export function readStoredDeliveryAddress() {
   }
 
   const storedAddress = window.localStorage.getItem(DELIVERY_ADDRESS_STORAGE_KEY)?.trim();
+  const profileAddress = readStoredUserProfile()?.address.trim();
 
-  return storedAddress || DEFAULT_DELIVERY_ADDRESS;
+  return storedAddress || profileAddress || DEFAULT_DELIVERY_ADDRESS;
 }
 
 export function saveDeliveryAddress(address: string) {
@@ -24,5 +30,6 @@ export function saveDeliveryAddress(address: string) {
   }
 
   window.localStorage.setItem(DELIVERY_ADDRESS_STORAGE_KEY, nextAddress);
+  updateStoredUserProfileAddress(nextAddress);
   window.dispatchEvent(new CustomEvent("nau-smart-grocery:delivery-address-updated"));
 }

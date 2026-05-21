@@ -19,6 +19,11 @@ import {
   readStoredDeliveryAddress,
   saveDeliveryAddress
 } from "@/lib/utils/delivery-address";
+import {
+  readStoredUserProfile,
+  USER_PROFILE_UPDATED_EVENT,
+  type StoredUserProfile
+} from "@/lib/utils/user-profile";
 import type { CartItem } from "@/types";
 
 function normalizeText(value: string) {
@@ -38,17 +43,24 @@ export function HomePage() {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [cartMessage, setCartMessage] = useState<string | null>(null);
   const [deliveryAddress, setDeliveryAddress] = useState(DEFAULT_DELIVERY_ADDRESS);
+  const [userProfile, setUserProfile] = useState<StoredUserProfile | null>(null);
 
   useEffect(() => {
     const updateAddress = () => setDeliveryAddress(readStoredDeliveryAddress());
+    const updateProfile = () => setUserProfile(readStoredUserProfile());
 
     updateAddress();
+    updateProfile();
     window.addEventListener("storage", updateAddress);
+    window.addEventListener("storage", updateProfile);
     window.addEventListener("nau-smart-grocery:delivery-address-updated", updateAddress);
+    window.addEventListener(USER_PROFILE_UPDATED_EVENT, updateProfile);
 
     return () => {
       window.removeEventListener("storage", updateAddress);
+      window.removeEventListener("storage", updateProfile);
       window.removeEventListener("nau-smart-grocery:delivery-address-updated", updateAddress);
+      window.removeEventListener(USER_PROFILE_UPDATED_EVENT, updateProfile);
     };
   }, []);
 
@@ -228,6 +240,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        customerName={userProfile?.name ?? ""}
         onUpdateDeliveryAddress={updateDeliveryAddress}
         onReplayOnboarding={replayOnboarding}
       />
@@ -251,6 +264,7 @@ export function HomePage() {
         expandedSections={expandedSections}
         onToggleSection={toggleSection}
         deliveryAddress={deliveryAddress}
+        customerName={userProfile?.name ?? ""}
         onChooseDeliveryAddress={chooseDeliveryAddress}
         onReplayOnboarding={replayOnboarding}
       />

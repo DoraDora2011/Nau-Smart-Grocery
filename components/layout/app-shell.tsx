@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { UserLoginOnboardingModal } from "@/components/onboarding/UserLoginOnboardingModal";
 import { useLanguage } from "@/components/providers/language-provider";
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -72,6 +73,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
 
       {isHomePage || isFullScreenAppPage ? null : <MobileNav />}
+      <UserLoginOnboardingModal />
     </div>
   );
 }

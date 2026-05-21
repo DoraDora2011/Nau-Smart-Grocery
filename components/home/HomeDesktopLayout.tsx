@@ -34,6 +34,7 @@ interface HomeDesktopLayoutProps {
   expandedSections: Set<HomeProductSection>;
   onToggleSection: (section: HomeProductSection) => void;
   deliveryAddress: string;
+  customerName: string;
   onChooseDeliveryAddress: () => void;
   onReplayOnboarding: () => void;
 }
@@ -73,6 +74,7 @@ export function HomeDesktopLayout({
   expandedSections,
   onToggleSection,
   deliveryAddress,
+  customerName,
   onChooseDeliveryAddress,
   onReplayOnboarding
 }: HomeDesktopLayoutProps) {
@@ -102,13 +104,18 @@ export function HomeDesktopLayout({
           </div>
 
           <div className="flex items-center gap-5">
-            <AppImageButton
-              buttonId="button-023"
-              href="/profile"
-              size={48}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-black transition hover:scale-105"
-              data-tour-id="user-profile"
-            />
+            <div className="flex max-w-[220px] items-center gap-3">
+              <AppImageButton
+                buttonId="button-023"
+                href="/profile"
+                size={48}
+                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+                data-tour-id="user-profile"
+              />
+              {customerName ? (
+                <span className="truncate text-sm font-black leading-tight">{customerName}</span>
+              ) : null}
+            </div>
             <button
               type="button"
               onClick={onReplayOnboarding}
