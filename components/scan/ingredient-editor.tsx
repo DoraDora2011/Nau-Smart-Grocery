@@ -72,7 +72,7 @@ export function IngredientEditor({
           variant="secondary"
           size="sm"
           onClick={addIngredient}
-          className="rounded-full border border-black bg-white px-4 font-black"
+          className="rounded-full bg-white px-4 font-black"
         >
           <Plus className="mr-2 h-4 w-4" />
           Thêm

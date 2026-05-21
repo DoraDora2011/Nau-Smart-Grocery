@@ -102,7 +102,7 @@ export function UserProfilePage() {
         <section className="space-y-8 px-5 pt-8 lg:px-8 lg:pt-10">
           <Link
             href="/mascot"
-            className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full border-[2.5px] border-solid border-black bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
+            className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
             aria-label="Mở phòng thay đồ mascot 3D"
           >
             Nhấn vào đây để thay đồ cho bé Nâu của bạn nhé!

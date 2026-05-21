@@ -371,7 +371,7 @@ export function CartPageView() {
             type="button"
             onClick={handleClearCart}
             disabled={items.length === 0}
-            className="rounded-[20px] border-[3px] border-black bg-transparent px-4 py-2.5 text-sm font-black leading-tight text-black disabled:opacity-40 sm:px-5 sm:py-3 sm:text-base"
+            className="rounded-[20px] bg-white/75 px-4 py-2.5 text-sm font-black leading-tight text-black shadow-sm disabled:opacity-40 sm:px-5 sm:py-3 sm:text-base"
           >
             Xoá giỏ
           </button>
@@ -379,7 +379,7 @@ export function CartPageView() {
             type="button"
             onClick={handleCheckout}
             disabled={items.length === 0}
-            className="rounded-[24px] bg-[#cd6cfd] px-6 py-3.5 text-base font-black leading-tight text-white shadow-[0_0_0_3px_#000000,0_14px_26px_rgba(0,0,0,0.16)] sm:px-8 sm:py-4 sm:text-lg"
+            className="rounded-[24px] bg-[#cd6cfd] px-6 py-3.5 text-base font-black leading-tight text-white shadow-[0_14px_26px_rgba(0,0,0,0.16)] sm:px-8 sm:py-4 sm:text-lg"
           >
             Mua Hàng ({checkoutQuantity})
           </button>

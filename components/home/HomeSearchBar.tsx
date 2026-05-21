@@ -4,22 +4,12 @@ interface HomeSearchBarProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
-  filterButtonSize?: number;
-  filterButtonClassName?: string;
-  showFilterButton?: boolean;
 }
 
-export function HomeSearchBar({
-  value,
-  onChange,
-  className,
-  filterButtonSize = 36,
-  filterButtonClassName,
-  showFilterButton = true
-}: HomeSearchBarProps) {
+export function HomeSearchBar({ value, onChange, className }: HomeSearchBarProps) {
   return (
     <div
-      className={`relative flex h-12 items-center gap-3 rounded-full bg-white py-0 pl-4 pr-14 shadow-sm ring-1 ring-black/5 ${className ?? ""}`}
+      className={`relative flex h-12 items-center gap-3 rounded-full bg-white py-0 pl-4 pr-4 shadow-sm ring-1 ring-black/5 ${className ?? ""}`}
     >
       <Search className="h-5 w-5 shrink-0 text-black" />
       <input
@@ -36,20 +26,6 @@ export function HomeSearchBar({
           aria-label="Xóa từ khóa tìm kiếm"
         >
           <X className="h-4 w-4" />
-        </button>
-      ) : null}
-      {showFilterButton ? (
-        <button
-          type="button"
-          aria-label="Chọn lọc tìm kiếm"
-          className={`absolute right-2 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full ${filterButtonClassName ?? "h-9 w-9"}`}
-          style={{ width: filterButtonSize, height: filterButtonSize }}
-        >
-          <img
-            src="/assets/buttons/button-025.png"
-            alt="Chọn lọc tìm kiếm"
-            className="block h-full w-full object-contain"
-          />
         </button>
       ) : null}
     </div>

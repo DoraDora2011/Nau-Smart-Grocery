@@ -35,7 +35,7 @@ function EmptyFavoriteState({ type }: { type: FavoriteTab }) {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-flex rounded-full border-2 border-black bg-white px-6 py-3 text-sm font-bold"
+        className="mt-6 inline-flex rounded-full bg-white px-6 py-3 text-sm font-bold"
       >
         Quay về mua sắm
       </Link>
@@ -459,13 +459,12 @@ export function FavoritePage() {
             type="button"
             onClick={() => setActiveTab("products")}
             style={{
-              borderColor: activeTab === "products" ? "#000000" : "#cfd9a0",
               boxShadow: activeTab === "products" ? "0 2px 0 rgba(0,0,0,0.18)" : "none"
             }}
-            className={`h-11 rounded-full border-[3px] px-4 text-sm font-bold transition ${
+            className={`h-11 rounded-full px-4 text-sm font-bold transition ${
               activeTab === "products"
                 ? "bg-[#ffe467]"
-                : "bg-transparent"
+                : "bg-white/55"
             }`}
           >
             Sản phẩm
@@ -474,13 +473,12 @@ export function FavoritePage() {
             type="button"
             onClick={() => setActiveTab("recipes")}
             style={{
-              borderColor: activeTab === "recipes" ? "#000000" : "#cfd9a0",
               boxShadow: activeTab === "recipes" ? "0 2px 0 rgba(0,0,0,0.18)" : "none"
             }}
-            className={`h-11 rounded-full border-[3px] px-4 text-sm font-bold transition ${
+            className={`h-11 rounded-full px-4 text-sm font-bold transition ${
               activeTab === "recipes"
                 ? "bg-[#ffe467]"
-                : "bg-transparent"
+                : "bg-white/55"
             }`}
           >
             Công thức nấu ăn

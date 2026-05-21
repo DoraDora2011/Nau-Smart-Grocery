@@ -176,7 +176,7 @@ export function RecipeInputMobile({
                     <button
                       type="button"
                       onClick={onOpenFilter}
-                      className="min-h-14 flex-1 rounded-3xl border-2 border-black bg-white px-4 py-3 text-left text-sm font-bold leading-5 shadow-sm"
+                      className="min-h-14 flex-1 rounded-3xl bg-white px-4 py-3 text-left text-sm font-bold leading-5 shadow-sm"
                     >
                       {message.text}
                     </button>
@@ -202,7 +202,7 @@ export function RecipeInputMobile({
               <button
                 type="button"
                 onClick={onOpenFilter}
-                className="flex min-h-11 flex-1 items-center justify-between rounded-full border-2 border-black bg-white px-4 text-sm font-bold"
+                className="flex min-h-11 flex-1 items-center justify-between rounded-full bg-white px-4 text-sm font-bold"
               >
                 Xem hướng dẫn nấu ăn ở đây
                 <ArrowRight className="h-5 w-5" />

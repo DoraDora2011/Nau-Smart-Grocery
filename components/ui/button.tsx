@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils/cn";
 const variants = {
   primary: "bg-[var(--color-primary)] text-white shadow-sm hover:bg-[var(--color-primary-strong)]",
   secondary:
-    "bg-[var(--color-card)] text-[var(--color-ink)] ring-1 ring-[var(--color-border)] hover:bg-white",
+    "bg-[var(--color-card)] text-[var(--color-ink)] hover:bg-white",
   ghost: "bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-muted)]"
 };
 

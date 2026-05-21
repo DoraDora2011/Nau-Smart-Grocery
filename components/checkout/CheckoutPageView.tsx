@@ -859,10 +859,10 @@ export function CheckoutPageView() {
                       type="button"
                       key={voucher.id}
                       onClick={() => toggleVoucher(voucher.id)}
-                      className={`block rounded-full border px-4 py-2 text-left text-sm font-black transition ${
+                      className={`block rounded-full px-4 py-2 text-left text-sm font-black transition ${
                         isSelected
-                          ? "border-[#cd6cfd] shadow-[0_0_10px_rgba(205,108,253,0.7)]"
-                          : "border-black"
+                          ? "bg-[#fff7cf] shadow-[0_0_10px_rgba(205,108,253,0.7)]"
+                          : "bg-[#f3f3f3]"
                       }`}
                     >
                       {voucher.label}

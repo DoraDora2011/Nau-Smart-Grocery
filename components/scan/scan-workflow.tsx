@@ -815,7 +815,7 @@ export function ScanWorkflow() {
               <button
                 type="button"
                 onClick={() => setSelectedRecipeView(null)}
-                className="mx-auto mt-8 block rounded-full border-[3px] border-black bg-[#69bf7b] px-10 py-3 text-base font-black leading-tight shadow-[0_10px_20px_rgba(0,0,0,0.22)] sm:px-14 sm:py-4 sm:text-lg"
+                className="mx-auto mt-8 block rounded-full bg-[#69bf7b] px-10 py-3 text-base font-black leading-tight shadow-[0_10px_20px_rgba(0,0,0,0.22)] sm:px-14 sm:py-4 sm:text-lg"
               >
                 Hoàn tất
               </button>

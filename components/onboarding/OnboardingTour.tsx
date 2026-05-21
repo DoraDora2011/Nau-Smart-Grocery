@@ -327,7 +327,7 @@ export function OnboardingTour() {
           <button
             type="button"
             onClick={finishTour}
-            className={`rounded-full border-2 border-black bg-white px-5 py-2.5 text-sm font-black leading-tight text-black transition active:scale-[0.98] ${
+            className={`rounded-full bg-white px-5 py-2.5 text-sm font-black leading-tight text-black transition active:scale-[0.98] ${
               isSingleStep ? "hidden" : ""
             }`}
           >
@@ -343,7 +343,7 @@ export function OnboardingTour() {
 
               setCurrentStep((current) => Math.min(current + 1, steps.length - 1));
             }}
-            className="rounded-full border-2 border-black bg-[#ffe467] px-5 py-2.5 text-sm font-black leading-tight text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
+            className="rounded-full bg-[#ffe467] px-5 py-2.5 text-sm font-black leading-tight text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
           >
             {isSingleStep ? "Đã hiểu" : isLastStep ? "Hoàn tất" : "Tiếp theo"}
           </button>

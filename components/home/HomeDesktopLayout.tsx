@@ -112,7 +112,7 @@ export function HomeDesktopLayout({
             <button
               type="button"
               onClick={onReplayOnboarding}
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-[#ffe467] px-4 text-sm font-black leading-tight text-black shadow-[0_0_0_2px_#000000] transition hover:scale-105"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-[#ffe467] px-4 text-sm font-black leading-tight text-black transition hover:scale-105"
               aria-label="Xem lại hướng dẫn"
             >
               <BookOpen className="h-5 w-5" strokeWidth={2.6} />
@@ -143,7 +143,7 @@ export function HomeDesktopLayout({
                 <Link
                   href="/scan"
                   data-tour-id="scan-mvp"
-                  className="inline-flex min-w-52 justify-center rounded-full border-2 border-black bg-[linear-gradient(135deg,#cd6cfd,#ffffff)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
+                  className="inline-flex min-w-52 justify-center rounded-full bg-[linear-gradient(135deg,#cd6cfd,#ffffff)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
                   Quét nguyên liệu
                 </Link>
@@ -156,7 +156,7 @@ export function HomeDesktopLayout({
                 <Link
                   href="/dish"
                   data-tour-id="recipe-mvp"
-                  className="inline-flex min-w-52 justify-center rounded-full border-2 border-black bg-[linear-gradient(135deg,#d7fdd9,#ffe467)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
+                  className="inline-flex min-w-52 justify-center rounded-full bg-[linear-gradient(135deg,#d7fdd9,#ffe467)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
                   Hỏi Nâu đầu bếp
                 </Link>
@@ -200,9 +200,6 @@ export function HomeDesktopLayout({
             value={searchQuery}
             onChange={onSearchChange}
             className="flex-1"
-            showFilterButton
-            filterButtonSize={40}
-            filterButtonClassName="h-10 w-10"
           />
           <button
             type="button"

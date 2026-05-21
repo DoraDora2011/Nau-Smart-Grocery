@@ -116,7 +116,7 @@ export function MascotDressUpPage() {
               type="button"
               onClick={handleConfirmMascot}
               disabled={isSaving}
-              className="w-full rounded-full border-[3px] border-black bg-[#cd6cfd] px-5 py-3 text-sm font-black leading-tight text-white shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:brightness-105 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:py-4 sm:text-base lg:text-lg"
+              className="w-full rounded-full bg-[#cd6cfd] px-5 py-3 text-sm font-black leading-tight text-white shadow-[0_10px_22px_rgba(0,0,0,0.22)] transition hover:brightness-105 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 sm:px-8 sm:py-4 sm:text-base lg:text-lg"
             >
               {isSaving ? "Đang lưu..." : "Xác nhận"}
             </button>

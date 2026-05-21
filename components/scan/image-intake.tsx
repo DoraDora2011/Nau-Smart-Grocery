@@ -364,7 +364,7 @@ export function ImageIntake({
             type="button"
             onClick={() => void applyZoom(zoomState.value - zoomState.step)}
             disabled={!zoomState.supported}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-black bg-[#f6f3d5] text-black active:scale-95"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f3d5] text-black active:scale-95"
             aria-label="Giảm zoom camera"
           >
             <Minus className="h-5 w-5" strokeWidth={3} />
@@ -384,7 +384,7 @@ export function ImageIntake({
             type="button"
             onClick={() => void applyZoom(zoomState.value + zoomState.step)}
             disabled={!zoomState.supported}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-black bg-[#f6f3d5] text-black active:scale-95"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f3d5] text-black active:scale-95"
             aria-label="Tăng zoom camera"
           >
             <Plus className="h-5 w-5" strokeWidth={3} />
@@ -418,7 +418,7 @@ export function ImageIntake({
           type="button"
           onClick={handleScanButton}
           disabled={isLoading}
-          className="hidden min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] border-[3px] border-black bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:flex lg:min-h-28 lg:min-w-36"
+          className="hidden min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:flex lg:min-h-28 lg:min-w-36"
           aria-label={selectedFile ? "Phân tích ảnh nguyên liệu" : "Chọn ảnh để quét"}
         >
           {selectedFile ? (
