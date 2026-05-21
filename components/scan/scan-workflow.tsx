@@ -369,7 +369,7 @@ export function ScanWorkflow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           confirmedIngredients,
-          limit: 4,
+          limit: 6,
         }),
       });
 
@@ -486,7 +486,7 @@ export function ScanWorkflow() {
 
       {ingredients.length > 0 ? (
         <div
-          className={`fixed inset-x-0 bottom-0 z-40 mx-auto max-h-[82dvh] max-w-md overflow-hidden rounded-t-[34px] bg-[#ffe467] px-6 pb-28 pt-3 shadow-[0_-20px_45px_rgba(0,0,0,0.25)] transition-transform duration-300 ease-out lg:max-w-3xl lg:pb-10 ${
+          className={`fixed inset-x-0 bottom-0 z-40 mx-auto max-h-[82dvh] max-w-md overflow-hidden rounded-t-[34px] bg-[#ffe467] px-6 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-20px_45px_rgba(0,0,0,0.25)] transition-transform duration-300 ease-out lg:max-w-3xl lg:pb-10 ${
             isSuggestionSheetOpen ? "translate-y-0" : "translate-y-[calc(100%-24px)]"
           }`}
         >
@@ -521,7 +521,7 @@ export function ScanWorkflow() {
             <span className="mx-auto mt-3 block h-1.5 w-16 rounded-full bg-white" />
           </button>
 
-          <div className="max-h-[68dvh] overflow-y-auto pr-1">
+          <div className="max-h-[68dvh] overflow-y-auto pb-[calc(6.5rem+env(safe-area-inset-bottom))] pr-1 lg:pb-0">
             <div className="mb-5">
               <p className="text-sm font-black uppercase tracking-wide text-black/55">
                 Gợi ý từ ảnh quét

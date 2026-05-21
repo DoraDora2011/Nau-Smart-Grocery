@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sparkles, ShoppingBasket, Store } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { UserLoginOnboardingModal } from "@/components/onboarding/UserLoginOnboardingModal";
 import { useLanguage } from "@/components/providers/language-provider";
+import { resetHomeWelcomeForNextReturn } from "@/lib/utils/home-welcome";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { dictionary } = useLanguage();
@@ -31,6 +32,20 @@ export function AppShell({ children }: { children: ReactNode }) {
     isProfilePage ||
     isMascotPage ||
     isNotificationsPage;
+
+  useEffect(() => {
+    const resetWelcomeAfterLeavingTab = () => {
+      if (document.visibilityState === "hidden") {
+        resetHomeWelcomeForNextReturn();
+      }
+    };
+
+    document.addEventListener("visibilitychange", resetWelcomeAfterLeavingTab);
+
+    return () => {
+      document.removeEventListener("visibilitychange", resetWelcomeAfterLeavingTab);
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-ink)]">

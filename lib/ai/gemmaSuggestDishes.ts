@@ -113,6 +113,18 @@ const ingredientSynonyms: Record<string, string[]> = {
   "can tay": ["celery", "can tay"],
   "ot chuong": ["bell pepper", "ot chuong"],
   "pho mai": ["cheese", "pho mai"],
+  "khoai tay": ["potato", "potatoes", "khoai tay"],
+  "banh mi": ["bread", "toast", "baguette", "banh mi"],
+  pasta: ["pasta", "spaghetti", "macaroni", "mi y", "mi spaghetti"],
+  "kem sua": ["cream", "cooking cream", "heavy cream", "kem sua"],
+  sua: ["milk", "whole milk", "sua"],
+  "thit xong khoi": ["bacon", "ham", "smoked meat", "thit xong khoi"],
+  "xuc xich": ["sausage", "sausages", "xuc xich"],
+  spinach: ["spinach", "rau chan vit"],
+  "ga quay": ["roast chicken", "roasted chicken", "grilled chicken", "cooked chicken", "ga quay"],
+  "com chin": ["cooked rice", "leftover rice", "rice leftovers", "com chin", "com nguoi"],
+  "com chien": ["fried rice", "com chien"],
+  "thit nuong": ["grilled meat", "roast meat", "cooked meat", "thit nuong"],
   "mam tom": ["mam tom", "mắm tôm", "shrimp paste"],
   "mam ruoc": ["mam ruoc", "mắm ruốc", "fermented shrimp paste"],
   "nuoc mam": ["nuoc mam", "nước mắm", "fish sauce"],
@@ -400,6 +412,18 @@ function buildIngredientDrivenFallbackSuggestions(
       matchedIngredients: visibleIngredients,
       missingIngredients: ["cơm hoặc gạo"],
       reasons: ["Gợi ý được sinh từ nguyên liệu scan, phù hợp khi không khớp món mẫu."]
+    },
+    {
+      id: "dish-dynamic-leftover-remix",
+      name: `Món tận dụng ${primaryIngredient}`,
+      cuisine: "Tái chế biến",
+      summary: `Biến phần đã scan thành một món mới với ${secondaryIngredient} hoặc gia vị phù hợp nếu đó là phần ăn đã chế biến.`,
+      matchScore: 0.36,
+      estimatedTimeMinutes: 16,
+      difficulty: "easy",
+      matchedIngredients: visibleIngredients,
+      missingIngredients: ["rau củ hoặc sốt phù hợp"],
+      reasons: ["Gợi ý này giữ lại khả năng tận dụng món ăn đã nấu hoặc nguyên liệu còn dư sau khi scan."]
     }
   ];
 
@@ -457,6 +481,10 @@ YÊU CẦU QUAN TRỌNG:
 - difficulty chỉ được là "easy", "medium", hoặc "advanced".
 - estimatedTimeMinutes là số phút nấu thực tế.
 - Chỉ trả về JSON, không markdown, không giải thích ngoài JSON.
+- The scan list may include cooked leftovers or prepared foods, not only raw ingredients. When that happens, suggest realistic ways to reuse or transform that exact scanned food into a new dish instead of pretending it is raw.
+- Do not limit the answer to Vietnamese dishes. Keep Vietnamese home cooking relevant, but include Western or other international options when the scanned ingredients support pasta, toast, bake, soup, salad, rice bowl, omelette, wrap, or leftover remix ideas.
+- Western ingredients such as pasta, bread, potato, cheese, butter, cream, milk, bacon, sausage, spinach, broccoli, mushroom, bell pepper, zucchini, rosemary, thyme, and parsley are valid scan matches.
+- If a cooked dish name is used from the scan list, keep that exact name inside matchedIngredients and make the summary explain how it will be reused.
 
 JSON schema:
 {

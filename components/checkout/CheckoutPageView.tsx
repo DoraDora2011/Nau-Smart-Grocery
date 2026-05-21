@@ -16,7 +16,6 @@ import { AppImageButton } from "@/components/AppImageButton";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
 import { useCart } from "@/components/providers/cart-provider";
 import logoMascot from "@/assets/brand_logo/logo-mascot-bigsize.png";
-import logoText from "@/assets/brand_logo/logo-text.png";
 import {
   DEFAULT_DELIVERY_ADDRESS,
   readStoredDeliveryAddress,
@@ -227,11 +226,7 @@ function FinalBillPage({
 }) {
   return (
     <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
-      <main className="mx-auto max-w-md space-y-14">
-        <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-8 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
-          <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-24 w-auto object-contain" />
-        </section>
-
+      <main className="mx-auto max-w-md space-y-14 pt-8">
         <section className="rounded-[14px] bg-white px-5 py-5 text-[15px] font-bold shadow-sm">
           <div className="grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-5">
             <span>Chi tiết đơn món : {order.totalQuantity} món</span>
@@ -386,11 +381,7 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-10">
-        <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-10 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
-          <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-24 w-auto object-contain" />
-        </section>
-
+      <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
         <section>
           <div className="relative z-10 flex items-end justify-center gap-3 text-center">
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Tóm tắt</h1>
@@ -745,11 +736,7 @@ export function CheckoutPageView() {
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-10">
-        <section className="-mx-6 rounded-b-[38px] bg-[linear-gradient(180deg,#ffffff_0%,#fff6c7_46%,#ffe467_100%)] px-8 pb-7 pt-11 text-center shadow-[0_12px_18px_rgba(0,0,0,0.18)]">
-          <img src={logoText.src} alt="Nấu Smart Grocery" className="mx-auto h-28 w-auto object-contain" />
-        </section>
-
+      <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
         <section className="-mt-1">
           <div className="relative z-10 flex items-end justify-center gap-4 text-center">
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Tóm tắt</h1>
@@ -910,7 +897,7 @@ export function CheckoutPageView() {
           aria-label="Thanh toán"
         >
           <img
-            src="/assets/buttons/button-017.png"
+            src="/assets/buttons/thanhtoan-button-001.png"
             alt="Thanh toán"
             className="h-full w-full object-contain"
           />

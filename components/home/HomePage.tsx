@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { HomeDesktopLayout } from "@/components/home/HomeDesktopLayout";
 import { HomeMobileLayout } from "@/components/home/HomeMobileLayout";
+import { HomeWelcomeLoader } from "@/components/home/HomeWelcomeLoader";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useFavorites } from "@/components/providers/favorite-provider";
 import { useCart } from "@/components/providers/cart-provider";
@@ -215,6 +216,8 @@ export function HomePage() {
 
   return (
     <div className="relative min-h-screen w-full bg-[#FFF1AF] text-black">
+      <HomeWelcomeLoader />
+
       {cartMessage ? (
         <div className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold text-black shadow-lg">
           {cartMessage}

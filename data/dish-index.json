@@ -138,5 +138,35 @@
     "optionalIngredients": ["hành lá", "đậu hũ", "ớt"],
     "estimatedTimeMinutes": 15,
     "difficulty": "easy"
+  },
+  {
+    "id": "dish-creamy-mushroom-pasta",
+    "name": "Mì Ý sốt nấm kem",
+    "cuisine": "Món Âu",
+    "summary": "Mì Ý nấm béo nhẹ với kem sữa, bơ và tỏi cho bữa nhanh dễ ăn.",
+    "requiredIngredients": ["mì", "nấm", "kem sữa"],
+    "optionalIngredients": ["bơ", "tỏi", "phô mai", "tiêu"],
+    "estimatedTimeMinutes": 24,
+    "difficulty": "easy"
+  },
+  {
+    "id": "dish-chicken-potato-bake",
+    "name": "Gà nướng khoai tây",
+    "cuisine": "Món Âu",
+    "summary": "Gà và khoai tây nướng cùng tỏi, bơ hoặc thảo mộc cho một khay ăn gọn.",
+    "requiredIngredients": ["thịt gà", "khoai tây"],
+    "optionalIngredients": ["tỏi", "bơ", "hành tây", "hương thảo"],
+    "estimatedTimeMinutes": 42,
+    "difficulty": "medium"
+  },
+  {
+    "id": "dish-mushroom-cheese-toast",
+    "name": "Bánh mì nấm phô mai",
+    "cuisine": "Món Âu nhanh",
+    "summary": "Bánh mì nướng giòn với nấm và phô mai, phù hợp khi muốn tận dụng đồ có sẵn.",
+    "requiredIngredients": ["bánh mì", "nấm", "phô mai"],
+    "optionalIngredients": ["bơ", "tỏi", "cà chua", "rau thơm"],
+    "estimatedTimeMinutes": 16,
+    "difficulty": "easy"
   }
 ]

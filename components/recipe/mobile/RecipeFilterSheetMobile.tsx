@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Keyboard } from "lucide-react";
 
 interface RecipeFilterSheetMobileProps {
@@ -31,6 +31,11 @@ export function RecipeFilterSheetMobile({
   const dragStartY = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [servingsDraft, setServingsDraft] = useState(String(servings));
+
+  useEffect(() => {
+    setServingsDraft(String(servings));
+  }, [servings]);
 
   if (!open) {
     return null;
@@ -60,6 +65,13 @@ export function RecipeFilterSheetMobile({
 
     dragStartY.current = null;
     setDragY(0);
+  };
+
+  const commitServingsDraft = () => {
+    const nextServings = Math.max(1, Number(servingsDraft) || servings || 1);
+
+    setServingsDraft(String(nextServings));
+    onServingsChange(nextServings);
   };
 
   return (
@@ -99,7 +111,29 @@ export function RecipeFilterSheetMobile({
               >
                 -
               </button>
-              <span>{servings}</span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                value={servingsDraft}
+                onChange={(event) => {
+                  const nextDraft = event.target.value;
+
+                  setServingsDraft(nextDraft);
+
+                  if (nextDraft) {
+                    onServingsChange(Math.max(1, Number(nextDraft) || 1));
+                  }
+                }}
+                onBlur={commitServingsDraft}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    event.currentTarget.blur();
+                  }
+                }}
+                aria-label="Nhập số người ăn"
+                className="w-10 rounded-full bg-white/24 px-1 text-center text-lg font-black leading-none outline-none focus:bg-white/45"
+              />
               <button
                 type="button"
                 onClick={() => onServingsChange(servings + 1)}
