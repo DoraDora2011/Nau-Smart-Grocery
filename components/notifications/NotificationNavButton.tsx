@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import {
@@ -15,19 +15,55 @@ interface NotificationNavButtonProps {
   className?: string;
 }
 
+const NOTIFICATION_SOUND_SRC = "/assets/sound%20effects/notification-sound-001.mp3";
+let knownNotificationIdsSnapshot: Set<string> | null = null;
+const soundedNotificationIds = new Set<string>();
+
 function useUnreadNotificationCount() {
   const [unreadCount, setUnreadCount] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playNotificationSound = useCallback(() => {
+    if (!audioRef.current) {
+      const audio = new Audio(NOTIFICATION_SOUND_SRC);
+      audio.preload = "auto";
+      audioRef.current = audio;
+    }
+
+    const audio = audioRef.current;
+    audio.currentTime = 0;
+    void audio.play().catch(() => undefined);
+  }, []);
 
   const refreshUnreadCount = useCallback(async () => {
     try {
       const notifications = await fetchWebsiteNotifications();
+      const nextUnreadCount = countUnreadNotifications(notifications);
+      const nextNotificationIds = new Set(notifications.map((notification) => notification.id));
+      const knownNotificationIds = knownNotificationIdsSnapshot;
 
-      setUnreadCount(countUnreadNotifications(notifications));
+      if (knownNotificationIds) {
+        const freshUnreadNotifications = notifications.filter(
+          (notification) =>
+            !knownNotificationIds.has(notification.id) &&
+            !soundedNotificationIds.has(notification.id)
+        );
+
+        if (freshUnreadNotifications.length > 0 && nextUnreadCount > 0) {
+          freshUnreadNotifications.forEach((notification) => {
+            soundedNotificationIds.add(notification.id);
+          });
+          playNotificationSound();
+        }
+      }
+
+      knownNotificationIdsSnapshot = nextNotificationIds;
+      setUnreadCount(nextUnreadCount);
     } catch (error) {
       console.warn("Could not load website notifications.", error);
       setUnreadCount(0);
     }
-  }, []);
+  }, [playNotificationSound]);
 
   useEffect(() => {
     void refreshUnreadCount();

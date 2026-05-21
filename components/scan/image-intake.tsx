@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState, type MutableRefObject } from 
 import { Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { ScanInputSource } from "@/types";
 
 interface ImageIntakeProps {
@@ -416,7 +417,10 @@ export function ImageIntake({
 
         <button
           type="button"
-          onClick={handleScanButton}
+          onClick={() => {
+            playUiSound("scan");
+            handleScanButton();
+          }}
           disabled={isLoading}
           className="hidden min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:flex lg:min-h-28 lg:min-w-36"
           aria-label={selectedFile ? "Phân tích ảnh nguyên liệu" : "Chọn ảnh để quét"}

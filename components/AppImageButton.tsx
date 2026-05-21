@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ComponentProps, CSSProperties, MouseEventHandler } from "react";
 
 import { getButtonAsset, type ButtonId } from "@/data/buttonAssets";
+import { playUiSound, type UiSound } from "@/lib/utils/ui-sounds";
 
 type ButtonType = "button" | "submit" | "reset";
 
@@ -43,6 +44,10 @@ function getSizeStyle(size: AppImageButtonProps["size"]): CSSProperties {
     width: typeof size === "number" ? `${size}px` : size,
     height: typeof size === "number" ? `${size}px` : size
   };
+}
+
+function getButtonSound(buttonId: ButtonId): UiSound {
+  return buttonId === "button-028" ? "scan" : "tap";
 }
 
 export function AppImageButton({
@@ -92,6 +97,7 @@ export function AppImageButton({
             return;
           }
 
+          playUiSound(getButtonSound(buttonId));
           onClick?.(event);
         }}
       >
@@ -115,6 +121,7 @@ export function AppImageButton({
             return;
           }
 
+          playUiSound(getButtonSound(buttonId));
           onClick?.(event);
         }}
       >
@@ -131,7 +138,10 @@ export function AppImageButton({
       className={className}
       data-tour-id={dataTourId}
       style={outerStyle}
-      onClick={onClick}
+      onClick={(event) => {
+        playUiSound(getButtonSound(buttonId));
+        onClick?.(event);
+      }}
     >
       {image}
     </button>

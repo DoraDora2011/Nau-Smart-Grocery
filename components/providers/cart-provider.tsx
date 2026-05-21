@@ -10,6 +10,7 @@ import {
 
 import { productCatalog, type ProductCatalogItem } from "@/data/productCatalog";
 import { calculateCartQuantityFromRecipeIngredient } from "@/lib/services/cartQuantity";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { CartItem } from "@/types";
 
 interface CartContextValue {
@@ -220,6 +221,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value: CartContextValue = {
     items,
     addItems: (incomingItems) => {
+      if (incomingItems.length > 0) {
+        playUiSound("cart");
+      }
+
       setItems((current) => {
         const merged = new Map(current.map((item) => {
           const normalizedItem = normalizeStoredItem(item);
