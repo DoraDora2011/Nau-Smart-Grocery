@@ -124,6 +124,19 @@ export function markNotificationsSeen(notifications: WebsiteNotification[]) {
   window.dispatchEvent(new CustomEvent(NOTIFICATION_SEEN_EVENT));
 }
 
+export function clearSeenNotificationIds() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(NOTIFICATION_SEEN_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent(NOTIFICATION_SEEN_EVENT));
+  } catch {
+    // If storage is unavailable, the device will still be treated as unread for this session.
+  }
+}
+
 export function countUnreadNotifications(notifications: WebsiteNotification[]) {
   const seenIds = readSeenNotificationIds();
 

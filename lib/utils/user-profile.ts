@@ -1,5 +1,6 @@
 export const USER_PROFILE_STORAGE_KEY = "nau_user_profile";
 export const USER_PROFILE_UPDATED_EVENT = "nau-smart-grocery:user-profile-updated";
+export const ONBOARDING_SEEN_STORAGE_KEY = "nau_onboarding_seen";
 
 export type StoredUserProfile = {
   name: string;
@@ -57,6 +58,18 @@ export function saveStoredUserProfile(profile: StoredUserProfile) {
     return true;
   } catch {
     return false;
+  }
+}
+
+export function clearAnonymousOnboardingState() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.removeItem(ONBOARDING_SEEN_STORAGE_KEY);
+  } catch {
+    // Storage can be unavailable; the current session can still continue as a new user.
   }
 }
 

@@ -214,8 +214,7 @@ export function NotificationsPage() {
         </div>
 
         <header className="mt-14">
-          <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">Nấu gửi bạn</p>
-          <h1 className="mt-3 text-[28px] font-black leading-none sm:text-4xl">Thông báo</h1>
+          <h1 className="text-[28px] font-black leading-none sm:text-4xl">Thông báo</h1>
           <p className="mt-4 max-w-xl text-sm font-semibold leading-6 text-black/62 sm:text-base">
             Phản hồi và cập nhật mới từ nhà phát hành sẽ xuất hiện tại đây.
           </p>

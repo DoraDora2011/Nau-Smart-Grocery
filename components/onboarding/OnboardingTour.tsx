@@ -2,7 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-const ONBOARDING_STORAGE_KEY = "nau_onboarding_seen";
+import {
+  clearAnonymousOnboardingState,
+  ONBOARDING_SEEN_STORAGE_KEY,
+  readStoredUserProfile
+} from "@/lib/utils/user-profile";
+
 const INTERNAL_REPLAY_HOTKEY = {
   ctrlKey: true,
   altKey: true,
@@ -126,7 +131,7 @@ export function OnboardingTour() {
       }
 
       try {
-        window.localStorage.removeItem(ONBOARDING_STORAGE_KEY);
+        window.localStorage.removeItem(ONBOARDING_SEEN_STORAGE_KEY);
       } catch {
         // Storage can be unavailable in private contexts; replay still works for this session.
       }
@@ -173,7 +178,11 @@ export function OnboardingTour() {
     }
 
     try {
-      if (window.localStorage.getItem(ONBOARDING_STORAGE_KEY) === "true") {
+      if (!readStoredUserProfile()) {
+        clearAnonymousOnboardingState();
+      }
+
+      if (window.localStorage.getItem(ONBOARDING_SEEN_STORAGE_KEY) === "true") {
         return () => {
           window.removeEventListener("nau-smart-grocery:replay-onboarding", replayTour);
           window.removeEventListener("keydown", handleInternalReplayHotkey);
@@ -230,7 +239,7 @@ export function OnboardingTour() {
 
   const finishTour = useCallback(() => {
     try {
-      window.localStorage.setItem(ONBOARDING_STORAGE_KEY, "true");
+      window.localStorage.setItem(ONBOARDING_SEEN_STORAGE_KEY, "true");
     } catch {
       // If storage is unavailable, still close the tour for this session.
     }

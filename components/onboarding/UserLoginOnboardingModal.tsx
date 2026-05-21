@@ -4,10 +4,12 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { saveDeliveryAddress } from "@/lib/utils/delivery-address";
 import {
+  clearAnonymousOnboardingState,
   readStoredUserProfile,
   saveStoredUserProfile,
   type StoredUserProfile
 } from "@/lib/utils/user-profile";
+import { clearSeenNotificationIds } from "@/lib/utils/website-notifications";
 
 type FormErrors = Partial<Record<"name" | "address" | "email" | "storage", string>>;
 
@@ -47,7 +49,14 @@ export function UserLoginOnboardingModal() {
   const [errors, setErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    setIsOpen(!readStoredUserProfile());
+    const storedProfile = readStoredUserProfile();
+
+    if (!storedProfile) {
+      clearAnonymousOnboardingState();
+      clearSeenNotificationIds();
+    }
+
+    setIsOpen(!storedProfile);
     setIsReady(true);
   }, []);
 
