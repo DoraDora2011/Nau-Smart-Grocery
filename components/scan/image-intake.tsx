@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type MutableRefObject } from "react";
-import { Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react";
+import { BookOpen, Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react";
 
+import instructionScan from "@/assets/brand_logo/instruction-scan-001.png";
 import { AppImageButton } from "@/components/AppImageButton";
 import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { ScanInputSource } from "@/types";
@@ -65,6 +66,7 @@ export function ImageIntake({
 }: ImageIntakeProps) {
   const [isMobile, setIsMobile] = useState(false);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("idle");
+  const [isInstructionOpen, setIsInstructionOpen] = useState(true);
   const [zoomState, setZoomState] = useState<ZoomState>(DEFAULT_ZOOM_STATE);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const uploadInputRef = useRef<HTMLInputElement>(null);
@@ -299,6 +301,31 @@ export function ImageIntake({
       />
       <canvas ref={canvasRef} className="hidden" />
 
+      {isInstructionOpen ? (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-black/40 px-5 py-[calc(1.5rem+env(safe-area-inset-top))]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Hướng dẫn sử dụng chức năng Scan"
+        >
+          <div className="my-auto flex w-full max-w-[25rem] flex-col items-center gap-4">
+            <Image
+              src={instructionScan}
+              alt="Hướng dẫn sắp xếp thực phẩm để chức năng Scan nhận diện chính xác hơn"
+              priority
+              className="h-auto max-h-[min(72dvh,44rem)] w-full object-contain"
+            />
+            <button
+              type="button"
+              onClick={() => setIsInstructionOpen(false)}
+              className="w-full max-w-[19rem] rounded-full bg-[#ffe467] px-8 py-3 text-base font-black text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
+            >
+              Đã hiểu
+            </button>
+          </div>
+        </div>
+      ) : null}
+
       <button
         type="button"
         onClick={() => openPicker(primarySource)}
@@ -447,6 +474,15 @@ export function ImageIntake({
             Xóa ảnh
           </button>
         ) : null}
+
+        <button
+          type="button"
+          onClick={() => setIsInstructionOpen(true)}
+          className="flex h-[72px] w-[72px] items-center justify-center rounded-[26px] bg-white text-black transition active:scale-95 lg:h-20 lg:w-20"
+          aria-label="Xem hướng dẫn sử dụng chức năng Scan"
+        >
+          <BookOpen className="h-8 w-8" strokeWidth={1.75} />
+        </button>
       </div>
     </section>
   );
