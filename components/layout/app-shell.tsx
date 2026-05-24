@@ -7,7 +7,6 @@ import { useEffect, type ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { DesktopWarning } from "@/components/layout/DesktopWarning";
 import { UserLoginOnboardingModal } from "@/components/onboarding/UserLoginOnboardingModal";
 import { useLanguage } from "@/components/providers/language-provider";
 import { resetHomeWelcomeForNextReturn } from "@/lib/utils/home-welcome";
@@ -103,7 +102,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       ) : null}
       {isHomePage || isFullScreenAppPage ? null : <MobileNav />}
       <UserLoginOnboardingModal />
-      <DesktopWarning />
     </div>
   );
 }
