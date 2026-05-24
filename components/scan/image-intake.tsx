@@ -281,7 +281,7 @@ export function ImageIntake({
   });
 
   return (
-    <section className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#FFF1AF] px-4 pb-[calc(6.75rem+env(safe-area-inset-bottom))] pt-[clamp(5.25rem,10dvh,6.5rem)] text-black lg:h-auto lg:min-h-[calc(100dvh-2rem)] lg:justify-between lg:overflow-visible lg:rounded-[42px] lg:px-14 lg:pb-20 lg:pt-28">
+    <section className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#FFF1AF] px-4 pb-[calc(6.75rem+env(safe-area-inset-bottom))] pt-[clamp(9.5rem,17dvh,10rem)] text-black lg:h-auto lg:min-h-[calc(100dvh-2rem)] lg:justify-between lg:overflow-visible lg:rounded-[42px] lg:px-14 lg:pb-20 lg:pt-28">
       <input
         ref={cameraInputRef}
         type="file"

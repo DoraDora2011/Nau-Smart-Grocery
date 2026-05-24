@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChefHat, Clock, Heart, LoaderCircle, Plus, ShoppingBasket, Sparkles } from "lucide-react";
+import { ChefHat, Clock, Heart, LoaderCircle, Plus, Sparkles } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
+import { ScanHistoryDrawer, type ScanHistoryItem } from "@/components/scan/scan-history-drawer";
 import { ImageIntake } from "@/components/scan/image-intake";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useFavorites } from "@/components/providers/favorite-provider";
@@ -40,6 +41,9 @@ type ScanRecipeApiResult = {
     amount?: string;
   }>;
 };
+
+const SCAN_HISTORY_STORAGE_KEY = "nau-smart-grocery-scan-history";
+const SCAN_HISTORY_LIMIT = 20;
 
 const VIETNAMESE_DISH_COPY: Record<
   string,
@@ -105,6 +109,36 @@ function formatPrice(value: number, locale: "vi" | "en") {
     new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(value) +
     (locale === "vi" ? "đ" : " VND")
   );
+}
+
+function getScanFavoriteRecipeId(suggestion: DishSuggestion) {
+  return `scan-suggestion-${suggestion.id}`;
+}
+
+function buildScanFavoriteRecipe(
+  suggestion: DishSuggestion,
+  locale: "vi" | "en",
+  fallbackIngredientList: string,
+  steps?: string[]
+) {
+  const display = getDishDisplay(suggestion, locale);
+  const nutrition = getDishNutrition(suggestion);
+  const ingredientNames = [...suggestion.matchedIngredients, ...suggestion.missingIngredients]
+    .map((name) => getLocalizedIngredientName(name, locale))
+    .join(", ");
+
+  return {
+    id: getScanFavoriteRecipeId(suggestion),
+    name: display.name,
+    description: display.summary,
+    ingredients: ingredientNames || fallbackIngredientList,
+    calories: nutrition.calories,
+    carbs: nutrition.carbs,
+    protein: nutrition.protein,
+    fat: nutrition.fat,
+    servings: 1,
+    steps: steps?.length ? steps : suggestion.reasons.map((reason) => reason),
+  };
 }
 
 function getScanRecipeSteps(
@@ -248,9 +282,11 @@ export function ScanWorkflow() {
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [isLoadingRecipeDetails, setIsLoadingRecipeDetails] = useState(false);
   const [isSuggestionSheetOpen, setIsSuggestionSheetOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [selectedRecipeView, setSelectedRecipeView] = useState<ScanRecipeView | null>(null);
   const [cartMessage, setCartMessage] = useState<string | null>(null);
   const [upsellQuantities, setUpsellQuantities] = useState<Record<string, number>>({});
+  const [scanHistory, setScanHistory] = useState<ScanHistoryItem[]>([]);
   const dragStartYRef = useRef<number | null>(null);
   const lastAutoScanKeyRef = useRef<string | null>(null);
   const scanCaptureActionRef = useRef<(() => void) | null>(null);
@@ -267,25 +303,87 @@ export function ScanWorkflow() {
     return () => window.clearTimeout(timer);
   }, [cartMessage]);
 
-  const handleToggleSuggestedDishFavorite = (suggestion: DishSuggestion) => {
-    const display = getDishDisplay(suggestion, locale);
-    const nutrition = getDishNutrition(suggestion);
-    const ingredientNames = [...suggestion.matchedIngredients, ...suggestion.missingIngredients]
-      .map((name) => getLocalizedIngredientName(name, locale))
-      .join(", ");
+  useEffect(() => {
+    try {
+      const savedHistory = window.localStorage.getItem(SCAN_HISTORY_STORAGE_KEY);
 
-    toggleRecipe({
-      id: `scan-suggestion-${suggestion.id}`,
-      name: display.name,
-      description: display.summary,
-      ingredients: ingredientNames || dictionary.recipe.noIngredientList,
-      calories: nutrition.calories,
-      carbs: nutrition.carbs,
-      protein: nutrition.protein,
-      fat: nutrition.fat,
-      servings: 1,
-      steps: suggestion.reasons.map((reason) => reason),
+      if (savedHistory) {
+        setScanHistory(JSON.parse(savedHistory) as ScanHistoryItem[]);
+      }
+    } catch {
+      setScanHistory([]);
+    }
+  }, []);
+
+  const persistScanHistory = useCallback((nextHistory: ScanHistoryItem[]) => {
+    setScanHistory(nextHistory);
+    window.localStorage.setItem(SCAN_HISTORY_STORAGE_KEY, JSON.stringify(nextHistory));
+  }, []);
+
+  const addScanHistoryItem = useCallback((nextIngredients: Ingredient[], nextSuggestions: DishSuggestion[]) => {
+    if (nextIngredients.length === 0 || nextSuggestions.length === 0) {
+      return;
+    }
+
+    const historyItem: ScanHistoryItem = {
+      id: `scan-history-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      ingredients: nextIngredients,
+      suggestions: nextSuggestions,
+    };
+
+    setScanHistory((currentHistory) => {
+      const nextHistory = [historyItem, ...currentHistory].slice(0, SCAN_HISTORY_LIMIT);
+      window.localStorage.setItem(SCAN_HISTORY_STORAGE_KEY, JSON.stringify(nextHistory));
+
+      return nextHistory;
     });
+  }, []);
+
+  const handleSelectScanHistory = (item: ScanHistoryItem) => {
+    setIngredients(item.ingredients);
+    setDishSuggestions(item.suggestions);
+    setScanSummary(interpolate(dictionary.scan.identifiedCount, { count: item.ingredients.length }));
+    setWarning(null);
+    setErrorMessage(null);
+    setSuggestionMessage(null);
+    setSelectedRecipeView(null);
+    setIsSuggestionSheetOpen(true);
+    setIsHistoryOpen(false);
+  };
+
+  const handleDeleteScanHistoryItem = (id: string) => {
+    persistScanHistory(scanHistory.filter((item) => item.id !== id));
+  };
+
+  const handleDeleteScanHistoryGroup = (dateKey: string) => {
+    persistScanHistory(
+      scanHistory.filter((item) => new Date(item.createdAt).toDateString() !== dateKey)
+    );
+  };
+
+  const handleToggleSuggestedDishFavorite = (suggestion: DishSuggestion) => {
+    toggleRecipe(buildScanFavoriteRecipe(suggestion, locale, dictionary.recipe.noIngredientList));
+  };
+
+  const handleToggleSelectedRecipeFavorite = () => {
+    if (!selectedRecipeView) {
+      return;
+    }
+
+    toggleRecipe(
+      buildScanFavoriteRecipe(
+        selectedRecipeView.suggestion,
+        locale,
+        dictionary.recipe.noIngredientList,
+        selectedRecipeView.steps
+      )
+    );
+  };
+
+  const closeScanRecipeView = () => {
+    setSelectedRecipeView(null);
+    setIsSuggestionSheetOpen(true);
   };
 
   const openScanRecipeView = async (suggestion: DishSuggestion) => {
@@ -408,6 +506,7 @@ export function ScanWorkflow() {
 
       setDishSuggestions(payload.data.suggestions);
       setScanSummary(interpolate(dictionary.scan.identifiedCount, { count: payload.data.ingredientCount }));
+      addScanHistoryItem(detectedIngredients, payload.data.suggestions);
       setIsSuggestionSheetOpen(true);
     } catch (error) {
       console.error(error);
@@ -415,7 +514,7 @@ export function ScanWorkflow() {
     } finally {
       setIsSuggesting(false);
     }
-  }, [dictionary.scan.identifiedCount, dictionary.scan.noIngredients, dictionary.scan.suggestFailed, locale]);
+  }, [addScanHistoryItem, dictionary.scan.identifiedCount, dictionary.scan.noIngredients, dictionary.scan.suggestFailed, locale]);
 
   const handleScan = useCallback(async () => {
     if (!selectedFile) {
@@ -492,14 +591,27 @@ export function ScanWorkflow() {
 
   return (
     <div className="relative h-[100dvh] min-h-0 overflow-hidden bg-[#FFF1AF] text-black lg:h-auto lg:min-h-[100dvh]">
-      <div className="fixed right-6 top-6 z-50">
-        <AppImageButton
-          buttonId="button-009"
-          href="/"
-          size={58}
-          className="flex h-[58px] w-[58px] items-center justify-center rounded-full text-black"
-        />
-      </div>
+      {!selectedRecipeView ? (
+        <div className="fixed right-6 top-[5.75rem] z-50">
+          <AppImageButton
+            buttonId="button-009"
+            href="/"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center rounded-full text-black"
+          />
+        </div>
+      ) : null}
+
+      {!selectedRecipeView ? (
+        <div className="fixed left-6 top-[5.75rem] z-50">
+          <AppImageButton
+            buttonId="button-007"
+            onClick={() => setIsHistoryOpen(true)}
+            size={56}
+            className="flex h-14 w-14 items-center justify-center rounded-full"
+          />
+        </div>
+      ) : null}
 
       <ImageIntake
         selectedFile={selectedFile}
@@ -640,7 +752,7 @@ export function ScanWorkflow() {
                             type="button"
                             onClick={() => handleToggleSuggestedDishFavorite(suggestion)}
                             className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white transition active:scale-90 ${
-                              favoriteRecipeIds.has(`scan-suggestion-${suggestion.id}`)
+                              favoriteRecipeIds.has(getScanFavoriteRecipeId(suggestion))
                                 ? "bg-[#cd6cfd]"
                                 : "bg-[#69bf7b]"
                             }`}
@@ -700,17 +812,37 @@ export function ScanWorkflow() {
             </div>
           ) : null}
 
-          <div className="fixed right-6 top-6 z-[90]">
+          <div className="fixed right-6 top-[5.75rem] z-[90]">
             <AppImageButton
               buttonId="button-009"
-              onClick={() => setSelectedRecipeView(null)}
+              onClick={closeScanRecipeView}
               size={58}
               className="flex h-[58px] w-[58px] items-center justify-center rounded-full text-black shadow-sm"
             />
           </div>
 
+          <button
+            type="button"
+            onClick={handleToggleSelectedRecipeFavorite}
+            className={`fixed left-6 top-[5.75rem] z-[90] flex h-12 w-12 items-center justify-center rounded-full text-white shadow-sm ring-2 ring-white transition active:scale-90 ${
+              favoriteRecipeIds.has(getScanFavoriteRecipeId(selectedRecipeView.suggestion))
+                ? "bg-[#cd6cfd]"
+                : "bg-[#69bf7b]"
+            }`}
+            aria-label={interpolate(dictionary.scan.saveDish, { dish: selectedRecipeView.display.name })}
+          >
+            <Heart
+              className={`h-6 w-6 ${
+                favoriteRecipeIds.has(getScanFavoriteRecipeId(selectedRecipeView.suggestion))
+                  ? "animate-[favorite-pop_260ms_ease-out]"
+                  : ""
+              }`}
+              fill="currentColor"
+            />
+          </button>
+
           <main className="mx-auto min-h-[100dvh] max-w-md">
-            <section className="px-11 pb-8 pt-28">
+            <section className="px-11 pb-8 pt-[11rem]">
               <h1 className="text-3xl font-black leading-tight sm:text-4xl">{selectedRecipeView.display.name}</h1>
               <p className="mt-7 text-sm font-bold leading-6 text-black/80 sm:mt-9 sm:text-base sm:leading-7">
                 {selectedRecipeView.display.summary}
@@ -872,6 +1004,17 @@ export function ScanWorkflow() {
           </main>
         </div>
       ) : null}
+
+      <ScanHistoryDrawer
+        open={isHistoryOpen}
+        history={scanHistory}
+        locale={locale}
+        onClose={() => setIsHistoryOpen(false)}
+        onSelectItem={handleSelectScanHistory}
+        onDeleteItem={handleDeleteScanHistoryItem}
+        onDeleteGroup={handleDeleteScanHistoryGroup}
+        onClearHistory={() => persistScanHistory([])}
+      />
 
       <RecipeMobileBottomNav onScanClick={() => scanCaptureActionRef.current?.()} />
     </div>
