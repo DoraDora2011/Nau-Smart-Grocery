@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { Keyboard } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/language-provider";
+import { uiLabels } from "@/lib/i18n/ui-labels";
+
 interface RecipeFilterSheetMobileProps {
   open: boolean;
   servings: number;
@@ -28,6 +31,8 @@ export function RecipeFilterSheetMobile({
   onClose,
   onConfirm
 }: RecipeFilterSheetMobileProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].recipeMobile;
   const dragStartY = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -76,7 +81,7 @@ export function RecipeFilterSheetMobile({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm lg:hidden">
-      <button type="button" className="absolute inset-0" aria-label="Đóng bộ lọc" onClick={onClose} />
+      <button type="button" className="absolute inset-0" aria-label={labels.closeFilter} onClick={onClose} />
 
       <section
         className="absolute inset-x-0 bottom-0 min-h-[66dvh] rounded-t-[32px] bg-white px-6 pb-[calc(8rem+env(safe-area-inset-bottom))] pt-3 text-black shadow-[0_-22px_56px_rgba(0,0,0,0.2)]"
@@ -92,22 +97,22 @@ export function RecipeFilterSheetMobile({
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           className="mx-auto block h-6 w-24 touch-none rounded-full"
-          aria-label="Kéo xuống để đóng"
+          aria-label={labels.dragClose}
         >
           <span className="mx-auto mt-2 block h-1.5 w-16 rounded-full bg-black/35" />
         </button>
-        <h2 className="mt-5 text-[26px] font-black leading-tight">Chọn lọc theo:</h2>
+        <h2 className="mt-5 text-[26px] font-black leading-tight">{labels.filterTitle}</h2>
 
         <div className="mt-9 space-y-8">
           <div>
             <div className="rounded-full bg-[linear-gradient(90deg,#ffffff_0%,#f2d8ff_46%,#cd6cfd_100%)] px-5 py-4 text-sm font-black shadow-sm">
-              Số người ăn:
+              {labels.servings}
             </div>
             <div className="mt-5 inline-flex items-center gap-4 rounded-full bg-[#cd6cfd] px-4 py-2 text-lg font-black shadow-sm">
               <button
                 type="button"
                 onClick={() => onServingsChange(Math.max(1, servings - 1))}
-                aria-label="Giảm số người"
+                aria-label={labels.decreaseServings}
               >
                 -
               </button>
@@ -131,13 +136,13 @@ export function RecipeFilterSheetMobile({
                     event.currentTarget.blur();
                   }
                 }}
-                aria-label="Nhập số người ăn"
+                aria-label={labels.inputServings}
                 className="w-10 rounded-full bg-white/24 px-1 text-center text-lg font-black leading-none outline-none focus:bg-white/45"
               />
               <button
                 type="button"
                 onClick={() => onServingsChange(servings + 1)}
-                aria-label="Tăng số người"
+                aria-label={labels.increaseServings}
               >
                 +
               </button>
@@ -145,12 +150,12 @@ export function RecipeFilterSheetMobile({
           </div>
 
           <div className="flex items-center justify-between rounded-full bg-[linear-gradient(90deg,#ffffff_0%,#f2d8ff_46%,#cd6cfd_100%)] px-5 py-4 shadow-sm">
-            <span className="text-sm font-black">Bạn có dị ứng không?</span>
+            <span className="text-sm font-black">{labels.allergyQuestion}</span>
             <button
               type="button"
               onClick={() => onHasAllergyChange(!hasAllergy)}
               className="flex h-6 w-12 items-center rounded-full bg-white px-1 shadow-inner"
-              aria-label="Bật tắt dị ứng"
+              aria-label={labels.allergyToggle}
             >
               <span
                 className={`h-4 w-4 rounded-full bg-[#ffe467] transition ${
@@ -166,7 +171,7 @@ export function RecipeFilterSheetMobile({
               <textarea
                 value={allergiesText}
                 onChange={(event) => onAllergiesTextChange(event.target.value)}
-                placeholder="Ví dụ: dị ứng hải sản, dị ứng sữa"
+                placeholder={labels.allergyPlaceholder}
                 className="mt-3 min-h-32 w-full resize-none bg-transparent text-sm font-semibold outline-none"
               />
             </label>
@@ -180,7 +185,7 @@ export function RecipeFilterSheetMobile({
             disabled={isLoading}
             className="rounded-full bg-black px-7 py-4 text-lg font-bold text-white shadow-lg disabled:opacity-60"
           >
-            {isLoading ? "Đang tạo..." : "Xác nhận"}
+            {isLoading ? labels.creatingShort : labels.confirm}
           </button>
         </div>
       </section>

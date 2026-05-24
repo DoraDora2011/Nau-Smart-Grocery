@@ -11,6 +11,8 @@ import { useFavorites } from "@/components/providers/favorite-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { productCatalog, type ProductCatalogItem } from "@/data/productCatalog";
 import { getLocalizedIngredientName } from "@/lib/i18n/ingredient-names";
+import { getLocalizedProductText } from "@/lib/i18n/products";
+import { interpolate } from "@/lib/i18n/translations";
 import { estimateRecipeNutrition } from "@/lib/services/recipeNutrition";
 import type { CartItem } from "@/types";
 import type {
@@ -60,13 +62,15 @@ const VIETNAMESE_DISH_COPY: Record<
   },
 };
 
-const difficultyLabels: Record<string, string> = {
-  easy: "Dễ",
-  medium: "Vừa",
-  advanced: "Khó",
-};
+function getDishDisplay(suggestion: DishSuggestion, locale: "vi" | "en") {
+  if (locale === "en") {
+    return {
+      name: suggestion.name,
+      cuisine: suggestion.cuisine,
+      summary: suggestion.summary,
+    };
+  }
 
-function getDishDisplay(suggestion: DishSuggestion) {
   return (
     VIETNAMESE_DISH_COPY[suggestion.id] ?? {
       name: suggestion.name,
@@ -96,11 +100,28 @@ function normalizeSearchText(value: string) {
     .trim();
 }
 
-function formatPrice(value: number) {
-  return new Intl.NumberFormat("vi-VN").format(value) + "đ";
+function formatPrice(value: number, locale: "vi" | "en") {
+  return (
+    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(value) +
+    (locale === "vi" ? "đ" : " VND")
+  );
 }
 
-function getScanRecipeSteps(suggestion: DishSuggestion, dishName: string, ingredientNames: string[]) {
+function getScanRecipeSteps(
+  suggestion: DishSuggestion,
+  dishName: string,
+  ingredientNames: string[],
+  locale: "vi" | "en"
+) {
+  if (locale === "en") {
+    return [
+      `Prepare the main ingredients: ${ingredientNames.join(", ") || dishName}.`,
+      "Season lightly before cooking so the dish has a balanced flavor.",
+      "Cook the main ingredients over medium heat until done, then adjust seasoning.",
+      "Plate the dish and serve hot for the best texture and flavor.",
+    ];
+  }
+
   if (suggestion.id === "dish-tomato-egg") {
     return [
       "Rửa sạch cà chua, cắt múi cau. Đập trứng ra tô, nêm một chút muối rồi đánh tan.",
@@ -150,7 +171,8 @@ function normalizeDetailedRecipeSteps(data: ScanRecipeApiResult, fallbackSteps: 
 
 async function fetchDetailedScanRecipeSteps(
   dishName: string,
-  fallbackSteps: string[]
+  fallbackSteps: string[],
+  locale: "vi" | "en"
 ) {
   const response = await fetch("/api/recipe", {
     method: "POST",
@@ -160,6 +182,7 @@ async function fetchDetailedScanRecipeSteps(
       dish: dishName,
       servings: 1,
       allergies: [],
+      locale,
     }),
   });
 
@@ -209,7 +232,7 @@ function buildCatalogCartItem(product: ProductCatalogItem): CartItem {
 }
 
 export function ScanWorkflow() {
-  const { locale } = useLanguage();
+  const { locale, dictionary } = useLanguage();
   const { favoriteIds, favoriteRecipeIds, toggleProduct, toggleRecipe } = useFavorites();
   const { addItems } = useCart();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -245,7 +268,7 @@ export function ScanWorkflow() {
   }, [cartMessage]);
 
   const handleToggleSuggestedDishFavorite = (suggestion: DishSuggestion) => {
-    const display = getDishDisplay(suggestion);
+    const display = getDishDisplay(suggestion, locale);
     const nutrition = getDishNutrition(suggestion);
     const ingredientNames = [...suggestion.matchedIngredients, ...suggestion.missingIngredients]
       .map((name) => getLocalizedIngredientName(name, locale))
@@ -255,7 +278,7 @@ export function ScanWorkflow() {
       id: `scan-suggestion-${suggestion.id}`,
       name: display.name,
       description: display.summary,
-      ingredients: ingredientNames || "Chưa có danh sách nguyên liệu.",
+      ingredients: ingredientNames || dictionary.recipe.noIngredientList,
       calories: nutrition.calories,
       carbs: nutrition.carbs,
       protein: nutrition.protein,
@@ -266,12 +289,12 @@ export function ScanWorkflow() {
   };
 
   const openScanRecipeView = async (suggestion: DishSuggestion) => {
-    const display = getDishDisplay(suggestion);
+    const display = getDishDisplay(suggestion, locale);
     const nutrition = getDishNutrition(suggestion);
     const ingredientNames = [...suggestion.matchedIngredients, ...suggestion.missingIngredients].map((name) =>
       getLocalizedIngredientName(name, locale),
     );
-    const fallbackSteps = getScanRecipeSteps(suggestion, display.name, ingredientNames);
+    const fallbackSteps = getScanRecipeSteps(suggestion, display.name, ingredientNames, locale);
 
     setSelectedRecipeView({
       suggestion,
@@ -286,7 +309,7 @@ export function ScanWorkflow() {
     setIsLoadingRecipeDetails(true);
 
     try {
-      const detailedSteps = await fetchDetailedScanRecipeSteps(display.name, fallbackSteps);
+      const detailedSteps = await fetchDetailedScanRecipeSteps(display.name, fallbackSteps, locale);
 
       setSelectedRecipeView((current) => {
         if (!current || current.suggestion.id !== suggestion.id) {
@@ -311,7 +334,7 @@ export function ScanWorkflow() {
       ...current,
       [product.id]: (current[product.id] ?? 0) + 1,
     }));
-    setCartMessage("Đã thêm vào giỏ hàng ✓");
+    setCartMessage(dictionary.common.addedToCart);
   };
 
   const toggleUpsellFavorite = (product: ProductCatalogItem) => {
@@ -355,7 +378,7 @@ export function ScanWorkflow() {
       .filter(Boolean);
 
     if (confirmedIngredients.length === 0) {
-      setSuggestionMessage("Chưa có đủ nguyên liệu để gợi ý món ăn.");
+      setSuggestionMessage(dictionary.scan.noIngredients);
       return;
     }
 
@@ -370,6 +393,7 @@ export function ScanWorkflow() {
         body: JSON.stringify({
           confirmedIngredients,
           limit: 6,
+          locale,
         }),
       });
 
@@ -377,25 +401,25 @@ export function ScanWorkflow() {
 
       if (!response.ok || !payload.success) {
         setSuggestionMessage(
-          payload.success ? "Chưa thể gợi ý món lúc này." : payload.error.message,
+          payload.success ? dictionary.scan.suggestFailed : payload.error.message,
         );
         return;
       }
 
       setDishSuggestions(payload.data.suggestions);
-      setScanSummary(`Đã xác định ${payload.data.ingredientCount} nguyên liệu.`);
+      setScanSummary(interpolate(dictionary.scan.identifiedCount, { count: payload.data.ingredientCount }));
       setIsSuggestionSheetOpen(true);
     } catch (error) {
       console.error(error);
-      setSuggestionMessage("Chưa thể gợi ý món lúc này.");
+      setSuggestionMessage(dictionary.scan.suggestFailed);
     } finally {
       setIsSuggesting(false);
     }
-  }, [locale]);
+  }, [dictionary.scan.identifiedCount, dictionary.scan.noIngredients, dictionary.scan.suggestFailed, locale]);
 
   const handleScan = useCallback(async () => {
     if (!selectedFile) {
-      setErrorMessage("Vui lòng chọn hoặc chụp ảnh trước khi bắt đầu quét.");
+      setErrorMessage(dictionary.scan.scanRequired);
       return;
     }
 
@@ -415,25 +439,36 @@ export function ScanWorkflow() {
       const payload = (await response.json()) as ScanRouteResponse;
 
       if (!response.ok || !payload.success) {
-        setErrorMessage(payload.success ? "Hiện chưa thể phân tích ảnh này." : payload.error.message);
+        setErrorMessage(payload.success ? dictionary.scan.scanFailed : payload.error.message);
         return;
       }
 
       setIngredients(payload.data.ingredients);
       setIsSuggestionSheetOpen(true);
       setWarning(
-        payload.data.warnings.length > 0
-          ? "Hệ thống đang dùng kết quả dự phòng an toàn. Bạn hãy kiểm tra lại danh sách nguyên liệu."
+        payload.data.fallbackUsed
+          ? dictionary.scan.fallbackWarning
+          : payload.data.warnings.length > 0
+            ? dictionary.scan.unclearWarning
           : null,
       );
       await suggestDishesFromIngredients(payload.data.ingredients);
     } catch (error) {
       console.error(error);
-      setErrorMessage("Hiện chưa thể phân tích ảnh này.");
+      setErrorMessage(dictionary.scan.scanFailed);
     } finally {
       setIsScanning(false);
     }
-  }, [resetScanResults, selectedFile, source, suggestDishesFromIngredients]);
+  }, [
+    dictionary.scan.fallbackWarning,
+    dictionary.scan.scanFailed,
+    dictionary.scan.scanRequired,
+    dictionary.scan.unclearWarning,
+    resetScanResults,
+    selectedFile,
+    source,
+    suggestDishesFromIngredients
+  ]);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -493,7 +528,7 @@ export function ScanWorkflow() {
           <button
             type="button"
             className="mx-auto mb-6 block h-8 w-28 touch-none rounded-full"
-            aria-label="Kéo xuống để thu gọn gợi ý món"
+            aria-label={dictionary.scan.dragHandle}
             onClick={() => setIsSuggestionSheetOpen((current) => !current)}
             onPointerDown={(event) => {
               dragStartYRef.current = event.clientY;
@@ -524,11 +559,11 @@ export function ScanWorkflow() {
           <div className="max-h-[68dvh] overflow-y-auto pb-[calc(6.5rem+env(safe-area-inset-bottom))] pr-1 lg:pb-0">
             <div className="mb-5">
               <p className="text-sm font-black uppercase tracking-wide text-black/55">
-                Gợi ý từ ảnh quét
+                {dictionary.scan.suggestionEyebrow}
               </p>
-              <h2 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">Món có thể nấu</h2>
+              <h2 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">{dictionary.scan.suggestionTitle}</h2>
               <p className="mt-2 text-sm font-bold text-black/60">
-                {scanSummary ?? `Đã xác định ${ingredients.length} nguyên liệu.`}
+                {scanSummary ?? interpolate(dictionary.scan.identifiedCount, { count: ingredients.length })}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {ingredients.slice(0, 6).map((ingredient) => (
@@ -557,7 +592,7 @@ export function ScanWorkflow() {
               <div className="flex min-h-48 items-center justify-center rounded-[28px] bg-white">
                 <div className="flex items-center gap-3 text-sm font-black text-black/60">
                   <LoaderCircle className="h-5 w-5 animate-spin" />
-                  Nấu đang tìm món phù hợp...
+                  {dictionary.scan.findingDishes}
                 </div>
               </div>
             ) : null}
@@ -572,7 +607,7 @@ export function ScanWorkflow() {
               <div className="space-y-6">
                 {dishSuggestions.map((suggestion) => (
                   (() => {
-                    const display = getDishDisplay(suggestion);
+                    const display = getDishDisplay(suggestion, locale);
                     const nutrition = getDishNutrition(suggestion);
                     const ingredientNames = [
                       ...suggestion.matchedIngredients,
@@ -593,12 +628,12 @@ export function ScanWorkflow() {
                             className="min-w-0 flex-1 text-left"
                           >
                             <h3 className="text-xl font-black leading-tight sm:text-2xl">{display.name}</h3>
-                            <p className="mt-3 text-xs font-bold text-black/45">Mô tả món ăn:</p>
+                            <p className="mt-3 text-xs font-bold text-black/45">{dictionary.scan.descriptionLabel}</p>
                             <p className="mt-1 line-clamp-2 text-sm font-bold leading-5 text-black/55">
                               {display.summary}
                             </p>
                             <p className="mt-2 line-clamp-1 text-xs font-bold text-black/45">
-                              Nguyên liệu chính: {ingredientNames || "đang đối chiếu"}
+                              {dictionary.scan.mainIngredients}: {ingredientNames || dictionary.scan.matching}
                             </p>
                           </button>
                           <button
@@ -609,7 +644,7 @@ export function ScanWorkflow() {
                                 ? "bg-[#cd6cfd]"
                                 : "bg-[#69bf7b]"
                             }`}
-                            aria-label={`Lưu món ${display.name} vào yêu thích`}
+                            aria-label={interpolate(dictionary.scan.saveDish, { dish: display.name })}
                           >
                             <Heart className="h-4 w-4 fill-current" />
                           </button>
@@ -643,7 +678,7 @@ export function ScanWorkflow() {
                           <ChefHat className="h-4 w-4" />
                           {display.cuisine}
                           <Clock className="ml-2 h-4 w-4" />
-                          {difficultyLabels[suggestion.difficulty] ?? suggestion.difficulty}
+                          {dictionary.difficulty[suggestion.difficulty] ?? suggestion.difficulty}
                           <Sparkles className="ml-auto h-4 w-4" />
                           </div>
                         </button>
@@ -681,15 +716,14 @@ export function ScanWorkflow() {
                 {selectedRecipeView.display.summary}
               </p>
               <p className="mt-5 text-sm font-bold leading-6 text-black/80 sm:mt-6 sm:text-base sm:leading-7">
-                Công thức này ưu tiên các nguyên liệu đã nhận diện được từ ảnh quét. Bạn có thể xem nhanh cách nấu,
-                sau đó mua thêm các sản phẩm phù hợp ở phần bên dưới.
+                {dictionary.scan.recipeIntro}
               </p>
 
               <div className="mt-8 space-y-4">
                 {isLoadingRecipeDetails ? (
                   <div className="flex items-center gap-3 rounded-3xl bg-[#ffe467] px-4 py-3 text-sm font-black text-black/70">
                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                    Nấu đang viết hướng dẫn chi tiết từng bước...
+                    {dictionary.scan.loadingSteps}
                   </div>
                 ) : null}
                 {selectedRecipeView.steps.map((step, index) => (
@@ -700,16 +734,16 @@ export function ScanWorkflow() {
               </div>
 
               <p className="mt-8 text-sm font-bold leading-6 sm:text-base">
-                Link các video hướng dẫn tại Youtube:{" "}
+                {dictionary.scan.youtubeLabel}{" "}
                 <a
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
-                    `cách nấu ${selectedRecipeView.display.name}`,
+                    `${dictionary.scan.youtubeQueryPrefix} ${selectedRecipeView.display.name}`,
                   )}`}
                   target="_blank"
                   rel="noreferrer"
                   className="underline decoration-2 underline-offset-4"
                 >
-                  xem thêm
+                  {dictionary.scan.seeMore}
                 </a>
               </p>
 
@@ -734,27 +768,41 @@ export function ScanWorkflow() {
             <section className="min-h-[58dvh] rounded-t-[28px] bg-[#ffe467] px-6 pb-40 pt-7">
               <div className="rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_45%,#cd6cfd_100%)] px-7 py-4">
                 <p className="text-sm font-black leading-6 sm:text-base">
-                  Món ăn của bạn sẽ hoàn hảo hơn nếu có thêm các nguyên liệu sau:
+                  {dictionary.scan.upsellIntro}
                 </p>
               </div>
 
               <div className="mt-10 flex snap-x gap-6 overflow-x-auto pb-3">
-                {selectedRecipeView.upsellProducts.map((product) => (
+                {selectedRecipeView.upsellProducts.map((product) => {
+                  const productText = getLocalizedProductText(
+                    {
+                      id: product.id,
+                      name: product.name,
+                      detail: product.detail ?? product.displayUnit,
+                      category: product.category,
+                      categoryLabel: product.categoryLabel,
+                      sellUnitLabel: product.sellUnitLabel,
+                      displayUnit: product.displayUnit
+                    },
+                    locale
+                  );
+
+                  return (
                   <article
                     key={product.id}
                     className="w-[152px] shrink-0 snap-start rounded-[26px] bg-white p-2.5 pb-4 shadow-sm"
                   >
                     <div className="relative flex aspect-square items-center justify-center rounded-[22px] bg-[#EEEEEE] p-3">
                       {product.image ? (
-                        <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
+                        <img src={product.image} alt={productText.name} className="h-full w-full object-contain" />
                       ) : (
-                        <span className="text-center text-xs font-black">{product.name}</span>
+                        <span className="text-center text-xs font-black">{productText.name}</span>
                       )}
                       <button
                         type="button"
                         onClick={() => toggleUpsellFavorite(product)}
                         className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#69bf7b] text-white ring-2 ring-white transition active:scale-90"
-                        aria-label={`Lưu ${product.name} vào yêu thích`}
+                        aria-label={interpolate(dictionary.common.addFavorite, { product: productText.name })}
                       >
                         <Heart
                           className={`h-3.5 w-3.5 ${
@@ -768,18 +816,18 @@ export function ScanWorkflow() {
 
                     <div className="px-1 pt-4">
                       <h3 className="line-clamp-2 min-h-9 text-[11px] font-black leading-snug">
-                        {product.name}
+                        {productText.name}
                       </h3>
                       <p className="mt-1 text-[10px] font-bold text-black/65">
-                        {product.detail ?? product.displayUnit}
+                        {productText.detail}
                       </p>
 
                       <div className="mt-4 flex items-end justify-between gap-2">
                         <div>
-                          <p className="text-lg font-black leading-none sm:text-xl">{formatPrice(product.price)}</p>
+                          <p className="text-lg font-black leading-none sm:text-xl">{formatPrice(product.price, locale)}</p>
                           {product.oldPrice ? (
                             <p className="mt-1 text-[10px] font-bold text-black/45 line-through">
-                              {formatPrice(product.oldPrice)}
+                              {formatPrice(product.oldPrice, locale)}
                             </p>
                           ) : null}
                         </div>
@@ -791,7 +839,7 @@ export function ScanWorkflow() {
                               type="button"
                               onClick={() => addUpsellProductToCart(product)}
                               className="text-base font-black leading-none sm:text-lg"
-                              aria-label={`Tăng số lượng ${product.name}`}
+                              aria-label={interpolate(dictionary.scan.increaseProduct, { product: productText.name })}
                             >
                               +
                             </button>
@@ -801,7 +849,7 @@ export function ScanWorkflow() {
                             type="button"
                             onClick={() => addUpsellProductToCart(product)}
                             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#69bf7b] text-black"
-                            aria-label={`Thêm ${product.name} vào giỏ`}
+                            aria-label={interpolate(dictionary.scan.addProduct, { product: productText.name })}
                           >
                             <Plus className="h-5 w-5" />
                           </button>
@@ -809,7 +857,8 @@ export function ScanWorkflow() {
                       </div>
                     </div>
                   </article>
-                ))}
+                  );
+                })}
               </div>
 
               <button
@@ -817,7 +866,7 @@ export function ScanWorkflow() {
                 onClick={() => setSelectedRecipeView(null)}
                 className="mx-auto mt-8 block rounded-full bg-[#69bf7b] px-10 py-3 text-base font-black leading-tight shadow-[0_10px_20px_rgba(0,0,0,0.22)] sm:px-14 sm:py-4 sm:text-lg"
               >
-                Hoàn tất
+                {dictionary.common.done}
               </button>
             </section>
           </main>

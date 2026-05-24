@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input";
 import { RecipeMobileLayout } from "@/components/recipe/mobile/RecipeMobileLayout";
 import { useCart } from "@/components/providers/cart-provider";
 import { useFavorites } from "@/components/providers/favorite-provider";
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
 import { estimateRecipeNutrition } from "@/lib/services/recipeNutrition";
 import type { CartItem } from "@/types";
 
@@ -92,7 +94,7 @@ function normalizeName(value: string) {
     .trim();
 }
 
-function parseAmount(amount: string) {
+function parseAmount(amount: string, locale: "vi" | "en") {
   const normalized = amount.replace(/,/g, ".");
   const numbers = normalized.match(/\d+(?:\.\d+)?/g)?.map(Number).filter(Number.isFinite) ?? [];
   const quantity = numbers.length > 0 ? Math.max(...numbers) : 1;
@@ -100,7 +102,7 @@ function parseAmount(amount: string) {
 
   return {
     quantity,
-    unit: unitMatch?.[0] ?? "phần"
+    unit: unitMatch?.[0] ?? (locale === "vi" ? "phần" : "portion")
   };
 }
 
@@ -113,6 +115,7 @@ function hasNameOverlap(left: string, right: string) {
 
 export function RecipeWorkflow() {
   const router = useRouter();
+  const { locale, dictionary } = useLanguage();
   const { addItems } = useCart();
   const { favoriteRecipeIds, toggleRecipe } = useFavorites();
   const [dishName, setDishName] = useState("");
@@ -177,17 +180,17 @@ export function RecipeWorkflow() {
     setReviewIngredients((current) =>
       current.filter((ingredient) => !hasNameOverlap(ingredient.name, ingredientName))
     );
-    setCartMessage("Đã xoá nguyên liệu này khỏi danh sách chuẩn bị thêm vào giỏ.");
+    setCartMessage(dictionary.recipe.removedIngredient);
   };
 
   const fetchRecipe = async () => {
     if (!dishName.trim()) {
-      setErrorMessage("Vui lòng nhập tên món ăn.");
+      setErrorMessage(dictionary.recipe.enterDishError);
       return;
     }
 
     if (servings <= 0) {
-      setErrorMessage("Số người ăn phải lớn hơn 0.");
+      setErrorMessage(dictionary.recipe.servingsError);
       return;
     }
 
@@ -205,14 +208,15 @@ export function RecipeWorkflow() {
           mode: "recipe",
           dish: dishName.trim(),
           servings,
-          allergies
+          allergies,
+          locale
         })
       });
 
       const data = (await res.json()) as RecipeResult & { error?: string; detail?: string };
 
       if (!res.ok) {
-        setErrorMessage(data.detail || data.error || "AI chưa thể tạo công thức lúc này.");
+        setErrorMessage(data.detail || data.error || dictionary.recipe.aiError);
         return;
       }
 
@@ -226,9 +230,10 @@ export function RecipeWorkflow() {
         {
           id: `recipe-${Date.now()}`,
           type: "recipe",
-          text: `Đã tạo công thức ${data.dish || dishName.trim()} cho ${
-            data.servings || servings
-          } người.`
+          text: interpolate(dictionary.recipe.mobileGenerated, {
+            dish: data.dish || dishName.trim(),
+            servings: data.servings || servings
+          })
         }
       ]);
 
@@ -255,7 +260,7 @@ export function RecipeWorkflow() {
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("AI chưa thể tạo công thức lúc này.");
+      setErrorMessage(dictionary.recipe.aiError);
     } finally {
       setLoading(false);
     }
@@ -263,7 +268,7 @@ export function RecipeWorkflow() {
 
   const addReviewedIngredientsToCart = async () => {
     if (reviewIngredients.length === 0) {
-      setCartMessage("Danh sách nguyên liệu đang trống, chưa thể thêm vào giỏ.");
+      setCartMessage(dictionary.recipe.emptyCartList);
       return;
     }
 
@@ -272,7 +277,7 @@ export function RecipeWorkflow() {
 
     try {
       const ingredients = reviewIngredients.map((ingredient) => {
-        const parsedAmount = parseAmount(ingredient.amount);
+        const parsedAmount = parseAmount(ingredient.amount, locale);
 
         return {
           name: ingredient.name,
@@ -287,13 +292,13 @@ export function RecipeWorkflow() {
       const res = await fetch("/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ingredients })
+        body: JSON.stringify({ ingredients, locale })
       });
 
       const data = (await res.json()) as CartAddResponse;
 
       if (!res.ok || !data.success) {
-        setCartMessage(!data.success ? data.error.message : "Chưa thể thêm vào giỏ lúc này.");
+        setCartMessage(!data.success ? data.error.message : dictionary.recipe.addCartFailed);
         return;
       }
 
@@ -302,14 +307,18 @@ export function RecipeWorkflow() {
       const unmatchedCount = data.data.unmatchedIngredients.length;
       addItems(data.data.items);
       setCartMessage(
-        `Đã thêm ${matchedCount} mặt hàng vào giỏ. ${
-          unmatchedCount > 0 ? `${unmatchedCount} nguyên liệu chưa có sản phẩm phù hợp.` : ""
-        }`
+        interpolate(dictionary.recipe.cartAddedSummary, {
+          matched: matchedCount,
+          unmatched:
+            unmatchedCount > 0
+              ? interpolate(dictionary.recipe.unmatchedSummary, { count: unmatchedCount })
+              : ""
+        })
       );
       router.push("/cart");
     } catch (error) {
       console.error(error);
-      setCartMessage("Chưa thể thêm vào giỏ lúc này.");
+      setCartMessage(dictionary.recipe.addCartFailed);
     } finally {
       setCartLoading(false);
     }
@@ -323,7 +332,7 @@ export function RecipeWorkflow() {
     const visibleIngredients = reviewIngredients.length > 0 ? reviewIngredients : recipe.ingredients ?? [];
     const ingredientText =
       visibleIngredients.map((ingredient) => ingredient.name).filter(Boolean).join(", ") ||
-      "Chưa có danh sách nguyên liệu.";
+      dictionary.recipe.noIngredientList;
     const nutrition = estimateRecipeNutrition(
       visibleIngredients.map((ingredient) => ({
         name: ingredient.name,
@@ -334,10 +343,13 @@ export function RecipeWorkflow() {
 
     toggleRecipe({
       id: favoriteRecipeId,
-      name: recipe.dish || dishName.trim() || "Công thức nấu ăn",
+      name: recipe.dish || dishName.trim() || dictionary.recipe.recipeFallbackName,
       description:
         recipe.steps?.[0] ??
-        `Công thức nấu ${recipe.dish || dishName.trim()} dành cho ${recipe.servings} người.`,
+        interpolate(dictionary.recipe.mobileGenerated, {
+          dish: recipe.dish || dishName.trim(),
+          servings: recipe.servings
+        }),
       ingredients: ingredientText,
       calories: nutrition.calories,
       carbs: nutrition.carbs,
@@ -365,7 +377,7 @@ export function RecipeWorkflow() {
     const submittedDishName = dishName.trim();
 
     if (!submittedDishName) {
-      setErrorMessage("Vui lòng nhập tên món ăn.");
+      setErrorMessage(dictionary.recipe.enterDishError);
       return;
     }
 
@@ -418,9 +430,10 @@ export function RecipeWorkflow() {
             {
               id: `recipe-history-${Date.now()}`,
               type: "recipe" as const,
-              text: `Đã mở lại công thức ${item.recipe.dish || item.text} cho ${
-                item.recipe.servings || item.servings || 1
-              } người.`
+              text: interpolate(dictionary.recipe.mobileReopened, {
+                dish: item.recipe.dish || item.text,
+                servings: item.recipe.servings || item.servings || 1
+              })
             }
           ]
         : [])
@@ -495,27 +508,27 @@ export function RecipeWorkflow() {
       <div className="space-y-5">
         <Card className="space-y-4">
           <div>
-            <h2 className="text-lg font-semibold leading-tight sm:text-xl">Nháº­p mÃ³n Äƒn</h2>
+            <h2 className="text-lg font-semibold leading-tight sm:text-xl">{dictionary.recipe.inputTitle}</h2>
             <p className="mt-1 text-sm text-[var(--color-ink-soft)]">
-              Nháº­p tÃªn mÃ³n, sá»‘ ngÆ°á»i Äƒn vÃ  nguyÃªn liá»‡u dá»‹ á»©ng náº¿u cÃ³.
+              {dictionary.recipe.inputDescription}
             </p>
           </div>
 
           <div className="space-y-3">
             <label className="block text-sm font-semibold text-[var(--color-ink)]">
-              TÃªn mÃ³n Äƒn
+              {dictionary.recipe.dishName}
             </label>
             <Input
               value={dishName}
               onChange={(event) => setDishName(event.target.value)}
-              placeholder="VÃ­ dá»¥: Canh chua cÃ¡, bÃ² kho, thá»‹t kho trá»©ng"
+              placeholder={dictionary.recipe.dishPlaceholder}
               className="bg-white"
             />
           </div>
 
           <div className="space-y-3">
             <label className="block text-sm font-semibold text-[var(--color-ink)]">
-              Sá»‘ ngÆ°á»i Äƒn
+              {dictionary.recipe.servings}
             </label>
             <div className="flex items-center gap-3 rounded-3xl border border-[var(--color-border)] bg-white px-4 py-3">
               <Users className="h-5 w-5 text-[var(--color-primary)]" />
@@ -532,12 +545,12 @@ export function RecipeWorkflow() {
 
           <div className="space-y-3">
             <label className="block text-sm font-semibold text-[var(--color-ink)]">
-              Dá»‹ á»©ng cáº§n trÃ¡nh
+              {dictionary.recipe.allergies}
             </label>
             <textarea
               value={allergiesText}
               onChange={(event) => setAllergiesText(event.target.value)}
-              placeholder="VÃ­ dá»¥: tÃ´m, Ä‘áº­u phá»™ng, sá»¯a"
+              placeholder={dictionary.recipe.allergiesPlaceholder}
               className="min-h-28 w-full resize-none rounded-3xl border border-[var(--color-border)] bg-white px-4 py-4 text-sm outline-none focus:border-[var(--color-primary)]"
             />
             <div className="flex flex-wrap gap-2">
@@ -552,7 +565,7 @@ export function RecipeWorkflow() {
                 ))
               ) : (
                 <p className="text-sm text-[var(--color-ink-soft)]">
-                  CÃ³ thá»ƒ Ä‘á»ƒ trá»‘ng náº¿u khÃ´ng cáº§n lá»c dá»‹ á»©ng.
+                  {dictionary.recipe.emptyAllergies}
                 </p>
               )}
             </div>
@@ -560,7 +573,7 @@ export function RecipeWorkflow() {
 
           <Button onClick={fetchRecipe} disabled={loading} className="w-full">
             <ChefHat className="mr-2 h-4 w-4" />
-            {loading ? "Äang táº¡o cÃ´ng thá»©c..." : "Táº¡o cÃ´ng thá»©c náº¥u Äƒn"}
+            {loading ? dictionary.recipe.creating : dictionary.recipe.create}
           </Button>
         </Card>
 
@@ -575,7 +588,7 @@ export function RecipeWorkflow() {
         {loading ? (
           <Card className="flex min-h-44 items-center justify-center gap-3 text-center">
             <LoaderCircle className="h-6 w-6 animate-spin text-[var(--color-primary)]" />
-            <p className="font-semibold">AI Ä‘ang kiá»ƒm tra dá»‹ á»©ng vÃ  táº¡o cÃ´ng thá»©c...</p>
+            <p className="font-semibold">{dictionary.recipe.checking}</p>
           </Card>
         ) : null}
 
@@ -587,7 +600,7 @@ export function RecipeWorkflow() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-[var(--color-accent)]">
-                  CÃ´ng thá»©c cho {recipe.servings} ngÆ°á»i
+                  {dictionary.recipe.resultFor} {recipe.servings} {dictionary.common.servings}
                 </p>
                 <h2 className="mt-1 text-xl font-semibold leading-tight sm:text-2xl">{recipe.dish}</h2>
               </div>
@@ -595,7 +608,7 @@ export function RecipeWorkflow() {
 
             {isUnsafe ? (
               <div className="space-y-3 rounded-3xl border border-[#e7c6b0] bg-[#fff3ea] p-4 text-[#7d3f23]">
-                <h3 className="font-semibold">Cáº£nh bÃ¡o dá»‹ á»©ng</h3>
+                <h3 className="font-semibold">{dictionary.recipe.allergyWarning}</h3>
                 {(recipe.allergyWarnings ?? []).map((warning) => (
                   <p key={warning} className="text-sm leading-6">
                     {warning}
@@ -603,22 +616,21 @@ export function RecipeWorkflow() {
                 ))}
                 {(recipe.conflictingIngredients?.length ?? 0) > 0 ? (
                   <p className="rounded-2xl bg-white px-4 py-3 text-sm font-semibold">
-                    NguyÃªn liá»‡u xung Ä‘á»™t: {recipe.conflictingIngredients?.join(", ")}
+                    {dictionary.recipe.conflictIngredients}: {recipe.conflictingIngredients?.join(", ")}
                   </p>
                 ) : null}
                 <p className="text-sm leading-6">
-                  Báº¡n cÃ³ thá»ƒ xoÃ¡ nguyÃªn liá»‡u xung Ä‘á»™t khá»i danh sÃ¡ch bÃªn dÆ°á»›i, hoáº·c náº¿u váº«n muá»‘n
-                  giá»¯ nguyÃªn cÃ´ng thá»©c thÃ¬ báº¥m nÃºt xÃ¡c nháº­n thÃªm vÃ o giá».
+                  {dictionary.recipe.unsafeHelp}
                 </p>
               </div>
             ) : (
               <div className="rounded-3xl bg-[var(--color-muted)] p-4 text-sm text-[var(--color-ink-soft)]">
-                CÃ´ng thá»©c khÃ´ng phÃ¡t hiá»‡n xung Ä‘á»™t vá»›i danh sÃ¡ch dá»‹ á»©ng báº¡n Ä‘Ã£ nháº­p.
+                {dictionary.recipe.safeMessage}
               </div>
             )}
 
             <div>
-              <h4 className="text-base font-semibold leading-snug sm:text-lg">Danh sÃ¡ch nguyÃªn liá»‡u chuáº©n bá»‹ thÃªm vÃ o giá»</h4>
+              <h4 className="text-base font-semibold leading-snug sm:text-lg">{dictionary.recipe.reviewTitle}</h4>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {reviewIngredients.map((ingredient, index) => {
                   const isConflict = isConflictingIngredient(ingredient.name);
@@ -642,7 +654,7 @@ export function RecipeWorkflow() {
                             variant="secondary"
                             size="sm"
                             onClick={() => removeIngredient(ingredient.name)}
-                            aria-label={`XoÃ¡ ${ingredient.name} khá»i danh sÃ¡ch`}
+                            aria-label={`${dictionary.common.remove} ${ingredient.name}`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -650,12 +662,12 @@ export function RecipeWorkflow() {
                       </div>
                       {isConflict ? (
                         <p className="mt-2 text-xs font-semibold text-[#8c4d2b]">
-                          CÃ³ thá»ƒ gÃ¢y dá»‹ á»©ng, hÃ£y xoÃ¡ náº¿u báº¡n muá»‘n loáº¡i khá»i giá».
+                          {dictionary.recipe.conflictHelp}
                         </p>
                       ) : null}
                       {ingredient.alternatives && ingredient.alternatives.length > 0 ? (
                         <p className="mt-2 text-sm text-[var(--color-ink-soft)]">
-                          CÃ³ thá»ƒ thay báº±ng: {ingredient.alternatives.join(", ")}
+                          {dictionary.recipe.alternatives}: {ingredient.alternatives.join(", ")}
                         </p>
                       ) : null}
                     </div>
@@ -670,7 +682,7 @@ export function RecipeWorkflow() {
               className="w-full"
             >
               <ShoppingBasket className="mr-2 h-4 w-4" />
-              {cartLoading ? "Äang thÃªm vÃ o giá»..." : "XÃ¡c nháº­n thÃªm danh sÃ¡ch vÃ o giá» hÃ ng"}
+              {cartLoading ? dictionary.recipe.addingToCart : dictionary.recipe.addListToCart}
             </Button>
 
             {cartMessage ? (
@@ -680,7 +692,7 @@ export function RecipeWorkflow() {
             ) : null}
 
             <div>
-              <h4 className="text-base font-semibold leading-snug sm:text-lg">CÃ¡ch lÃ m</h4>
+              <h4 className="text-base font-semibold leading-snug sm:text-lg">{dictionary.recipe.stepsTitle}</h4>
               <div className="mt-3 space-y-3">
                 {recipe.steps?.map((step, index) => (
                   <p key={`${step}-${index}`} className="rounded-2xl bg-white px-4 py-3 text-sm">
@@ -697,11 +709,9 @@ export function RecipeWorkflow() {
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white">
               <Soup className="h-5 w-5" />
             </div>
-            <h2 className="text-lg font-semibold leading-tight sm:text-xl">CÃ´ng thá»©c sáº½ hiá»ƒn thá»‹ á»Ÿ Ä‘Ã¢y</h2>
+            <h2 className="text-lg font-semibold leading-tight sm:text-xl">{dictionary.recipe.emptyTitle}</h2>
             <p className="text-sm text-[var(--color-ink-soft)]">
-              Sau khi nháº­p tÃªn mÃ³n, sá»‘ ngÆ°á»i Äƒn vÃ  dá»‹ á»©ng náº¿u cÃ³, há»‡ thá»‘ng sáº½ táº¡o sáºµn cÃ¡c card
-              nguyÃªn liá»‡u. Náº¿u phÃ¡t hiá»‡n xung Ä‘á»™t dá»‹ á»©ng, báº¡n cÃ³ thá»ƒ xoÃ¡ nguyÃªn liá»‡u Ä‘Ã³ trÆ°á»›c khi
-              thÃªm vÃ o giá».
+              {dictionary.recipe.emptyDescription}
             </p>
           </Card>
         ) : null}

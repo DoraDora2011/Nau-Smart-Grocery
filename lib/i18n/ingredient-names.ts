@@ -100,6 +100,150 @@ const viIngredientNames: Record<string, string> = {
   zucchini: "Bí ngòi"
 };
 
+const enIngredientNameOverrides: Record<string, string> = {
+  "bánh mì": "Bread",
+  "banh mi": "Bread",
+  "bánh phở": "Pho Noodle",
+  "banh pho": "Pho Noodle",
+  "bánh tráng": "Rice Paper",
+  "banh trang": "Rice Paper",
+  "bạc hà": "Mint",
+  "bac ha": "Mint",
+  "bò viên": "Beef Balls",
+  "bo vien": "Beef Balls",
+  "bông cải xanh": "Broccoli",
+  "bong cai xanh": "Broccoli",
+  "bông cải trắng": "Cauliflower",
+  "bong cai trang": "Cauliflower",
+  "bơ": "Butter",
+  "bo": "Butter",
+  "bún": "Rice Vermicelli",
+  bun: "Rice Vermicelli",
+  "cà chua": "Tomato",
+  "ca chua": "Tomato",
+  "cà rốt": "Carrot",
+  "ca rot": "Carrot",
+  "cà tím": "Eggplant",
+  "ca tim": "Eggplant",
+  "cá viên": "Fish Balls",
+  "ca vien": "Fish Balls",
+  "chả cá": "Fish Cake",
+  "cha ca": "Fish Cake",
+  "chả lụa": "Vietnamese Pork Roll",
+  "cha lua": "Vietnamese Pork Roll",
+  "chả quế": "Vietnamese Cinnamon Pork Roll",
+  "cha que": "Vietnamese Cinnamon Pork Roll",
+  "cơm": "Rice",
+  com: "Rice",
+  "củ kiệu": "Pickled Scallion Head",
+  "cu kieu": "Pickled Scallion Head",
+  "củ cải": "Daikon",
+  "cu cai": "Daikon",
+  "củ cải trắng": "Daikon",
+  "cu cai trang": "Daikon",
+  "dưa leo": "Cucumber",
+  "dua leo": "Cucumber",
+  "đậu bắp": "Okra",
+  "dau bap": "Okra",
+  "đậu hũ": "Tofu",
+  "dau hu": "Tofu",
+  "đậu phụ": "Tofu",
+  "dau phu": "Tofu",
+  "đồ chua": "Vietnamese Pickles",
+  "do chua": "Vietnamese Pickles",
+  "giá đỗ": "Bean Sprouts",
+  "gia do": "Bean Sprouts",
+  "hành lá": "Green Onion",
+  "hanh la": "Green Onion",
+  "hành tây": "Onion",
+  "hanh tay": "Onion",
+  "hành tím": "Shallot",
+  "hanh tim": "Shallot",
+  "húng quế": "Basil",
+  "hung que": "Basil",
+  "húng tây": "Basil",
+  "hung tay": "Basil",
+  "kem sữa": "Cream",
+  "kem sua": "Cream",
+  "khổ qua": "Bitter Melon",
+  "kho qua": "Bitter Melon",
+  "khoai tây": "Potato",
+  "khoai tay": "Potato",
+  "mắm ruốc": "Fermented Shrimp Paste",
+  "mam ruoc": "Fermented Shrimp Paste",
+  "mắm tôm": "Shrimp Paste",
+  "mam tom": "Shrimp Paste",
+  "me vắt": "Tamarind Pulp",
+  "me vat": "Tamarind Pulp",
+  "mì": "Noodles",
+  mi: "Noodles",
+  "mì ý": "Spaghetti",
+  "mi y": "Spaghetti",
+  "mì spaghetti": "Spaghetti",
+  "mi spaghetti": "Spaghetti",
+  "miến": "Glass Noodle",
+  mien: "Glass Noodle",
+  "nem chua": "Fermented Pork Roll",
+  "ngò gai": "Sawtooth Coriander",
+  "ngo gai": "Sawtooth Coriander",
+  "ngò rí": "Cilantro",
+  "ngo ri": "Cilantro",
+  "nước mắm": "Fish Sauce",
+  "nuoc mam": "Fish Sauce",
+  "ớt": "Chili",
+  ot: "Chili",
+  "ớt chuông": "Bell Pepper",
+  "ot chuong": "Bell Pepper",
+  "phô mai": "Cheese",
+  "pho mai": "Cheese",
+  "rau răm": "Vietnamese Coriander",
+  "rau ram": "Vietnamese Coriander",
+  "sả": "Lemongrass",
+  sa: "Lemongrass",
+  "sốt cà chua": "Tomato Sauce",
+  "sot ca chua": "Tomato Sauce",
+  "sốt pasta": "Pasta Sauce",
+  "sot pasta": "Pasta Sauce",
+  "sốt spaghetti": "Spaghetti Sauce",
+  "sot spaghetti": "Spaghetti Sauce",
+  "sữa": "Milk",
+  sua: "Milk",
+  "tía tô": "Perilla",
+  "tia to": "Perilla",
+  "tỏi": "Garlic",
+  toi: "Garlic",
+  "trứng": "Eggs",
+  trung: "Eggs",
+  "tương ớt": "Chili Sauce",
+  "tuong ot": "Chili Sauce",
+  "xúc xích": "Sausage",
+  "xuc xich": "Sausage"
+};
+
+function normalizeLookup(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/\s+/g, " ");
+}
+
+const enIngredientNames = Object.entries(viIngredientNames).reduce<Record<string, string>>(
+  (names, [englishName, vietnameseName]) => {
+    const displayName = titleCase(englishName);
+    const accentedKey = vietnameseName.trim().toLowerCase();
+    const normalizedKey = normalizeLookup(vietnameseName);
+
+    names[accentedKey] ??= displayName;
+    names[normalizedKey] ??= displayName;
+
+    return names;
+  },
+  { ...enIngredientNameOverrides }
+);
+
 function titleCase(value: string) {
   return value
     .split(" ")
@@ -115,5 +259,5 @@ export function getLocalizedIngredientName(name: string, locale: Locale) {
     return viIngredientNames[normalized] ?? titleCase(name);
   }
 
-  return titleCase(name);
+  return enIngredientNames[normalized] ?? enIngredientNames[normalizeLookup(name)] ?? titleCase(name);
 }

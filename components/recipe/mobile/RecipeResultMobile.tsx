@@ -3,6 +3,10 @@
 import { useRef, useState, type PointerEvent } from "react";
 import { ChevronDown, Heart, Minus, ShoppingBasket } from "lucide-react";
 
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
+
 type RecipeIngredient = {
   name: string;
   amount: string;
@@ -47,14 +51,16 @@ export function RecipeResultMobile({
   onToggleRecipeFavorite,
   onCollapse
 }: RecipeResultMobileProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].recipeMobile;
   const dragStartY = useRef<number | null>(null);
   const didDragHandle = useRef(false);
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [stepsOpen, setStepsOpen] = useState(false);
-  const youtubeSearchKeyword = recipe.dish || "công thức nấu ăn";
+  const youtubeSearchKeyword = recipe.dish || labels.fallbackSearch;
   const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    `cách nấu ${youtubeSearchKeyword}`
+    `${labels.youtubeQueryPrefix} ${youtubeSearchKeyword}`
   )}`;
 
   const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
@@ -114,7 +120,7 @@ export function RecipeResultMobile({
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           className="-mx-2 flex h-12 w-[calc(100%+1rem)] touch-none items-start justify-center rounded-t-[28px] pt-2"
-          aria-label="Kéo xuống để quay lại khung chat"
+          aria-label={labels.dragChat}
         >
           <span className="block h-1.5 w-16 rounded-full bg-white" />
         </button>
@@ -122,15 +128,17 @@ export function RecipeResultMobile({
         <div className="mt-0 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h1 className="text-2xl font-black leading-tight sm:text-[26px]">
-              Công thức nấu {recipe.dish || "(tên món ăn)"}
+              {interpolate(labels.recipeTitle, { dish: recipe.dish || labels.unnamedDish })}
             </h1>
-            <p className="mt-2 text-sm font-bold leading-snug sm:text-base">Dành cho {recipe.servings} người</p>
+            <p className="mt-2 text-sm font-bold leading-snug sm:text-base">
+              {interpolate(labels.servingsFor, { servings: recipe.servings })}
+            </p>
           </div>
           <button
             type="button"
             onClick={onToggleRecipeFavorite}
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_18px_rgba(0,0,0,0.12)] transition active:scale-95"
-            aria-label={isRecipeFavorite ? "Bỏ lưu công thức yêu thích" : "Lưu công thức yêu thích"}
+            aria-label={isRecipeFavorite ? labels.unsaveRecipe : labels.saveRecipe}
           >
             <Heart
               className={`h-6 w-6 transition-all duration-200 ${
@@ -152,7 +160,7 @@ export function RecipeResultMobile({
         ) : null}
 
         <div className="mt-7">
-          <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
+          <h2 className="text-lg font-black leading-tight sm:text-xl">{labels.ingredientsTitle}</h2>
           <div className="mt-5 space-y-5">
             {reviewIngredients.map((ingredient, index) => {
               const isConflict = isConflictingIngredient(ingredient.name);
@@ -174,12 +182,12 @@ export function RecipeResultMobile({
                       <p className="mt-1.5 text-sm font-semibold leading-tight text-black/70">{ingredient.amount}</p>
                       {isConflict ? (
                         <p className="mt-2 text-xs font-bold leading-snug text-[#8c4d2b]">
-                          Có thể gây dị ứng, hãy xoá nếu bạn muốn loại khỏi giỏ.
+                          {labels.conflictHelp}
                         </p>
                       ) : null}
                       {ingredient.alternatives && ingredient.alternatives.length > 0 ? (
                         <p className="mt-2 line-clamp-2 text-xs font-semibold leading-snug text-black/55">
-                          Có thể thay bằng: {ingredient.alternatives.join(", ")}
+                          {labels.alternatives}: {ingredient.alternatives.join(", ")}
                         </p>
                       ) : null}
                     </div>
@@ -189,14 +197,14 @@ export function RecipeResultMobile({
                         type="button"
                         onClick={() => onRemoveIngredient(ingredient.name)}
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D9D9D9] text-black transition active:scale-95"
-                        aria-label={`Xóa ${ingredient.name} khỏi danh sách`}
+                        aria-label={interpolate(labels.removeIngredient, { name: ingredient.name })}
                       >
                         <Minus className="h-5 w-5" strokeWidth={3} />
                       </button>
                       <button
                         type="button"
                         className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6fbd7d] text-black"
-                        aria-label="Thêm nguyên liệu"
+                        aria-label={labels.addIngredient}
                       >
                         <ShoppingBasket className="h-5 w-5" />
                       </button>
@@ -214,7 +222,7 @@ export function RecipeResultMobile({
           disabled={cartLoading || reviewIngredients.length === 0}
           className="mt-7 w-full rounded-full bg-[#6fbd7d] px-5 py-3 text-sm font-black leading-tight text-black disabled:opacity-60 sm:py-4 sm:text-base"
         >
-          {cartLoading ? "Đang thêm vào giỏ..." : "Thêm danh sách vào giỏ hàng"}
+          {cartLoading ? labels.addingList : labels.addList}
         </button>
 
         {cartMessage ? (
@@ -228,7 +236,7 @@ export function RecipeResultMobile({
             className="flex w-full items-center justify-between text-left"
             aria-expanded={stepsOpen}
           >
-            <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
+            <h2 className="text-lg font-black leading-tight sm:text-xl">{labels.stepsTitle}</h2>
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-black">
               <ChevronDown className={`h-5 w-5 transition-transform ${stepsOpen ? "rotate-180" : ""}`} />
             </span>
@@ -243,14 +251,14 @@ export function RecipeResultMobile({
             </div>
           ) : null}
           <p className="mt-5 rounded-2xl bg-white/85 px-4 py-3 text-sm font-bold leading-6">
-            Tham khảo thêm các công thức đa dạng hơn nếu bạn muốn:{" "}
+            {labels.youtubeIntro}{" "}
             <a
               href={youtubeUrl}
               target="_blank"
               rel="noreferrer"
               className="underline decoration-2 underline-offset-4"
             >
-              xem video hướng dẫn trên YouTube
+              {labels.youtubeLink}
             </a>
           </p>
         </div>

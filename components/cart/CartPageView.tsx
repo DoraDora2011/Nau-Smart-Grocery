@@ -8,8 +8,12 @@ import { AppImageButton } from "@/components/AppImageButton";
 import { ProductGrid } from "@/components/home/ProductGrid";
 import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
 import { useFavorites } from "@/components/providers/favorite-provider";
+import { useLanguage } from "@/components/providers/language-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import { homeProducts, type HomeProduct } from "@/data/home-products";
+import { getLocalizedProductText } from "@/lib/i18n/products";
+import { interpolate, type Locale } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import type { CartItem } from "@/types";
 
 type QuantityMap = Record<string, number>;
@@ -20,8 +24,11 @@ const suggestionItems = homeProducts
 
 const CHECKOUT_SELECTION_STORAGE_KEY = "nau-smart-grocery:checkout-selection";
 
-function formatPrice(value: number) {
-  return new Intl.NumberFormat("vi-VN").format(value) + "đ";
+function formatPrice(value: number, locale: Locale) {
+  return (
+    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(value) +
+    (locale === "vi" ? "đ" : " VND")
+  );
 }
 
 function CartBottomNav() {
@@ -57,6 +64,8 @@ interface CartItemRowProps {
   item: CartItem;
   selected: boolean;
   favorite: boolean;
+  locale: Locale;
+  labels: (typeof uiLabels)[Locale]["cart"];
   onSelect: (id: string) => void;
   onIncrease: (id: string, quantity: number) => void;
   onDecrease: (id: string, quantity: number) => void;
@@ -68,6 +77,8 @@ function CartItemRow({
   item,
   selected,
   favorite,
+  locale,
+  labels,
   onSelect,
   onIncrease,
   onDecrease,
@@ -76,6 +87,17 @@ function CartItemRow({
 }: CartItemRowProps) {
   const subtotal = item.estimatedPrice * item.quantity;
   const hasImage = Boolean(item.image && !item.image.includes("fallback-product"));
+  const productText = getLocalizedProductText(
+    {
+      id: item.productId || item.id,
+      name: item.productName,
+      detail: item.unit,
+      category: item.category,
+      sellUnitLabel: item.sellUnitLabel,
+      displayUnit: item.displayUnit
+    },
+    locale
+  );
 
   return (
     <article
@@ -96,18 +118,18 @@ function CartItemRow({
         />
         <div className="flex h-20 w-20 items-center justify-center rounded-[20px] bg-[#EEEEEE] p-2">
           {hasImage ? (
-            <img src={item.image} alt={item.productName} className="h-full w-full object-contain" />
+            <img src={item.image} alt={productText.name} className="h-full w-full object-contain" />
           ) : (
             <span className="px-2 text-center text-[11px] font-black leading-tight text-black">
-              {item.productName}
+              {productText.name}
             </span>
           )}
         </div>
       </div>
 
       <div className="min-w-0 py-1">
-        <h2 className="line-clamp-1 text-[13px] font-black text-black">{item.productName}</h2>
-        <p className="mt-0.5 text-[10px] font-bold text-black/70">{item.unit}</p>
+        <h2 className="line-clamp-1 text-[13px] font-black text-black">{productText.name}</h2>
+        <p className="mt-0.5 text-[10px] font-bold text-black/70">{productText.detail}</p>
         <div className="mt-2 flex h-8 w-[74px] items-center justify-between rounded-full bg-[#6fbd7d] px-2 text-black">
           <button
             type="button"
@@ -116,7 +138,7 @@ function CartItemRow({
               onDecrease(item.id, item.quantity);
             }}
             className="flex h-6 w-5 items-center justify-center rounded-full"
-            aria-label={`Giảm số lượng ${item.productName}`}
+            aria-label={interpolate(labels.decreaseProduct, { name: productText.name })}
           >
             <Minus className="h-4 w-4" />
           </button>
@@ -128,7 +150,7 @@ function CartItemRow({
               onIncrease(item.id, item.quantity);
             }}
             className="flex h-6 w-5 items-center justify-center rounded-full"
-            aria-label={`Tăng số lượng ${item.productName}`}
+            aria-label={interpolate(labels.increaseProduct, { name: productText.name })}
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -145,7 +167,7 @@ function CartItemRow({
           className={`flex h-8 w-8 items-center justify-center rounded-full bg-[#6fbd7d] text-white ring-2 ring-white transition-transform duration-200 ${
             favorite ? "scale-110" : "scale-100"
           }`}
-          aria-label={favorite ? "Đã thêm vào yêu thích" : "Thêm vào yêu thích"}
+          aria-label={favorite ? labels.addedFavorite : labels.addFavorite}
         >
           <Heart
             className={`h-5 w-5 transition-all duration-200 ${
@@ -155,18 +177,18 @@ function CartItemRow({
             stroke={favorite ? "#CD6CFD" : "currentColor"}
           />
         </button>
-        <p className="text-right text-lg font-black leading-none text-black sm:text-xl">{formatPrice(subtotal)}</p>
+        <p className="text-right text-lg font-black leading-none text-black sm:text-xl">{formatPrice(subtotal, locale)}</p>
       </div>
     </article>
   );
 }
 
-function EmptyCartState() {
+function EmptyCartState({ labels }: { labels: (typeof uiLabels)[Locale]["cart"] }) {
   return (
     <div className="rounded-[24px] bg-white px-6 py-12 text-center shadow-[0_18px_36px_rgba(46,46,18,0.08)]">
-      <p className="text-xl font-black leading-tight sm:text-2xl">Giỏ hàng đang trống</p>
+      <p className="text-xl font-black leading-tight sm:text-2xl">{labels.emptyTitle}</p>
       <p className="mt-3 text-sm font-semibold leading-6 text-black/60">
-        Sản phẩm bạn bấm thêm ở Trang chủ, mục Tất cả hoặc các Category sẽ tự xuất hiện tại đây.
+        {labels.emptyDescription}
       </p>
     </div>
   );
@@ -174,6 +196,8 @@ function EmptyCartState() {
 
 export function CartPageView() {
   const router = useRouter();
+  const { locale, dictionary } = useLanguage();
+  const labels = uiLabels[locale].cart;
   const { addItems, clearCart, items, removeItem, updateQuantity } = useCart();
   const { addProduct, favoriteIds } = useFavorites();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
@@ -272,7 +296,7 @@ export function CartPageView() {
         id: product.id,
         productId: product.id,
         productName: product.name,
-        brand: "Nấu Smart Grocery",
+        brand: dictionary.common.appName,
         category: product.category,
         quantity: 1,
         unit: product.detail,
@@ -349,6 +373,8 @@ export function CartPageView() {
                   item={item}
                   selected={selectedIds.has(item.id)}
                   favorite={favoriteIds.has(item.id)}
+                  locale={locale}
+                  labels={labels}
                   onSelect={toggleSelected}
                   onIncrease={increaseCartQuantity}
                   onDecrease={decreaseCartQuantity}
@@ -358,7 +384,7 @@ export function CartPageView() {
               ))}
             </div>
           ) : (
-            <EmptyCartState />
+            <EmptyCartState labels={labels} />
           )}
         </section>
 
@@ -369,7 +395,7 @@ export function CartPageView() {
             disabled={items.length === 0}
             className="rounded-[20px] bg-white/75 px-4 py-2.5 text-sm font-black leading-tight text-black shadow-sm disabled:opacity-40 sm:px-5 sm:py-3 sm:text-base"
           >
-            Xoá giỏ
+            {labels.clear}
           </button>
           <button
             type="button"
@@ -377,12 +403,12 @@ export function CartPageView() {
             disabled={items.length === 0}
             className="rounded-[24px] bg-[#cd6cfd] px-6 py-3.5 text-base font-black leading-tight text-white shadow-[0_14px_26px_rgba(0,0,0,0.16)] sm:px-8 sm:py-4 sm:text-lg"
           >
-            Mua Hàng ({checkoutQuantity})
+            {labels.checkout} ({checkoutQuantity})
           </button>
         </div>
 
         <section className="mt-12 min-h-[calc(100dvh-8rem)] rounded-t-[28px] bg-[#ffe467] px-6 pb-48 pt-8 shadow-[0_-12px_30px_rgba(0,0,0,0.08)]">
-          <h1 className="mb-8 text-center text-xl font-black leading-tight sm:text-2xl">Có thể bạn cần</h1>
+          <h1 className="mb-8 text-center text-xl font-black leading-tight sm:text-2xl">{labels.suggested}</h1>
           <ProductGrid
             products={suggestionItems}
             favoriteIds={favoriteIds}

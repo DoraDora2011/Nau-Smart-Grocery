@@ -5,9 +5,11 @@ import { BookOpen, ShoppingBasket } from "lucide-react";
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { HomeSearchBar } from "@/components/home/HomeSearchBar";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
 import { NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { ProductSection } from "@/components/home/ProductSection";
+import { useLanguage } from "@/components/providers/language-provider";
 import type {
   HomeCategory,
   HomeCategoryKey,
@@ -40,22 +42,6 @@ interface HomeDesktopLayoutProps {
   onReplayOnboarding: () => void;
 }
 
-const desktopNavItems = [
-  { label: "Trang Chủ", href: "/" },
-  { label: "Yêu Thích", href: "/favorite" },
-  { label: "Thông Báo", href: "/notifications" },
-  { label: "Chính Sách", href: "#policy" }
-];
-
-const footerLinks = [
-  "Trung tâm dịch vụ",
-  "Quy định hoàn trả",
-  "Về chúng tôi",
-  "Chính sách giao hàng",
-  "Chính sách bảo mật",
-  "Điều khoản sử dụng"
-];
-
 export function HomeDesktopLayout({
   categories,
   activeCategory,
@@ -79,6 +65,14 @@ export function HomeDesktopLayout({
   onChooseDeliveryAddress,
   onReplayOnboarding
 }: HomeDesktopLayoutProps) {
+  const { dictionary } = useLanguage();
+  const desktopNavItems = [
+    { label: dictionary.nav.home, href: "/" },
+    { label: dictionary.nav.favorite, href: "/favorite" },
+    { label: dictionary.nav.notifications, href: "/notifications" },
+    { label: dictionary.nav.policy, href: "#policy" }
+  ];
+
   return (
     <div className="hidden min-h-screen bg-[#FFF1AF] text-black lg:block">
       <header className="fixed inset-x-0 top-0 z-50 bg-white shadow-sm">
@@ -112,6 +106,7 @@ export function HomeDesktopLayout({
           </div>
 
           <div className="flex items-center gap-5">
+            <LanguageSwitcher />
             <div className="flex max-w-[220px] items-center gap-3">
               <AppImageButton
                 buttonId="button-023"
@@ -128,10 +123,10 @@ export function HomeDesktopLayout({
               type="button"
               onClick={onReplayOnboarding}
               className="inline-flex h-12 items-center gap-2 rounded-full bg-[#ffe467] px-4 text-sm font-black leading-tight text-black transition hover:scale-105"
-              aria-label="Xem lại hướng dẫn"
+              aria-label={dictionary.home.guideAgain}
             >
               <BookOpen className="h-5 w-5" strokeWidth={2.6} />
-              Hướng dẫn
+              {dictionary.home.guide}
             </button>
             <Link
               href="/cart"
@@ -148,9 +143,7 @@ export function HomeDesktopLayout({
         <div className="mx-auto grid max-w-7xl grid-cols-[0.92fr_1.08fr] items-center gap-16">
           <div className="space-y-6 text-black">
             <div className="max-w-xl rounded-[32px] border-2 border-black bg-white/78 p-7 text-base font-semibold leading-8 text-black">
-              Bạn không biết nên nấu món gì hoặc cần mua thêm nguyên liệu nào? Nấu giúp bạn
-              quét ảnh nguyên liệu, gợi ý món ăn phù hợp, lập công thức cho nhiều người và tự
-              động thêm nguyên liệu còn thiếu vào giỏ hàng.
+              {dictionary.home.heroCopy}
             </div>
 
             <div className="flex min-h-24 items-start gap-2 text-black">
@@ -160,10 +153,10 @@ export function HomeDesktopLayout({
                   data-tour-id="scan-mvp"
                   className="inline-flex min-w-52 justify-center rounded-full bg-[linear-gradient(135deg,#cd6cfd,#ffffff)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
-                  Quét nguyên liệu
+                  {dictionary.home.scanIngredients}
                 </Link>
                 <p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-black opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  (Tải ảnh nguyên liệu lên và khám phá những món bạn có thể nấu)
+                  {dictionary.home.scanHint}
                 </p>
               </div>
 
@@ -173,11 +166,10 @@ export function HomeDesktopLayout({
                   data-tour-id="recipe-mvp"
                   className="inline-flex min-w-52 justify-center rounded-full bg-[linear-gradient(135deg,#d7fdd9,#ffe467)] px-8 py-4 text-base font-bold text-black transition hover:scale-105 hover:shadow-xl"
                 >
-                  Hỏi Nâu đầu bếp
+                  {dictionary.home.chefAsk}
                 </Link>
                 <p className="mt-3 max-w-xs text-sm font-semibold leading-6 text-black opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  (Nhập món ăn và số người, Nấu sẽ gợi ý công thức, khẩu phần và tự động tạo
-                  giỏ hàng.)
+                  {dictionary.home.chefHint}
                 </p>
               </div>
             </div>
@@ -192,9 +184,12 @@ export function HomeDesktopLayout({
               priority
             />
             <div className="absolute right-8 top-16 rounded-[999px] bg-white px-9 py-6 text-xl font-bold leading-snug shadow-sm xl:text-2xl">
-              Chào nha,
-              <br />
-              mình là Nâu
+              {dictionary.home.mascotGreeting.split("\n").map((line, index) => (
+                <span key={line}>
+                  {index > 0 ? <br /> : null}
+                  {line}
+                </span>
+              ))}
             </div>
           </div>
         </div>
@@ -220,8 +215,8 @@ export function HomeDesktopLayout({
             type="button"
             onClick={onChooseDeliveryAddress}
             className="flex items-center gap-2 border-0 bg-transparent p-0 text-left text-sm font-bold text-black transition hover:scale-[1.02]"
-            aria-label="Nhập địa chỉ giao hàng"
-            title="Nhập địa chỉ giao hàng"
+            aria-label={dictionary.home.inputAddress}
+            title={dictionary.home.inputAddress}
           >
             <LocationBadgeIcon className="h-10 w-10" />
             <span className="max-w-[210px] truncate">{deliveryAddress}</span>
@@ -232,7 +227,7 @@ export function HomeDesktopLayout({
       <section className="mx-auto max-w-6xl space-y-16 px-6 pb-28 pt-12">
         {activeCategory ? (
           <ProductSection
-            title={activeCategoryLabel ?? "Sản phẩm"}
+            title={activeCategoryLabel ?? dictionary.common.product}
             products={categoryProducts}
             favoriteIds={favoriteIds}
             quantities={quantities}
@@ -243,7 +238,7 @@ export function HomeDesktopLayout({
           />
         ) : searchQuery.trim() ? (
           <ProductSection
-            title="Kết quả tìm kiếm"
+            title={dictionary.common.searchResults}
             products={searchResultProducts}
             favoriteIds={favoriteIds}
             quantities={quantities}
@@ -255,7 +250,7 @@ export function HomeDesktopLayout({
         ) : (
           <>
             <ProductSection
-              title="Popular Items"
+              title={dictionary.home.popularItems}
               products={popularProducts}
               favoriteIds={favoriteIds}
               quantities={quantities}
@@ -267,7 +262,7 @@ export function HomeDesktopLayout({
               onToggleViewAll={() => onToggleSection("popular")}
             />
             <ProductSection
-              title="Best deal"
+              title={dictionary.home.bestDeal}
               products={bestDealProducts}
               favoriteIds={favoriteIds}
               quantities={quantities}
@@ -290,11 +285,11 @@ export function HomeDesktopLayout({
               alt="Nấu Smart Grocery"
               className="h-20 w-auto object-contain"
             />
-            <p className="text-sm font-semibold">Liên hệ: (028) 3776 1300</p>
+            <p className="text-sm font-semibold">{dictionary.home.contact}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-x-10 gap-y-3 text-sm font-semibold">
-            {footerLinks.map((link) => (
+            {dictionary.home.footerLinks.map((link) => (
               <a key={link} href="#footer" className="hover:underline">
                 {link}
               </a>
@@ -302,11 +297,9 @@ export function HomeDesktopLayout({
           </div>
 
           <div className="space-y-2 text-right text-sm font-semibold leading-6">
-            <p>Tên công ty: CÔNG TY TNHH Mô Tảo Thương Công</p>
-            <p>Người đại diện: Mô Đào</p>
-            <p>Mã số doanh nghiệp: 0123568888</p>
-            <p>Địa chỉ: 702 Đường Nguyễn Văn Linh, TP. Hồ Chí Minh</p>
-            <p>Bản quyền Mô Tảo Thương Công © 2026</p>
+            {dictionary.home.companyInfo.map((line) => (
+              <p key={line}>{line}</p>
+            ))}
           </div>
         </div>
       </footer>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import dishIndexData from "@/data/dish-index.json";
+import type { Locale } from "@/lib/i18n/translations";
 import type { DishSuggestion, SuggestDishesResult } from "@/types";
 
 const GEMMA_SERVICE_URL = process.env.GEMMA_SERVICE_URL;
@@ -456,7 +457,12 @@ function createDynamicDishId(name: string, index: number) {
   return `dish-ai-${slug || index + 1}`;
 }
 
-function buildGeminiSuggestPrompt(confirmedIngredients: string[], limit: number) {
+function buildGeminiSuggestPrompt(confirmedIngredients: string[], limit: number, locale: Locale) {
+  const responseLanguage =
+    locale === "en"
+      ? "Names, cuisine, summaries, reasons, matched ingredients, and missing ingredients must be in English."
+      : "Tên món, mô tả, lý do, nguyên liệu khớp và nguyên liệu thiếu phải bằng tiếng Việt.";
+
   return `
 Bạn là đầu bếp Việt Nam cho website Nấu Smart Grocery.
 
@@ -474,7 +480,7 @@ YÊU CẦU QUAN TRỌNG:
 - Không dùng danh sách món mặc định.
 - Không lặp lại cùng một món.
 - Ưu tiên món Việt Nam hoặc món gia đình Việt dễ nấu.
-- Tên món, mô tả, lý do, nguyên liệu thiếu phải bằng tiếng Việt.
+- ${responseLanguage}
 - matchedIngredients chỉ gồm nguyên liệu có trong danh sách scan.
 - missingIngredients chỉ gồm nguyên liệu cần mua thêm nếu thiếu.
 - matchScore từ 0 đến 1, càng dùng được nhiều nguyên liệu scan thì càng cao.
@@ -508,7 +514,8 @@ JSON schema:
 
 async function suggestDishesWithGemini(
   confirmedIngredients: string[],
-  limit: number
+  limit: number,
+  locale: Locale
 ): Promise<SuggestDishesResult> {
   if (!GEMINI_API_KEY) {
     throw new Error("Missing GEMINI_API_KEY.");
@@ -528,7 +535,7 @@ async function suggestDishesWithGemini(
           {
             parts: [
               {
-                text: buildGeminiSuggestPrompt(confirmedIngredients, limit)
+                text: buildGeminiSuggestPrompt(confirmedIngredients, limit, locale)
               }
             ]
           }
@@ -577,7 +584,8 @@ async function suggestDishesWithGemini(
 
 export async function suggestDishesWithGemma(
   confirmedIngredients: string[],
-  limit = 4
+  limit = 4,
+  locale: Locale = "vi"
 ): Promise<SuggestDishesResult> {
   if (GEMMA_SERVICE_URL) {
     try {
@@ -589,7 +597,8 @@ export async function suggestDishesWithGemma(
         },
         body: JSON.stringify({
           confirmedIngredients,
-          limit
+          limit,
+          locale
         }),
         cache: "no-store"
       });
@@ -613,7 +622,7 @@ export async function suggestDishesWithGemma(
 
   if (GEMINI_API_KEY) {
     try {
-      return await suggestDishesWithGemini(confirmedIngredients, limit);
+      return await suggestDishesWithGemini(confirmedIngredients, limit, locale);
     } catch (error) {
       console.warn("Gemini suggest dishes failed; falling back to local mock.", error);
     }

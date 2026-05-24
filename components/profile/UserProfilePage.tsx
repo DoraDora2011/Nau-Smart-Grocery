@@ -6,6 +6,9 @@ import { ChevronRight } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import {
   readStoredUserProfile,
   USER_PROFILE_UPDATED_EVENT,
@@ -21,12 +24,12 @@ type MascotProfilePreview = {
 };
 
 const profileMenuItems = [
-  { label: "Danh sách yêu thích", href: "/favorite?from=profile" },
-  { label: "Thông tin cá nhân", href: "#personal-info" },
-  { label: "Mật khẩu và bảo mật", href: "#security" },
-  { label: "Cẩm nang của Nấu", href: "#guide" },
-  { label: "Chính sách và hỗ trợ", href: "#support" },
-  { label: "Ngôn ngữ và khu vực", href: "#language-region" },
+  { labelKey: "favorites", href: "/favorite?from=profile" },
+  { labelKey: "personalInfo", href: "#personal-info" },
+  { labelKey: "security", href: "#security" },
+  { labelKey: "guide", href: "#guide" },
+  { labelKey: "support", href: "#support" },
+  { labelKey: "languageRegion", href: "#language-region" },
 ] as const;
 
 function ProfileBottomNav() {
@@ -59,6 +62,8 @@ function ProfileBottomNav() {
 }
 
 export function UserProfilePage() {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].profile;
   const [mascotPreview, setMascotPreview] = useState<MascotProfilePreview | null>(null);
   const [userProfile, setUserProfile] = useState<StoredUserProfile | null>(null);
   const [isPersonalInfoOpen, setIsPersonalInfoOpen] = useState(false);
@@ -103,12 +108,12 @@ export function UserProfilePage() {
         <div className="px-1 pt-2">
           <section
             className="rounded-b-[42px] rounded-t-[48px] bg-[linear-gradient(180deg,#d7fdd9_0%,#edc7ff_52%,#cd6cfd_100%)] px-2 pb-3 pt-5 shadow-[0_10px_18px_rgba(0,0,0,0.24)] lg:rounded-b-[54px] lg:rounded-t-[88px] lg:px-4 lg:pb-5 lg:pt-8"
-            aria-label="Mở phòng thay đồ mascot 3D"
+            aria-label={labels.mascotRoomLabel}
           >
             <div className="flex min-h-[235px] items-center justify-center lg:min-h-[360px]">
               <iframe
                 src={mascotPreviewSrc}
-                title={`Mascot Nâu ${mascotPreview?.outfit ?? "default"}`}
+                title={interpolate(labels.mascotTitle, { outfit: mascotPreview?.outfit ?? "default" })}
                 className="h-[235px] w-full border-0 bg-transparent lg:h-[360px]"
               />
             </div>
@@ -119,9 +124,9 @@ export function UserProfilePage() {
           <Link
             href="/mascot"
             className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
-            aria-label="Mở phòng thay đồ mascot 3D"
+            aria-label={labels.mascotRoomLabel}
           >
-            Nhấn vào đây để thay đồ cho bé Nâu của bạn nhé!
+            {labels.mascotCta}
           </Link>
 
           <Link
@@ -133,16 +138,19 @@ export function UserProfilePage() {
           </Link>
 
           <div className="space-y-4 px-0 lg:space-y-5 lg:px-4">
-            {profileMenuItems.map((item) =>
+            {profileMenuItems.map((item) => {
+              const itemLabel = labels.menu[item.labelKey];
+
+              return (
               item.href === "#personal-info" ? (
-                <section key={item.label} id="personal-info" className="rounded-[28px]">
+                <section key={item.labelKey} id="personal-info" className="rounded-[28px]">
                   <button
                     type="button"
                     onClick={() => setIsPersonalInfoOpen((current) => !current)}
                     aria-expanded={isPersonalInfoOpen}
                     className="group flex min-h-12 w-full items-center justify-between rounded-full px-5 text-left text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
                   >
-                    <span>{item.label}</span>
+                    <span>{itemLabel}</span>
                     <ChevronRight
                       className={`h-7 w-7 shrink-0 stroke-[2.4] transition lg:h-9 lg:w-9 ${
                         isPersonalInfoOpen ? "rotate-90" : "group-hover:translate-x-1 group-focus-visible:translate-x-1"
@@ -153,28 +161,28 @@ export function UserProfilePage() {
                   {isPersonalInfoOpen && userProfile ? (
                     <div className="mt-3 space-y-3 rounded-[28px] bg-white/85 px-5 py-5 text-sm font-bold leading-6 shadow-sm sm:px-7 lg:text-base">
                       <p>
-                        <span className="text-black/52">Tên:</span> {userProfile.name}
+                        <span className="text-black/52">{labels.name}</span> {userProfile.name}
                       </p>
                       <p>
-                        <span className="text-black/52">Địa chỉ:</span> {userProfile.address}
+                        <span className="text-black/52">{labels.address}</span> {userProfile.address}
                       </p>
                       <p className="break-all">
-                        <span className="text-black/52">Gmail:</span> {userProfile.email}
+                        <span className="text-black/52">{labels.email}</span> {userProfile.email}
                       </p>
                     </div>
                   ) : null}
                 </section>
               ) : (
                 <Link
-                  key={item.label}
+                  key={item.labelKey}
                   href={item.href}
                   className="group flex min-h-12 items-center justify-between rounded-full px-5 text-[17px] font-black leading-tight transition duration-200 hover:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] hover:shadow-[0_10px_22px_rgba(255,228,103,0.24)] focus-visible:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[#ffe467] active:scale-[0.99] active:bg-[linear-gradient(100deg,#ffffff_0%,#f5f8bd_48%,#ffe467_100%)] sm:px-7 sm:text-xl lg:min-h-16 lg:text-[26px]"
                 >
-                  <span>{item.label}</span>
+                  <span>{itemLabel}</span>
                   <ChevronRight className="h-7 w-7 shrink-0 stroke-[2.4] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-9 lg:w-9" />
                 </Link>
               )
-            )}
+            )})}
           </div>
         </section>
       </main>

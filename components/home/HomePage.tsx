@@ -7,6 +7,7 @@ import { HomeMobileLayout } from "@/components/home/HomeMobileLayout";
 import { HomeWelcomeLoader } from "@/components/home/HomeWelcomeLoader";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useFavorites } from "@/components/providers/favorite-provider";
+import { useLanguage } from "@/components/providers/language-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import {
   homeCategories,
@@ -36,6 +37,7 @@ function normalizeText(value: string) {
 }
 
 export function HomePage() {
+  const { dictionary } = useLanguage();
   const { addItems, removeItem, updateQuantity } = useCart();
   const { favoriteIds, toggleProduct } = useFavorites();
   const [activeCategory, setActiveCategory] = useState<HomeCategoryKey | null>(null);
@@ -110,7 +112,7 @@ export function HomePage() {
       : allBestDealProducts.slice(0, 4);
   const categoryProducts = filteredProducts.filter((product) => product.section === "category");
   const activeCategoryLabel =
-    homeCategories.find((category) => category.key === activeCategory)?.label ?? null;
+    activeCategory ? dictionary.categories[activeCategory] : null;
 
   const toggleFavorite = (productId: string) => {
     const product = homeProducts.find((item) => item.id === productId);
@@ -141,7 +143,7 @@ export function HomePage() {
       id: product.id,
       productId: product.id,
       productName: product.name,
-      brand: "Nấu Smart Grocery",
+      brand: dictionary.common.appName,
       category: product.category,
       quantity: 1,
       unit: product.detail,
@@ -152,7 +154,7 @@ export function HomePage() {
     };
 
     addItems([cartItem]);
-    setCartMessage("Đã thêm vào giỏ hàng ✓");
+    setCartMessage(dictionary.common.addedToCart);
   };
 
   const decreaseQuantity = (productId: string) => {
@@ -203,7 +205,7 @@ export function HomePage() {
 
   const chooseDeliveryAddress = () => {
     const nextAddress = window.prompt(
-      "Nhập địa chỉ giao hàng của bạn:",
+      dictionary.home.addressPrompt,
       deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? "" : deliveryAddress
     );
 

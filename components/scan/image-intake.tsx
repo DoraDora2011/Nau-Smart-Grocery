@@ -6,6 +6,8 @@ import { BookOpen, Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react
 
 import instructionScan from "@/assets/brand_logo/instruction-scan-001.png";
 import { AppImageButton } from "@/components/AppImageButton";
+import { useLanguage } from "@/components/providers/language-provider";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { ScanInputSource } from "@/types";
 
@@ -64,6 +66,8 @@ export function ImageIntake({
   errorMessage,
   scanActionRef,
 }: ImageIntakeProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].scanInput;
   const [isMobile, setIsMobile] = useState(false);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("idle");
   const [isInstructionOpen, setIsInstructionOpen] = useState(true);
@@ -306,12 +310,12 @@ export function ImageIntake({
           className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-black/40 px-5 py-[calc(1.5rem+env(safe-area-inset-top))]"
           role="dialog"
           aria-modal="true"
-          aria-label="Hướng dẫn sử dụng chức năng Scan"
+          aria-label={labels.guideLabel}
         >
           <div className="my-auto flex w-full max-w-[25rem] flex-col items-center gap-4">
             <Image
               src={instructionScan}
-              alt="Hướng dẫn sắp xếp thực phẩm để chức năng Scan nhận diện chính xác hơn"
+              alt={labels.guideAlt}
               priority
               className="h-auto max-h-[min(72dvh,44rem)] w-full object-contain"
             />
@@ -320,7 +324,7 @@ export function ImageIntake({
               onClick={() => setIsInstructionOpen(false)}
               className="w-full max-w-[19rem] rounded-full bg-[#ffe467] px-8 py-3 text-base font-black text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
             >
-              Đã hiểu
+              {labels.understood}
             </button>
           </div>
         </div>
@@ -330,13 +334,13 @@ export function ImageIntake({
         type="button"
         onClick={() => openPicker(primarySource)}
         className="mx-auto w-full max-w-[680px] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-8 focus-visible:outline-[#cd6cfd]"
-        aria-label="Chọn ảnh nguyên liệu để quét"
+        aria-label={labels.pickImage}
       >
         <div className="relative mx-auto aspect-[0.9] max-h-[min(47dvh,27rem)] min-h-[clamp(17rem,39dvh,24rem)] w-full overflow-hidden rounded-[80px] bg-[#f6f3d5] shadow-[0_18px_40px_rgba(0,0,0,0.08)] lg:aspect-[0.96] lg:max-h-[48dvh] lg:min-h-[310px]">
           {previewUrl ? (
             <Image
               src={previewUrl}
-              alt="Ảnh nguyên liệu đã chọn"
+              alt={labels.previewAlt}
               width={1200}
               height={1200}
               unoptimized
@@ -351,18 +355,18 @@ export function ImageIntake({
                 playsInline
                 autoPlay
                 className="h-full w-full object-cover"
-                aria-label="Camera quét nguyên liệu"
+                aria-label={labels.cameraLabel}
               />
               {cameraStatus === "starting" ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#f6f3d5]/80 text-center text-sm font-black text-black/45">
-                  Đang mở camera...
+                  {labels.openingCamera}
                 </div>
               ) : null}
             </>
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-4 px-8 text-center text-black/45">
               <ImagePlus className="h-16 w-16" />
-              <p className="text-base font-black leading-snug sm:text-xl">Chạm để chọn hoặc chụp ảnh</p>
+              <p className="text-base font-black leading-snug sm:text-xl">{labels.tapToPick}</p>
             </div>
           )}
 
@@ -393,7 +397,7 @@ export function ImageIntake({
             onClick={() => void applyZoom(zoomState.value - zoomState.step)}
             disabled={!zoomState.supported}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f3d5] text-black active:scale-95"
-            aria-label="Giảm zoom camera"
+            aria-label={labels.zoomOut}
           >
             <Minus className="h-5 w-5" strokeWidth={3} />
           </button>
@@ -406,14 +410,14 @@ export function ImageIntake({
             onChange={(event) => void applyZoom(Number(event.target.value))}
             disabled={!zoomState.supported}
             className="h-2 flex-1 accent-[#cd6cfd]"
-            aria-label={zoomState.supported ? "Điều chỉnh zoom camera" : "Thiết bị chưa hỗ trợ zoom camera"}
+            aria-label={zoomState.supported ? labels.zoomControl : labels.zoomUnsupported}
           />
           <button
             type="button"
             onClick={() => void applyZoom(zoomState.value + zoomState.step)}
             disabled={!zoomState.supported}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f6f3d5] text-black active:scale-95"
-            aria-label="Tăng zoom camera"
+            aria-label={labels.zoomIn}
           >
             <Plus className="h-5 w-5" strokeWidth={3} />
           </button>
@@ -422,7 +426,7 @@ export function ImageIntake({
 
       <div className="mx-auto mt-7 w-full max-w-[680px] text-center lg:mt-12">
         <p className="text-base font-black leading-snug text-black/40 sm:text-lg lg:text-2xl">
-          Sắp xếp nguyên liệu rõ ràng để hệ thống nhận diện tốt hơn
+          {labels.arrangeHint}
         </p>
         {selectedFile ? (
           <p className="mt-2 truncate text-sm font-bold text-black/45">{selectedFile.name}</p>
@@ -450,7 +454,7 @@ export function ImageIntake({
           }}
           disabled={isLoading}
           className="hidden min-h-20 min-w-20 flex-col items-center justify-center gap-1 rounded-[34px] bg-white px-3 text-center text-black shadow-[0_12px_24px_rgba(0,0,0,0.12)] transition active:scale-95 disabled:opacity-60 sm:min-h-24 sm:min-w-24 sm:px-4 lg:flex lg:min-h-28 lg:min-w-36"
-          aria-label={selectedFile ? "Phân tích ảnh nguyên liệu" : "Chọn ảnh để quét"}
+          aria-label={selectedFile ? labels.analyzeImage : labels.chooseToScan}
         >
           {selectedFile ? (
             <ScanLine className={`h-8 w-8 ${isLoading ? "animate-pulse" : ""}`} />
@@ -458,7 +462,7 @@ export function ImageIntake({
             <Camera className="h-8 w-8" />
           )}
           <span className="text-xs font-black leading-tight">
-            {isLoading ? "Đang phân tích" : selectedFile ? "Thử lại" : "Chụp ảnh"}
+            {isLoading ? labels.analyzing : selectedFile ? labels.retry : labels.takePhoto}
           </span>
         </button>
 
@@ -471,7 +475,7 @@ export function ImageIntake({
             }}
             className="sr-only"
           >
-            Xóa ảnh
+            {labels.clearImage}
           </button>
         ) : null}
 
@@ -479,7 +483,7 @@ export function ImageIntake({
           type="button"
           onClick={() => setIsInstructionOpen(true)}
           className="flex h-[72px] w-[72px] items-center justify-center rounded-[26px] bg-white text-black transition active:scale-95 lg:h-20 lg:w-20"
-          aria-label="Xem hướng dẫn sử dụng chức năng Scan"
+          aria-label={labels.openGuide}
         >
           <BookOpen className="h-8 w-8" strokeWidth={1.75} />
         </button>

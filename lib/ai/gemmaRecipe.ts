@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import dishIndexData from "@/data/dish-index.json";
 import recipeTemplateData from "@/data/recipe-templates.json";
+import type { Locale } from "@/lib/i18n/translations";
 import type {
   GenerateRecipeResult,
   Recipe,
@@ -402,7 +403,8 @@ function buildMockRecipeResult(
 export async function generateRecipeWithGemma(
   dishName: string,
   servings: number,
-  allergies: string[] = []
+  allergies: string[] = [],
+  locale: Locale = "vi"
 ): Promise<GenerateRecipeResult> {
   if (!GEMMA_SERVICE_URL) {
     return buildMockRecipeResult(dishName, servings, allergies);
@@ -417,7 +419,8 @@ export async function generateRecipeWithGemma(
     body: JSON.stringify({
       dishName,
       servings,
-      allergies
+      allergies,
+      locale
     }),
     cache: "no-store"
   });

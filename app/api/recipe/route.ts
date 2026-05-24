@@ -66,10 +66,15 @@ export async function POST(req: NextRequest) {
 
     if (mode === "suggest") {
       const ingredients = Array.isArray(body.ingredients) ? body.ingredients : [];
+      const locale = body.locale === "en" ? "en" : "vi";
+      const languageInstruction =
+        locale === "en"
+          ? "Suggest EXACTLY 3 dish names in English."
+          : "Gợi ý CHÍNH XÁC 3 món ăn Việt Nam bằng tiếng Việt.";
       const prompt = `
 Nguyên liệu: ${ingredients.join(", ")}
 
-Gợi ý CHÍNH XÁC 3 món ăn Việt Nam.
+${languageInstruction}
 
 YÊU CẦU:
 - Chỉ tên món
@@ -89,10 +94,17 @@ YÊU CẦU:
 
     if (mode === "recipe") {
       const allergies = Array.isArray(body.allergies) ? body.allergies : [];
+      const locale = body.locale === "en" ? "en" : "vi";
+      const languageInstruction =
+        locale === "en"
+          ? "Return dish names, allergy warnings, ingredient names, amounts, alternatives, and steps in English."
+          : "Trả về tên món, cảnh báo dị ứng, tên nguyên liệu, định lượng, món thay thế và các bước bằng tiếng Việt.";
       const prompt = `
 Món ăn: ${body.dish}
 Số người: ${body.servings}
 Dị ứng cần tránh: ${allergies.length > 0 ? allergies.join(", ") : "không có"}
+
+${languageInstruction}
 
 Hãy tạo công thức trước, sau đó kiểm tra dị ứng trên chính danh sách nguyên liệu đã tạo.
 

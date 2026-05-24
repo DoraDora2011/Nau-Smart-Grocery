@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { useLanguage } from "@/components/providers/language-provider";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import {
   fetchWebsiteNotifications,
   markNotificationsSeen,
@@ -59,9 +61,11 @@ function isSameCalendarDate(first: Date, second: Date) {
   );
 }
 
-function getNotificationDateLabel(date: Date | null) {
+function getNotificationDateLabel(date: Date | null, locale: "vi" | "en") {
+  const labels = uiLabels[locale].notifications;
+
   if (!date) {
-    return "Thông báo khác";
+    return labels.fallbackGroup;
   }
 
   const today = new Date();
@@ -69,25 +73,25 @@ function getNotificationDateLabel(date: Date | null) {
   yesterday.setDate(today.getDate() - 1);
 
   if (isSameCalendarDate(date, today)) {
-    return "Hôm nay";
+    return labels.today;
   }
 
   if (isSameCalendarDate(date, yesterday)) {
-    return "Hôm qua";
+    return labels.yesterday;
   }
 
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
     day: "numeric",
     month: "numeric",
     year: "numeric"
   }).format(date);
 }
 
-function getNotificationTimeLabel(notification: WebsiteNotification) {
+function getNotificationTimeLabel(notification: WebsiteNotification, locale: "vi" | "en") {
   const notificationDate = parseNotificationDate(notification);
 
   if (notificationDate) {
-    return new Intl.DateTimeFormat("vi-VN", {
+    return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
       hour: "2-digit",
       minute: "2-digit"
     }).format(notificationDate);
@@ -109,7 +113,7 @@ function sortNotifications(notifications: WebsiteNotification[]) {
   });
 }
 
-function groupNotifications(notifications: WebsiteNotification[]) {
+function groupNotifications(notifications: WebsiteNotification[], locale: "vi" | "en") {
   return notifications.reduce<NotificationGroup[]>((groups, notification) => {
     const notificationDate = parseNotificationDate(notification);
     const key = notificationDate ? getDateKey(notificationDate) : "undated";
@@ -122,7 +126,7 @@ function groupNotifications(notifications: WebsiteNotification[]) {
 
     groups.push({
       key,
-      label: getNotificationDateLabel(notificationDate),
+      label: getNotificationDateLabel(notificationDate, locale),
       notifications: [notification]
     });
 
@@ -160,6 +164,8 @@ function NotificationsBottomNav() {
 }
 
 export function NotificationsPage() {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].notifications;
   const [notifications, setNotifications] = useState<WebsiteNotification[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -182,7 +188,7 @@ export function NotificationsPage() {
         console.warn("Could not open website notifications.", loadError);
 
         if (active) {
-          setError("Chưa thể tải thông báo lúc này. Vui lòng thử lại sau.");
+          setError(labels.loadError);
         }
       } finally {
         if (active) {
@@ -196,10 +202,13 @@ export function NotificationsPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [labels.loadError]);
 
   const visibleNotifications = useMemo(() => sortNotifications(notifications), [notifications]);
-  const notificationGroups = useMemo(() => groupNotifications(visibleNotifications), [visibleNotifications]);
+  const notificationGroups = useMemo(
+    () => groupNotifications(visibleNotifications, locale),
+    [locale, visibleNotifications]
+  );
 
   return (
     <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
@@ -214,16 +223,16 @@ export function NotificationsPage() {
         </div>
 
         <header className="mt-14">
-          <h1 className="text-[28px] font-black leading-none sm:text-4xl">Thông báo</h1>
+          <h1 className="text-[28px] font-black leading-none sm:text-4xl">{labels.title}</h1>
           <p className="mt-4 max-w-xl text-sm font-semibold leading-6 text-black/62 sm:text-base">
-            Phản hồi và cập nhật mới từ nhà phát hành sẽ xuất hiện tại đây.
+            {labels.description}
           </p>
         </header>
 
         <section className="mt-9">
           {loading ? (
             <div className="rounded-[28px] bg-white/85 px-6 py-8 text-sm font-bold text-black/62 shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
-              Đang tải thông báo...
+              {labels.loading}
             </div>
           ) : null}
 
@@ -236,9 +245,9 @@ export function NotificationsPage() {
           {!loading && !error && visibleNotifications.length === 0 ? (
             <div className="rounded-[30px] bg-white/80 px-6 py-10 text-center shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
               <div className="mx-auto h-14 w-14 rounded-full bg-[#ffe467]" />
-              <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">Chưa có thông báo mới</h2>
+              <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">{labels.emptyTitle}</h2>
               <p className="mt-3 text-sm font-semibold leading-6 text-black/65">
-                Khi Nấu có cập nhật dành cho bạn, thông báo sẽ hiện ở đây.
+                {labels.emptyDescription}
               </p>
             </div>
           ) : null}
@@ -252,7 +261,7 @@ export function NotificationsPage() {
                   </h2>
                   <div className="space-y-3">
                     {group.notifications.map((notification) => {
-                      const timeLabel = getNotificationTimeLabel(notification);
+                      const timeLabel = getNotificationTimeLabel(notification, locale);
 
                       return (
                         <article

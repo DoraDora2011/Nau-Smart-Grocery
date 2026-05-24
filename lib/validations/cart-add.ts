@@ -11,5 +11,6 @@ export const cartIngredientInputSchema = z.object({
 });
 
 export const cartAddRequestSchema = z.object({
-  ingredients: z.array(cartIngredientInputSchema).min(1)
+  ingredients: z.array(cartIngredientInputSchema).min(1),
+  locale: z.enum(["vi", "en"]).optional()
 });

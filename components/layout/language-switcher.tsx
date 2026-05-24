@@ -9,18 +9,25 @@ export function LanguageSwitcher() {
   const { locale, setLocale, dictionary } = useLanguage();
 
   return (
-    <label className="inline-flex items-center gap-2 rounded-2xl bg-[var(--color-card)] px-3 py-2 text-sm text-[var(--color-ink)] ring-1 ring-[var(--color-border)]">
-      <Languages className="h-4 w-4 text-[var(--color-ink-soft)]" />
-      <span className="hidden sm:inline">{dictionary.header.language}</span>
-      <select
-        value={locale}
-        onChange={(event) => setLocale(event.target.value as Locale)}
-        className="bg-transparent text-sm font-semibold outline-none"
-        aria-label={dictionary.header.language}
-      >
-        <option value="vi">{dictionary.languages.vi}</option>
-        <option value="en">{dictionary.languages.en}</option>
-      </select>
-    </label>
+    <div
+      className="inline-flex items-center gap-1 rounded-full bg-white/90 p-1 text-sm text-black shadow-sm ring-1 ring-black/10 backdrop-blur"
+      aria-label={dictionary.header.language}
+      title={dictionary.header.language}
+    >
+      <Languages className="ml-2 h-4 w-4 text-black/55" />
+      {(["vi", "en"] as Locale[]).map((item) => (
+        <button
+          key={item}
+          type="button"
+          onClick={() => setLocale(item)}
+          className={`min-w-9 rounded-full px-2.5 py-1.5 text-xs font-black leading-none transition ${
+            locale === item ? "bg-[#ffe467] text-black" : "text-black/60 hover:bg-black/5"
+          }`}
+          aria-pressed={locale === item}
+        >
+          {item === "vi" ? dictionary.languages.shortVi : dictionary.languages.shortEn}
+        </button>
+      ))}
+    </div>
   );
 }

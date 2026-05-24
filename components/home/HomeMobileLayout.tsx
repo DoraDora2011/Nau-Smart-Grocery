@@ -6,9 +6,11 @@ import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { HomeSearchBar } from "@/components/home/HomeSearchBar";
 import { HomeOnboardingCarousel } from "@/components/home/HomeOnboardingCarousel";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
 import { ProductSection } from "@/components/home/ProductSection";
 import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { useLanguage } from "@/components/providers/language-provider";
 import type {
   HomeCategory,
   HomeCategoryKey,
@@ -63,6 +65,7 @@ export function HomeMobileLayout({
   onUpdateDeliveryAddress,
   onReplayOnboarding
 }: HomeMobileLayoutProps) {
+  const { dictionary } = useLanguage();
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
   const [addressDraft, setAddressDraft] = useState(deliveryAddress);
 
@@ -94,8 +97,8 @@ export function HomeMobileLayout({
             type="button"
             onClick={openLocationPopup}
             className="flex shrink-0 items-center border-0 bg-transparent p-0 text-black active:scale-[0.98]"
-            aria-label="Nhập địa chỉ giao hàng"
-            title="Nhập địa chỉ giao hàng"
+            aria-label={dictionary.home.inputAddress}
+            title={dictionary.home.inputAddress}
           >
             <LocationBadgeIcon className="h-11 w-11" />
           </button>
@@ -112,6 +115,9 @@ export function HomeMobileLayout({
             ) : null}
           </div>
         </div>
+        <div className="mt-4 flex justify-end">
+          <LanguageSwitcher />
+        </div>
 
         <div className="mt-6 grid grid-cols-2 gap-3">
           <Link
@@ -121,10 +127,10 @@ export function HomeMobileLayout({
           >
             <span className="relative flex flex-1 flex-col px-3.5 pb-2 pt-4">
               <span className="block pr-14 text-sm font-bold leading-tight text-black/38">
-                Chức năng
+                {dictionary.home.featureLabel}
               </span>
               <span className="mt-0.5 block pr-14 text-base font-black leading-[1.05]">
-                Tra cứu món ăn
+                {dictionary.home.dishLookup}
               </span>
               <Image
                 src="/assets/buttons/function%201-icon-002.png"
@@ -135,7 +141,7 @@ export function HomeMobileLayout({
               />
             </span>
             <span className="flex h-10 items-center justify-between bg-[#f3f3f3] px-3.5 text-xs font-bold leading-none">
-              Nhấn vào đây
+              {dictionary.home.tapHere}
               <span className="text-2xl font-normal leading-none" aria-hidden="true">
                 ›
               </span>
@@ -148,10 +154,10 @@ export function HomeMobileLayout({
           >
             <span className="relative flex flex-1 flex-col px-3.5 pb-2 pt-4">
               <span className="block pr-14 text-sm font-bold leading-tight text-black/38">
-                Chức năng
+                {dictionary.home.featureLabel}
               </span>
               <span className="mt-0.5 block pr-14 text-base font-black leading-[1.05]">
-                Scan nguyên liệu
+                {dictionary.home.scanIngredients}
               </span>
               <Image
                 src="/assets/buttons/function%202-icon-002.png"
@@ -162,7 +168,7 @@ export function HomeMobileLayout({
               />
             </span>
             <span className="flex h-10 items-center justify-between bg-[#ffef9d] px-3.5 text-xs font-bold leading-none">
-              Nhấn vào đây
+              {dictionary.home.tapHere}
               <span className="text-2xl font-normal leading-none" aria-hidden="true">
                 ›
               </span>
@@ -178,12 +184,12 @@ export function HomeMobileLayout({
       {isLocationPopupOpen ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-5">
           <div className="w-full max-w-sm rounded-[28px] bg-white p-5 text-black shadow-[0_18px_48px_rgba(0,0,0,0.24)]">
-            <h2 className="text-lg font-black leading-tight">Địa chỉ giao hàng</h2>
+            <h2 className="text-lg font-black leading-tight">{dictionary.home.addressTitle}</h2>
             <p className="mt-2 text-sm font-semibold leading-5 text-black/60">
-              Kiểm tra hoặc chỉnh sửa địa chỉ giao hàng của bạn.
+              {dictionary.home.addressDescription}
             </p>
             <label className="mt-5 block text-xs font-black uppercase leading-tight text-black/55">
-              Địa chỉ hiện tại
+              {dictionary.home.currentAddress}
             </label>
             <input
               value={addressDraft}
@@ -197,14 +203,14 @@ export function HomeMobileLayout({
                 onClick={closeLocationPopup}
                 className="rounded-full bg-[#eeeeee] px-5 py-2.5 text-sm font-black leading-tight text-black"
               >
-                Hủy
+                {dictionary.common.cancel}
               </button>
               <button
                 type="button"
                 onClick={saveLocationPopup}
                 className="rounded-full bg-[#6fbd7d] px-5 py-2.5 text-sm font-black leading-tight text-black"
               >
-                Lưu
+                {dictionary.common.save}
               </button>
             </div>
           </div>
@@ -212,7 +218,7 @@ export function HomeMobileLayout({
       ) : null}
 
       <section className="space-y-7 px-5 pb-12 pt-7">
-        <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">Danh mục mua sắm</h2>
+        <h2 className="text-xl font-bold leading-tight text-black sm:text-2xl">{dictionary.home.shoppingCategories}</h2>
         <CategoryTabs
           categories={categories}
           activeCategory={activeCategory}
@@ -222,7 +228,7 @@ export function HomeMobileLayout({
 
         {activeCategory ? (
           <ProductSection
-            title={activeCategoryLabel ?? "Sản phẩm"}
+            title={activeCategoryLabel ?? dictionary.common.product}
             products={categoryProducts}
             favoriteIds={favoriteIds}
             quantities={quantities}
@@ -232,7 +238,7 @@ export function HomeMobileLayout({
           />
         ) : searchQuery.trim() ? (
           <ProductSection
-            title="Kết quả tìm kiếm"
+            title={dictionary.common.searchResults}
             products={searchResultProducts}
             favoriteIds={favoriteIds}
             quantities={quantities}
@@ -243,7 +249,7 @@ export function HomeMobileLayout({
         ) : (
           <>
             <ProductSection
-              title="Popular Items"
+              title={dictionary.home.popularItems}
               products={popularProducts}
               favoriteIds={favoriteIds}
               quantities={quantities}
@@ -254,7 +260,7 @@ export function HomeMobileLayout({
               onToggleViewAll={() => onToggleSection("popular")}
             />
             <ProductSection
-              title="Best deal"
+              title={dictionary.home.bestDeal}
               products={bestDealProducts}
               favoriteIds={favoriteIds}
               quantities={quantities}

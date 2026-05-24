@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
 import {
   clearAnonymousOnboardingState,
   ONBOARDING_SEEN_STORAGE_KEY,
@@ -14,6 +16,8 @@ const INTERNAL_REPLAY_HOTKEY = {
   shiftKey: true,
   key: "G"
 };
+
+const tourTargets = ["scan-mvp", "recipe-mvp", "user-profile"] as const;
 
 declare global {
   interface Window {
@@ -36,27 +40,6 @@ type TourMode = "full" | "single";
 type OnboardingReplayDetail = {
   target?: string;
 };
-
-const steps: TourStep[] = [
-  {
-    target: "scan-mvp",
-    title: "Quét nguyên liệu còn lại",
-    description:
-      "Chụp ảnh hoặc tải ảnh nguyên liệu bạn đang có. Nấu sẽ nhận diện thực phẩm và gợi ý những món có thể nấu ngay, giúp bạn tận dụng đồ ăn còn lại và giảm lãng phí."
-  },
-  {
-    target: "recipe-mvp",
-    title: "Nấu món bạn muốn cho nhiều người",
-    description:
-      "Nhập tên món ăn và số người dùng bữa. AI sẽ gợi ý công thức, tự điều chỉnh định lượng nguyên liệu và hỗ trợ thêm danh sách cần mua vào giỏ hàng."
-  },
-  {
-    target: "user-profile",
-    title: "Cá nhân hoá nhân vật của bạn",
-    description:
-      "Vào User Profile để chọn outfit cho character đại diện của bạn. Bạn có thể thay đổi phong cách nhân vật để trải nghiệm mua sắm trở nên vui hơn và cá nhân hơn."
-  }
-];
 
 type HighlightRect = {
   top: number;
@@ -100,6 +83,16 @@ function getPaddedRect(rect: DOMRect): HighlightRect {
 }
 
 export function OnboardingTour() {
+  const { dictionary } = useLanguage();
+  const steps = useMemo<TourStep[]>(
+    () =>
+      tourTargets.map((target, index) => ({
+        target,
+        title: dictionary.onboarding.tourSteps[index].title,
+        description: dictionary.onboarding.tourSteps[index].description
+      })),
+    [dictionary]
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [tourMode, setTourMode] = useState<TourMode>("full");
@@ -109,7 +102,7 @@ export function OnboardingTour() {
   const isSingleStep = tourMode === "single";
 
   const openTour = useCallback((target?: string, mode: TourMode = "full") => {
-    const nextStep = target ? steps.findIndex((item) => item.target === target) : 0;
+    const nextStep = target ? tourTargets.findIndex((item) => item === target) : 0;
 
     if (nextStep < 0) {
       return;
@@ -286,10 +279,7 @@ export function OnboardingTour() {
     <div className="pointer-events-none fixed inset-0 z-[90] text-black" role="dialog" aria-modal="true" aria-labelledby="onboarding-title">
       {targetRect ? (
         <>
-          <div
-            className="fixed inset-0 bg-transparent"
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 bg-transparent" aria-hidden="true" />
           <div
             className="pointer-events-none fixed rounded-[26px] border-[3px] border-white"
             style={{
@@ -323,7 +313,10 @@ export function OnboardingTour() {
         </div>
 
         <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">
-          Chức năng {currentStep + 1} / {steps.length}
+          {interpolate(dictionary.onboarding.stepLabel, {
+            current: currentStep + 1,
+            total: steps.length
+          })}
         </p>
         <h2 id="onboarding-title" className="mt-2 text-xl font-black leading-tight sm:text-2xl">
           {step.title}
@@ -340,7 +333,7 @@ export function OnboardingTour() {
               isSingleStep ? "hidden" : ""
             }`}
           >
-            Bỏ qua hướng dẫn
+            {dictionary.onboarding.skip}
           </button>
           <button
             type="button"
@@ -354,7 +347,11 @@ export function OnboardingTour() {
             }}
             className="rounded-full bg-[#ffe467] px-5 py-2.5 text-sm font-black leading-tight text-black shadow-[0_6px_0_rgba(0,0,0,0.16)] transition active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.16)]"
           >
-            {isSingleStep ? "Đã hiểu" : isLastStep ? "Hoàn tất" : "Tiếp theo"}
+            {isSingleStep
+              ? dictionary.onboarding.understood
+              : isLastStep
+                ? dictionary.onboarding.finish
+                : dictionary.onboarding.next}
           </button>
         </div>
       </div>

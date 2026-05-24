@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getLocalizedIngredientName } from "@/lib/i18n/ingredient-names";
+import { interpolate } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import type { Locale } from "@/lib/i18n/translations";
 import type { Ingredient } from "@/types";
 
@@ -24,6 +26,8 @@ export function IngredientEditor({
   isLoading,
   locale,
 }: IngredientEditorProps) {
+  const labels = uiLabels[locale].ingredientEditor;
+
   const updateIngredient = (id: string, name: string) => {
     onChange(
       ingredients.map((ingredient) =>
@@ -61,11 +65,11 @@ export function IngredientEditor({
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-black uppercase tracking-wide text-[#b46a1f]">
-            Kết quả quét
+            {labels.eyebrow}
           </p>
-          <h2 className="text-xl font-black leading-tight sm:text-2xl">Xác nhận nguyên liệu</h2>
+          <h2 className="text-xl font-black leading-tight sm:text-2xl">{labels.title}</h2>
           <p className="mt-1 text-sm font-bold text-black/55">
-            Chỉnh lại tên nguyên liệu trước khi Nấu gợi ý món phù hợp.
+            {labels.description}
           </p>
         </div>
         <Button
@@ -75,7 +79,7 @@ export function IngredientEditor({
           className="rounded-full bg-white px-4 font-black"
         >
           <Plus className="mr-2 h-4 w-4" />
-          Thêm
+          {labels.add}
         </Button>
       </div>
 
@@ -85,11 +89,11 @@ export function IngredientEditor({
             <div className="mb-3 flex items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge className="rounded-full bg-[#d7fdd9] text-black">
-                  {ingredient.source === "scan" ? "Đã nhận diện" : "Thêm tay"}
+                  {ingredient.source === "scan" ? labels.detected : labels.manual}
                 </Badge>
                 {typeof ingredient.confidence === "number" ? (
                   <Badge className="rounded-full bg-[#fff4b8] text-black">
-                    Độ tin cậy {Math.round(ingredient.confidence * 100)}%
+                    {interpolate(labels.confidence, { value: Math.round(ingredient.confidence * 100) })}
                   </Badge>
                 ) : null}
               </div>
@@ -97,7 +101,7 @@ export function IngredientEditor({
                 variant="ghost"
                 size="sm"
                 onClick={() => removeIngredient(ingredient.id)}
-                aria-label="Xóa nguyên liệu"
+                aria-label={labels.remove}
                 className="rounded-full"
               >
                 <Trash2 className="h-4 w-4" />
@@ -107,7 +111,7 @@ export function IngredientEditor({
             <Input
               value={getLocalizedIngredientName(ingredient.normalizedName || ingredient.name, locale)}
               onChange={(event) => updateIngredient(ingredient.id, event.target.value)}
-              placeholder="Tên nguyên liệu"
+              placeholder={labels.placeholder}
               className="h-12 rounded-2xl border-black bg-white text-base font-black"
             />
           </div>
@@ -120,7 +124,7 @@ export function IngredientEditor({
         className="h-12 w-full rounded-full bg-[#69bf7b] text-sm font-black leading-tight text-black hover:bg-[#69bf7b]/90 sm:h-14 sm:text-base"
       >
         <CheckCircle2 className="mr-2 h-5 w-5" />
-        {isLoading ? "Đang lưu danh sách..." : "Xác nhận danh sách nguyên liệu"}
+        {isLoading ? labels.saving : labels.confirm}
       </Button>
     </div>
   );

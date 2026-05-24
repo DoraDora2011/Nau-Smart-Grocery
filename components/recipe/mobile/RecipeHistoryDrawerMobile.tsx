@@ -5,6 +5,9 @@ import { X } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 
 type RecipeIngredient = {
   name: string;
@@ -57,22 +60,23 @@ interface RecipeHistoryDrawerMobileProps {
   onClearHistory: () => void;
 }
 
-function formatHistoryDate(dateValue: string) {
+function formatHistoryDate(dateValue: string, locale: "vi" | "en") {
+  const labels = uiLabels[locale].recipeMobile;
   const date = new Date(dateValue);
   const today = new Date();
 
   if (date.toDateString() === today.toDateString()) {
-    return "Hôm nay";
+    return labels.today;
   }
 
-  return new Intl.DateTimeFormat("vi-VN", {
+  return new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
     day: "numeric",
     month: "numeric",
     year: "numeric"
   }).format(date);
 }
 
-function groupHistoryByDate(history: RecipeHistoryItem[]) {
+function groupHistoryByDate(history: RecipeHistoryItem[], locale: "vi" | "en") {
   return history.reduce<Array<{ dateKey: string; label: string; items: RecipeHistoryItem[] }>>(
     (groups, item) => {
       const dateKey = new Date(item.createdAt).toDateString();
@@ -85,7 +89,7 @@ function groupHistoryByDate(history: RecipeHistoryItem[]) {
 
       groups.push({
         dateKey,
-        label: formatHistoryDate(item.createdAt),
+        label: formatHistoryDate(item.createdAt, locale),
         items: [item]
       });
 
@@ -113,6 +117,8 @@ export function RecipeHistoryDrawerMobile({
   onDeleteGroup,
   onClearHistory
 }: RecipeHistoryDrawerMobileProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].recipeMobile;
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingDeleteAction, setPendingDeleteAction] = useState<PendingDeleteAction | null>(null);
   const normalizedSearchQuery = normalizeSearchText(searchQuery);
@@ -123,7 +129,7 @@ export function RecipeHistoryDrawerMobile({
 
     return history.filter((item) => normalizeSearchText(item.text).includes(normalizedSearchQuery));
   }, [history, normalizedSearchQuery]);
-  const groupedHistory = groupHistoryByDate(filteredHistory);
+  const groupedHistory = groupHistoryByDate(filteredHistory, locale);
   const hasHistory = history.length > 0;
   const hasVisibleHistory = groupedHistory.length > 0;
 
@@ -155,7 +161,7 @@ export function RecipeHistoryDrawerMobile({
     <div className="fixed inset-0 z-[90] bg-black/25 text-black backdrop-blur-[1px] lg:hidden">
       <button
         type="button"
-        aria-label="Đóng lịch sử tìm kiếm"
+        aria-label={labels.closeHistory}
         className="absolute inset-0 cursor-default"
         onClick={onClose}
       />
@@ -170,7 +176,7 @@ export function RecipeHistoryDrawerMobile({
         </div>
 
         <div className="px-6 pt-14">
-          <h2 className="text-xl font-black leading-tight">Lịch sử tìm kiếm</h2>
+          <h2 className="text-xl font-black leading-tight">{labels.historyTitle}</h2>
         </div>
 
         <div className="px-5 pb-6 pt-5">
@@ -179,7 +185,7 @@ export function RecipeHistoryDrawerMobile({
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder=""
-              aria-label="Tìm kiếm lịch sử"
+              aria-label={labels.searchHistory}
               className="min-w-0 flex-1 bg-transparent text-sm font-bold text-black outline-none placeholder:text-black/50"
             />
             <Image
@@ -202,7 +208,7 @@ export function RecipeHistoryDrawerMobile({
                     type="button"
                     onClick={() => setPendingDeleteAction({ type: "group", dateKey: group.dateKey })}
                     className="flex h-9 w-9 items-center justify-center rounded-full text-black"
-                    aria-label={`Xoá lịch sử ${group.label}`}
+                    aria-label={interpolate(labels.deleteHistoryGroup, { label: group.label })}
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -222,7 +228,7 @@ export function RecipeHistoryDrawerMobile({
                         type="button"
                         onClick={() => setPendingDeleteAction({ type: "item", itemId: item.id })}
                         className="flex h-9 w-9 items-center justify-center rounded-full text-black"
-                        aria-label={`Xoá ${item.text} khỏi lịch sử`}
+                        aria-label={interpolate(labels.deleteHistoryItem, { text: item.text })}
                       >
                         <X className="h-5 w-5" />
                       </button>
@@ -234,7 +240,7 @@ export function RecipeHistoryDrawerMobile({
           </div>
         ) : (
           <div className="flex-1 bg-white px-6 py-6 text-sm font-bold text-black/60">
-            {hasHistory ? "Không tìm thấy lịch sử phù hợp." : ""}
+            {hasHistory ? labels.noHistoryResult : ""}
           </div>
         )}
 
@@ -244,7 +250,7 @@ export function RecipeHistoryDrawerMobile({
             onClick={() => setPendingDeleteAction({ type: "all" })}
             className="absolute inset-x-0 bottom-0 flex min-h-14 items-center bg-[#D9D9D9] px-6 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 text-left text-[13px] font-bold leading-tight"
           >
-            Xoá tất cả lịch sử tìm kiếm
+            {labels.clearHistory}
           </button>
         ) : null}
 
@@ -256,8 +262,8 @@ export function RecipeHistoryDrawerMobile({
             <div className="flex min-h-[142px] items-center justify-center px-8">
               <p className="text-sm font-bold leading-6">
                 {pendingDeleteAction.type === "all"
-                  ? "Xác nhận bạn muốn xoá toàn bộ lịch sử tìm kiếm"
-                  : "Xác nhận bạn muốn xoá hoạt động này"}
+                  ? labels.confirmDeleteAll
+                  : labels.confirmDeleteOne}
               </p>
             </div>
             <div className="grid grid-cols-2 border-t-2 border-black">
@@ -266,10 +272,10 @@ export function RecipeHistoryDrawerMobile({
                 onClick={() => setPendingDeleteAction(null)}
                 className="min-h-14 border-r border-black text-sm font-bold"
               >
-                Không
+                {labels.no}
               </button>
               <button type="button" onClick={handleConfirmDelete} className="min-h-14 text-sm font-bold">
-                Xác nhận
+                {labels.confirm}
               </button>
             </div>
           </div>

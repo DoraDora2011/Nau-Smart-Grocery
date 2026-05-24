@@ -8,37 +8,44 @@ import { Heart, Minus, Plus, Trash2 } from "lucide-react";
 import { AppImageButton } from "@/components/AppImageButton";
 import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
 import { useCart } from "@/components/providers/cart-provider";
+import { useLanguage } from "@/components/providers/language-provider";
 import {
   type FavoriteProduct,
   type FavoriteRecipe,
   useFavorites
 } from "@/components/providers/favorite-provider";
+import { getLocalizedProductText } from "@/lib/i18n/products";
+import { interpolate, type Locale } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import type { CartItem } from "@/types";
 
 type FavoriteTab = "products" | "recipes";
 type QuantityMap = Record<string, number>;
 
-function formatPrice(value: number) {
-  return new Intl.NumberFormat("vi-VN").format(value) + "đ";
+function formatPrice(value: number, locale: Locale) {
+  return (
+    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(value) +
+    (locale === "vi" ? "đ" : " VND")
+  );
 }
 
-function EmptyFavoriteState({ type }: { type: FavoriteTab }) {
+function EmptyFavoriteState({ type, labels }: { type: FavoriteTab; labels: (typeof uiLabels)[Locale]["favorite"] }) {
   return (
     <div className="rounded-[28px] bg-white/80 px-6 py-10 text-center shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
       <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#ffe467] text-black">
         <Heart className="h-7 w-7" />
       </div>
       <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">
-        Chưa có {type === "products" ? "sản phẩm" : "công thức"} yêu thích
+        {type === "products" ? labels.emptyProductTitle : labels.emptyRecipeTitle}
       </h2>
       <p className="mt-3 text-sm font-semibold leading-6 text-black/65">
-        Khi bạn bấm biểu tượng trái tim, mục đã lưu sẽ xuất hiện ở đây để xem lại nhanh.
+        {labels.emptyDescription}
       </p>
       <Link
         href="/"
         className="mt-6 inline-flex rounded-full bg-white px-6 py-3 text-sm font-bold"
       >
-        Quay về mua sắm
+        {labels.backShopping}
       </Link>
     </div>
   );
@@ -47,6 +54,8 @@ function EmptyFavoriteState({ type }: { type: FavoriteTab }) {
 interface FavoriteProductCardProps {
   product: FavoriteProduct;
   quantity: number;
+  locale: Locale;
+  labels: (typeof uiLabels)[Locale]["favorite"];
   onRemove: (id: string) => void;
   onAddToCart: (product: FavoriteProduct) => void;
   onDecreaseQuantity: (id: string) => void;
@@ -55,45 +64,58 @@ interface FavoriteProductCardProps {
 function FavoriteProductCard({
   product,
   quantity,
+  locale,
+  labels,
   onRemove,
   onAddToCart,
   onDecreaseQuantity
 }: FavoriteProductCardProps) {
+  const productText = getLocalizedProductText(
+    {
+      id: product.productId || product.id,
+      name: product.name,
+      detail: product.detail,
+      category: product.category
+    },
+    locale
+  );
+  const displayName = productText.name;
+
   return (
     <article className="relative overflow-hidden rounded-[30px] bg-white p-2.5 pb-4 shadow-[0_16px_36px_rgba(46,46,18,0.08)]">
       <button
         type="button"
         onClick={() => onRemove(product.id)}
         className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#6fbd7d] text-white ring-2 ring-white"
-        aria-label={`Xoá ${product.name} khỏi yêu thích`}
+        aria-label={interpolate(labels.removeProduct, { name: displayName })}
       >
         <Trash2 className="h-4.5 w-4.5" />
       </button>
 
       <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#EEEEEE] p-4">
         {product.image ? (
-          <img src={product.image} alt={product.name} className="h-full w-full object-contain" />
+          <img src={product.image} alt={displayName} className="h-full w-full object-contain" />
         ) : (
-          <span className="px-2 text-center text-xs font-black leading-tight">{product.name}</span>
+          <span className="px-2 text-center text-xs font-black leading-tight">{displayName}</span>
         )}
       </div>
 
       <div className="space-y-2 px-1.5 pt-4">
         <div>
           <h3 className="line-clamp-2 min-h-9 text-[13px] font-bold leading-snug text-black">
-            {product.name}
+            {displayName}
           </h3>
-          <p className="mt-0.5 text-[11px] font-semibold text-black/70">{product.detail}</p>
+          <p className="mt-0.5 text-[11px] font-semibold text-black/70">{productText.detail}</p>
         </div>
 
         <div className="flex items-center justify-between gap-2 pt-1">
           <div className="min-w-0">
             <p className="text-xl font-black leading-none text-black sm:text-2xl">
-              {formatPrice(product.price)}
+              {formatPrice(product.price, locale)}
             </p>
             {product.oldPrice ? (
               <p className="mt-1 text-[11px] font-semibold text-black/45 line-through">
-                {formatPrice(product.oldPrice)}
+                {formatPrice(product.oldPrice, locale)}
               </p>
             ) : null}
           </div>
@@ -103,7 +125,7 @@ function FavoriteProductCard({
                 type="button"
                 onClick={() => onDecreaseQuantity(product.id)}
                 className="flex h-7 w-5 items-center justify-center rounded-full"
-                aria-label={`Giảm số lượng ${product.name}`}
+                aria-label={interpolate(labels.decreaseProduct, { name: displayName })}
               >
                 <Minus className="h-4 w-4" />
               </button>
@@ -112,7 +134,7 @@ function FavoriteProductCard({
                 type="button"
                 onClick={() => onAddToCart(product)}
                 className="flex h-7 w-5 items-center justify-center rounded-full"
-                aria-label={`Tăng số lượng ${product.name}`}
+                aria-label={interpolate(labels.increaseProduct, { name: displayName })}
               >
                 <Plus className="h-4 w-4" />
               </button>
@@ -122,7 +144,7 @@ function FavoriteProductCard({
               type="button"
               onClick={() => onAddToCart(product)}
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#6fbd7d] text-black"
-              aria-label={`Thêm ${product.name} vào giỏ`}
+              aria-label={interpolate(labels.addProduct, { name: displayName })}
             >
               <Plus className="h-6 w-6" />
             </button>
@@ -136,11 +158,13 @@ function FavoriteProductCard({
 function RecipeFavoriteCard({
   recipe,
   onOpen,
-  onRemove
+  onRemove,
+  labels
 }: {
   recipe: FavoriteRecipe;
   onOpen: (recipe: FavoriteRecipe) => void;
   onRemove: (id: string) => void;
+  labels: (typeof uiLabels)[Locale]["favorite"];
 }) {
   const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -156,7 +180,7 @@ function RecipeFavoriteCard({
       onClick={() => onOpen(recipe)}
       onKeyDown={handleKeyDown}
       className="relative cursor-pointer rounded-[24px] bg-white px-5 py-4 text-black shadow-[0_16px_34px_rgba(46,46,18,0.08)] transition active:scale-[0.99]"
-      aria-label={`Mở lại công thức ${recipe.name}`}
+      aria-label={interpolate(labels.openRecipe, { name: recipe.name })}
     >
       <button
         type="button"
@@ -165,16 +189,16 @@ function RecipeFavoriteCard({
           onRemove(recipe.id);
         }}
         className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-[#6fbd7d] text-white ring-2 ring-white"
-        aria-label={`Xoá công thức ${recipe.name} khỏi yêu thích`}
+        aria-label={interpolate(labels.removeRecipe, { name: recipe.name })}
       >
         <Trash2 className="h-4 w-4" />
       </button>
 
       <h2 className="pr-8 text-xl font-black leading-tight sm:text-2xl">{recipe.name}</h2>
       <div className="mt-3 space-y-1 text-[11px] font-semibold leading-5 text-black/55">
-        <p>Mô tả món ăn:</p>
+        <p>{labels.dishDescription}</p>
         <p className="line-clamp-2">{recipe.description}</p>
-        <p className="line-clamp-1">Nguyên liệu chính: {recipe.ingredients}</p>
+        <p className="line-clamp-1">{labels.mainIngredients}: {recipe.ingredients}</p>
       </div>
 
       <div className="mt-4 grid grid-cols-4 gap-3">
@@ -199,10 +223,12 @@ function RecipeFavoriteCard({
 
 function FavoriteRecipeOverlay({
   recipe,
-  onClose
+  onClose,
+  labels
 }: {
   recipe: FavoriteRecipe;
   onClose: () => void;
+  labels: (typeof uiLabels)[Locale]["favorite"];
 }) {
   const dragStartY = useRef<number | null>(null);
   const [dragY, setDragY] = useState(0);
@@ -212,7 +238,7 @@ function FavoriteRecipeOverlay({
     .map((ingredient) => ingredient.trim())
     .filter(Boolean);
   const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
-    `cách nấu ${recipe.name}`
+    `${labels.youtubeQueryPrefix} ${recipe.name}`
   )}`;
 
   const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
@@ -257,15 +283,19 @@ function FavoriteRecipeOverlay({
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
           className="mx-auto block h-7 w-28 touch-none rounded-full"
-          aria-label="Kéo xuống để đóng công thức"
+          aria-label={labels.dragCloseRecipe}
         >
           <span className="mx-auto mt-2 block h-1.5 w-16 rounded-full bg-white" />
         </button>
 
         <div className="mt-5">
-          <h1 className="text-2xl font-black leading-tight sm:text-[26px]">Công thức nấu {recipe.name}</h1>
+          <h1 className="text-2xl font-black leading-tight sm:text-[26px]">
+            {interpolate(labels.recipeTitle, { name: recipe.name })}
+          </h1>
           {recipe.servings ? (
-            <p className="mt-2 text-base font-bold">Dành cho {recipe.servings} người</p>
+            <p className="mt-2 text-base font-bold">
+              {interpolate(labels.servingsFor, { servings: recipe.servings })}
+            </p>
           ) : null}
           <p className="mt-4 rounded-2xl bg-white/80 px-4 py-3 text-sm font-bold leading-6">
             {recipe.description}
@@ -290,9 +320,9 @@ function FavoriteRecipeOverlay({
         </div>
 
         <div className="mt-7">
-          <h2 className="text-lg font-black leading-tight sm:text-xl">Các loại nguyên liệu chính:</h2>
+          <h2 className="text-lg font-black leading-tight sm:text-xl">{labels.ingredientsTitle}</h2>
           <div className="mt-4 grid grid-cols-2 gap-4">
-            {(ingredients.length > 0 ? ingredients : ["Chưa có danh sách nguyên liệu"]).map(
+            {(ingredients.length > 0 ? ingredients : [labels.noIngredientList]).map(
               (ingredient, index) => (
                 <article
                   key={`${ingredient}-${index}`}
@@ -310,7 +340,7 @@ function FavoriteRecipeOverlay({
 
         {recipe.steps && recipe.steps.length > 0 ? (
           <div className="mt-7">
-            <h2 className="text-lg font-black leading-tight sm:text-xl">Cách làm</h2>
+            <h2 className="text-lg font-black leading-tight sm:text-xl">{labels.stepsTitle}</h2>
             <div className="mt-3 space-y-3">
               {recipe.steps.map((step, index) => (
                 <p
@@ -325,14 +355,14 @@ function FavoriteRecipeOverlay({
         ) : null}
 
         <p className="mt-5 rounded-2xl bg-white/85 px-4 py-3 text-sm font-bold leading-6">
-          Tham khảo thêm các công thức đa dạng hơn nếu bạn muốn:{" "}
+          {labels.youtubeIntro}{" "}
           <a
             href={youtubeUrl}
             target="_blank"
             rel="noreferrer"
             className="underline decoration-2 underline-offset-4"
           >
-            xem video hướng dẫn trên YouTube
+            {labels.youtubeLink}
           </a>
         </p>
       </section>
@@ -371,6 +401,8 @@ function FavoriteBottomNav() {
 
 export function FavoritePage() {
   const searchParams = useSearchParams();
+  const { locale, dictionary } = useLanguage();
+  const labels = uiLabels[locale].favorite;
   const { addItems, removeItem, updateQuantity } = useCart();
   const { products, recipes, removeProduct, removeRecipe } = useFavorites();
   const [activeTab, setActiveTab] = useState<FavoriteTab>("products");
@@ -401,8 +433,8 @@ export function FavoritePage() {
       id: product.id,
       productId: product.productId,
       productName: product.name,
-      brand: "Nấu Smart Grocery",
-      category: product.category ?? "Sản phẩm",
+      brand: dictionary.common.appName,
+      category: product.category ?? dictionary.common.product,
       quantity: 1,
       unit: product.detail,
       estimatedPrice: product.price,
@@ -412,7 +444,7 @@ export function FavoritePage() {
     };
 
     addItems([cartItem]);
-    setCartMessage("Đã thêm vào giỏ hàng ✓");
+    setCartMessage(dictionary.common.addedToCart);
   };
 
   const decreaseQuantity = (productId: string) => {
@@ -463,7 +495,7 @@ export function FavoritePage() {
                 : "bg-white/55"
             }`}
           >
-            Sản phẩm
+            {labels.tabs.products}
           </button>
           <button
             type="button"
@@ -477,7 +509,7 @@ export function FavoritePage() {
                 : "bg-white/55"
             }`}
           >
-            Công thức nấu ăn
+            {labels.tabs.recipes}
           </button>
         </div>
 
@@ -490,6 +522,8 @@ export function FavoritePage() {
                     key={product.id}
                     product={product}
                     quantity={quantities[product.id] ?? 0}
+                    locale={locale}
+                    labels={labels}
                     onRemove={removeProduct}
                     onAddToCart={addFavoriteProductToCart}
                     onDecreaseQuantity={decreaseQuantity}
@@ -497,7 +531,7 @@ export function FavoritePage() {
                 ))}
               </div>
             ) : (
-              <EmptyFavoriteState type="products" />
+              <EmptyFavoriteState type="products" labels={labels} />
             )
           ) : recipes.length > 0 ? (
             <div className="space-y-8">
@@ -507,17 +541,18 @@ export function FavoritePage() {
                   recipe={recipe}
                   onOpen={setSelectedRecipe}
                   onRemove={removeRecipe}
+                  labels={labels}
                 />
               ))}
             </div>
           ) : (
-            <EmptyFavoriteState type="recipes" />
+            <EmptyFavoriteState type="recipes" labels={labels} />
           )}
         </section>
       </main>
 
       {selectedRecipe ? (
-        <FavoriteRecipeOverlay recipe={selectedRecipe} onClose={() => setSelectedRecipe(null)} />
+        <FavoriteRecipeOverlay recipe={selectedRecipe} labels={labels} onClose={() => setSelectedRecipe(null)} />
       ) : null}
 
       <FavoriteBottomNav />

@@ -14,8 +14,12 @@ import { useRouter } from "next/navigation";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
+import { useLanguage } from "@/components/providers/language-provider";
 import { useCart } from "@/components/providers/cart-provider";
 import logoMascot from "@/assets/brand_logo/logo-mascot-bigsize.png";
+import { getLocalizedProductText } from "@/lib/i18n/products";
+import { interpolate, type Locale } from "@/lib/i18n/translations";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 import {
   DEFAULT_DELIVERY_ADDRESS,
   readStoredDeliveryAddress,
@@ -27,16 +31,16 @@ const CHECKOUT_SELECTION_STORAGE_KEY = "nau-smart-grocery:checkout-selection";
 const ORDER_PHONE_NUMBER = "028 3776 1300";
 
 const paymentOptions = [
-  { id: "cash", label: "Tiền mặt", icon: "/assets/buttons/cash-001.png" },
-  { id: "card", label: "Thẻ Ghi nợ/Tín dụng", icon: "/assets/buttons/card-001.png" },
-  { id: "bank", label: "Ngân hàng", icon: "/assets/buttons/bank-001.png" },
-  { id: "third-party", label: "App thứ ba", icon: "/assets/buttons/momo-001.png" },
+  { id: "cash", labelKey: "cash", icon: "/assets/buttons/cash-001.png" },
+  { id: "card", labelKey: "card", icon: "/assets/buttons/card-001.png" },
+  { id: "bank", labelKey: "bank", icon: "/assets/buttons/bank-001.png" },
+  { id: "third-party", labelKey: "thirdParty", icon: "/assets/buttons/momo-001.png" },
 ] as const;
 
 const voucherOptions = [
-  { id: "total-20", label: "20% trên tổng giỏ khi thanh toán", type: "fixed", amount: 50000 },
-  { id: "item-5", label: "5% trên từng món khi thanh toán", type: "percent", amount: 0.05 },
-  { id: "ship-15", label: "Giảm 15.000đ phí vận chuyển", type: "fixed", amount: 15000 },
+  { id: "total-20", labelKey: "total20", type: "fixed", amount: 50000 },
+  { id: "item-5", labelKey: "item5", type: "percent", amount: 0.05 },
+  { id: "ship-15", labelKey: "ship15", type: "fixed", amount: 15000 },
 ] as const;
 
 type PaymentId = (typeof paymentOptions)[number]["id"];
@@ -59,8 +63,11 @@ type OrderSnapshot = {
   totalQuantity: number;
 };
 
-function formatPrice(value: number) {
-  return new Intl.NumberFormat("vi-VN").format(Math.max(0, Math.round(value))) + "đ";
+function formatPrice(value: number, locale: Locale) {
+  return (
+    new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US").format(Math.max(0, Math.round(value))) +
+    (locale === "vi" ? "đ" : " VND")
+  );
 }
 
 function shortenText(value: string, maxLength = 18) {
@@ -84,13 +91,28 @@ function CheckoutItemRow({
   onDecrease,
   onIncrease,
   onRemove,
+  locale,
+  labels,
 }: {
   item: CartItem;
   onDecrease: (item: CartItem) => void;
   onIncrease: (item: CartItem) => void;
   onRemove: (id: string) => void;
+  locale: Locale;
+  labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
   const hasImage = Boolean(item.image && !item.image.includes("fallback-product"));
+  const productText = getLocalizedProductText(
+    {
+      id: item.productId || item.id,
+      name: item.productName,
+      detail: item.unit,
+      category: item.category,
+      sellUnitLabel: item.sellUnitLabel,
+      displayUnit: item.displayUnit
+    },
+    locale
+  );
 
   return (
     <article className="grid grid-cols-[86px_1fr_auto] gap-3 rounded-[22px] bg-white p-2">
@@ -103,77 +125,94 @@ function CheckoutItemRow({
         />
         <div className="flex h-20 w-20 items-center justify-center rounded-[18px] bg-[#ffe467] p-2">
           {hasImage ? (
-            <img src={item.image} alt={item.productName} className="h-full w-full object-contain" />
+            <img src={item.image} alt={productText.name} className="h-full w-full object-contain" />
           ) : (
             <span className="px-1 text-center text-[10px] font-black leading-tight">
-              {item.productName}
+              {productText.name}
             </span>
           )}
         </div>
       </div>
 
       <div className="min-w-0 py-1 text-left">
-        <h2 className="line-clamp-2 text-[14px] font-black leading-tight">{item.productName}</h2>
-        <p className="mt-0.5 text-[10px] font-bold text-black/70">{item.unit}</p>
+        <h2 className="line-clamp-2 text-[14px] font-black leading-tight">{productText.name}</h2>
+        <p className="mt-0.5 text-[10px] font-bold text-black/70">{productText.detail}</p>
         <div className="mt-3 flex h-7 w-[72px] items-center justify-between rounded-full bg-[#6fbd7d] px-2 text-black">
-          <button type="button" onClick={() => onDecrease(item)} aria-label={`Giảm ${item.productName}`}>
+          <button type="button" onClick={() => onDecrease(item)} aria-label={interpolate(labels.decrease, { name: productText.name })}>
             <Minus className="h-4 w-4" />
           </button>
           <span className="text-sm font-black">{item.quantity}</span>
-          <button type="button" onClick={() => onIncrease(item)} aria-label={`Tăng ${item.productName}`}>
+          <button type="button" onClick={() => onIncrease(item)} aria-label={interpolate(labels.increase, { name: productText.name })}>
             <Plus className="h-4 w-4" />
           </button>
         </div>
       </div>
 
       <p className="self-center whitespace-nowrap text-right text-lg font-black sm:text-xl">
-        {formatPrice(item.estimatedPrice * item.quantity)}
+        {formatPrice(item.estimatedPrice * item.quantity, locale)}
       </p>
     </article>
   );
 }
 
-function ReadOnlyItemRow({ item }: { item: CartItem }) {
+function ReadOnlyItemRow({ item, locale, labels }: { item: CartItem; locale: Locale; labels: (typeof uiLabels)[Locale]["checkout"] }) {
   const hasImage = Boolean(item.image && !item.image.includes("fallback-product"));
+  const productText = getLocalizedProductText(
+    {
+      id: item.productId || item.id,
+      name: item.productName,
+      detail: item.unit,
+      category: item.category,
+      sellUnitLabel: item.sellUnitLabel,
+      displayUnit: item.displayUnit
+    },
+    locale
+  );
 
   return (
     <article className="grid grid-cols-[78px_1fr_auto] gap-3 rounded-[22px] bg-white p-2">
       <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[18px] bg-[#ffe467] p-2">
         {hasImage ? (
-          <img src={item.image} alt={item.productName} className="h-full w-full object-contain" />
+          <img src={item.image} alt={productText.name} className="h-full w-full object-contain" />
         ) : (
           <span className="px-1 text-center text-[10px] font-black leading-tight">
-            {item.productName}
+            {productText.name}
           </span>
         )}
       </div>
 
       <div className="min-w-0 py-1 text-left">
-        <h2 className="line-clamp-2 text-[14px] font-black leading-tight">{item.productName}</h2>
-        <p className="mt-1 text-[11px] font-bold text-black/70">{item.unit}</p>
-        <p className="mt-2 text-xs font-black">Số lượng: {item.quantity}</p>
+        <h2 className="line-clamp-2 text-[14px] font-black leading-tight">{productText.name}</h2>
+        <p className="mt-1 text-[11px] font-bold text-black/70">{productText.detail}</p>
+        <p className="mt-2 text-xs font-black">{interpolate(labels.quantity, { quantity: item.quantity })}</p>
       </div>
 
       <p className="self-center whitespace-nowrap text-right text-base font-black">
-        {formatPrice(item.estimatedPrice * item.quantity)}
+        {formatPrice(item.estimatedPrice * item.quantity, locale)}
       </p>
     </article>
   );
 }
 
-function PaymentLoadingOverlay({ status }: { status: Exclude<PaymentStatus, "idle"> }) {
+function PaymentLoadingOverlay({
+  status,
+  labels
+}: {
+  status: Exclude<PaymentStatus, "idle">;
+  labels: (typeof uiLabels)[Locale]["checkout"];
+}) {
   return (
     <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/20 px-6 backdrop-blur-[2px]">
       <div className="grid h-[322px] w-full max-w-[378px] place-items-center rounded-[26px] bg-white px-8 py-9 text-center text-black shadow-[0_24px_70px_rgba(0,0,0,0.25)]">
         {status === "processing" ? (
           <>
             <div className="payment-spinner" aria-hidden="true" />
-            <p className="text-xl font-black leading-tight sm:text-[26px]">Đang Thanh Toán</p>
+            <p className="text-xl font-black leading-tight sm:text-[26px]">{labels.processing}</p>
           </>
         ) : (
           <>
             <Check className="h-36 w-36 stroke-[#6be17d] stroke-[1.5]" aria-hidden="true" />
-            <p className="text-xl font-black leading-tight sm:text-[26px]">Thanh Toán Thành Công</p>
+            <p className="text-xl font-black leading-tight sm:text-[26px]">{labels.success}</p>
           </>
         )}
       </div>
@@ -219,38 +258,40 @@ function FinalBillPage({
   order,
   onPreviewOrder,
   onCancelOrder,
+  labels,
 }: {
   order: OrderSnapshot;
   onPreviewOrder: () => void;
   onCancelOrder: () => void;
+  labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
   return (
     <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
       <main className="mx-auto max-w-md space-y-14 pt-8">
         <section className="rounded-[14px] bg-white px-5 py-5 text-[15px] font-bold shadow-sm">
           <div className="grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-5">
-            <span>Chi tiết đơn món : {order.totalQuantity} món</span>
+            <span>{interpolate(labels.billDetails, { quantity: order.totalQuantity })}</span>
             <button
               type="button"
               onClick={onPreviewOrder}
               className="h-[35px] w-[117px]"
-              aria-label="Kiểm tra chi tiết đơn món"
+              aria-label={labels.checkOrderDetails}
             >
               <img
                 src="/assets/buttons/button-018.png"
-                alt="Ở Đây"
+                alt={labels.here}
                 className="h-full w-full object-contain"
               />
             </button>
-            <span>Số điện thoại :</span>
+            <span>{labels.phone}</span>
             <span className="text-right">{order.phoneNumber}</span>
-            <span>Mã đơn :</span>
+            <span>{labels.orderCode}</span>
             <span className="text-right">{order.orderCode}</span>
-            <span>Thời gian :</span>
+            <span>{labels.time}</span>
             <span className="text-right">{order.createdAt}</span>
-            <span>Giao đến :</span>
+            <span>{labels.deliverTo}</span>
             <span className="text-right">{shortenText(order.deliveryAddress, 17)}</span>
-            <span>Thanh toán :</span>
+            <span>{labels.payment}</span>
             <span className="text-right">{order.paymentLabel}</span>
           </div>
 
@@ -258,11 +299,11 @@ function FinalBillPage({
             type="button"
             onClick={onCancelOrder}
             className="mt-5 h-[35px] w-[118px]"
-            aria-label="Huỷ đặt đơn"
+            aria-label={labels.cancelOrderLabel}
           >
             <img
               src="/assets/buttons/button-019.png"
-              alt="Huỷ Đặt Đơn"
+              alt={labels.cancelOrder}
               className="h-full w-full object-contain"
             />
           </button>
@@ -271,12 +312,12 @@ function FinalBillPage({
         <section className="rounded-[14px] bg-white px-5 py-6 shadow-sm">
           <h1 className="flex items-center justify-center gap-2 text-center text-xl font-black leading-tight sm:text-[22px]">
             <PackageCheck className="h-6 w-6" />
-            Quá trình vận chuyển :
+            {labels.shipmentProcess}
           </h1>
 
           <div className="mt-8 grid grid-cols-[72px_1fr] gap-1">
-            <ShipmentTimeline />
-            <MapPreview />
+            <ShipmentTimeline labels={labels} />
+            <MapPreview labels={labels} />
           </div>
         </section>
       </main>
@@ -286,8 +327,8 @@ function FinalBillPage({
   );
 }
 
-function ShipmentTimeline() {
-  const steps = ["Siêu thị", "Shiper đã\nnhận đơn", "Shipper đã\nlấy hàng", "Nhà bạn"];
+function ShipmentTimeline({ labels }: { labels: (typeof uiLabels)[Locale]["checkout"] }) {
+  const steps = labels.timeline;
 
   return (
     <div className="grid min-h-[356px] grid-rows-[auto_1fr_auto_1fr_auto_1fr_auto] justify-items-start text-sm font-black">
@@ -352,7 +393,7 @@ function AnimatedRouteArrow({ delay }: { delay: number }) {
   );
 }
 
-function MapPreview() {
+function MapPreview({ labels }: { labels: (typeof uiLabels)[Locale]["checkout"] }) {
   return (
     <div className="relative -ml-2 flex min-h-[316px] items-center justify-center overflow-hidden bg-transparent">
       <video
@@ -363,13 +404,23 @@ function MapPreview() {
         muted
         playsInline
         preload="auto"
-        aria-label="Mascot trượt patin giao hàng"
+        aria-label={labels.deliveryMascot}
       />
     </div>
   );
 }
 
-function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () => void }) {
+function OrderPreviewPage({
+  order,
+  onBack,
+  locale,
+  labels
+}: {
+  order: OrderSnapshot;
+  onBack: () => void;
+  locale: Locale;
+  labels: (typeof uiLabels)[Locale]["checkout"];
+}) {
   return (
     <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
       <div className="fixed right-6 top-6 z-40">
@@ -384,31 +435,34 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
       <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
         <section>
           <div className="relative z-10 flex items-end justify-center gap-3 text-center">
-            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Tóm tắt</h1>
-            <img src={logoMascot.src} alt="Mascot Nấu" className="h-20 w-20 object-contain" />
-            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">Đơn hàng</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">{labels.summaryLeft}</h1>
+            <img src={logoMascot.src} alt="Mascot Nau" className="h-20 w-20 object-contain" />
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">{labels.summaryRight}</h1>
           </div>
 
           <div className="-mt-3 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
             {order.items.map((item) => (
-              <ReadOnlyItemRow key={item.id} item={item} />
+              <ReadOnlyItemRow key={item.id} item={item} locale={locale} labels={labels} />
             ))}
           </div>
         </section>
 
         <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="grid grid-cols-[40px_minmax(0,1fr)_minmax(0,1.35fr)] items-center gap-3 border-b border-black/55 pb-4">
-            <CheckoutIcon src="/assets/buttons/address-001.png" alt="Địa chỉ" />
-            <span className="font-black">Địa Chỉ</span>
+            <CheckoutIcon src="/assets/buttons/address-001.png" alt={labels.address} />
+            <span className="font-black">{labels.address}</span>
             <span className="truncate text-right text-sm font-bold">{order.deliveryAddress}</span>
           </div>
 
           <div className="grid grid-cols-[40px_minmax(0,1fr)_minmax(96px,auto)] items-center gap-3">
-            <CheckoutIcon src="/assets/buttons/payment-001.png" alt="Phương thức thanh toán" />
+            <CheckoutIcon src="/assets/buttons/payment-001.png" alt={labels.paymentMethod.replace("\n", " ")} />
             <span className="min-w-0 text-[13px] font-black leading-tight sm:text-sm">
-              Phương thức
-              <br />
-              Thanh toán
+              {labels.paymentMethod.split("\n").map((line, index) => (
+                <span key={line}>
+                  {line}
+                  {index === 0 ? <br /> : null}
+                </span>
+              ))}
             </span>
             <span className="shrink-0 whitespace-nowrap text-right text-[12px] font-bold">
               {order.paymentLabel}
@@ -425,8 +479,8 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
 
         <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="flex w-full items-center gap-3 text-left">
-            <CheckoutIcon src="/assets/buttons/voucher-001.png" alt="Voucher" />
-            <span className="font-black">Voucher</span>
+            <CheckoutIcon src="/assets/buttons/voucher-001.png" alt={labels.voucher} />
+            <span className="font-black">{labels.voucher}</span>
           </div>
 
           <div className="space-y-3 text-left">
@@ -440,12 +494,12 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
                 </div>
               ))
             ) : (
-              <p className="text-sm font-bold text-black/60">Không áp dụng voucher</p>
+              <p className="text-sm font-bold text-black/60">{labels.noVoucher}</p>
             )}
           </div>
         </section>
 
-        <PaymentDetailsCard order={order} />
+        <PaymentDetailsCard order={order} locale={locale} labels={labels} />
 
       </main>
 
@@ -454,31 +508,39 @@ function OrderPreviewPage({ order, onBack }: { order: OrderSnapshot; onBack: () 
   );
 }
 
-function PaymentDetailsCard({ order }: { order: OrderSnapshot }) {
+function PaymentDetailsCard({
+  order,
+  locale,
+  labels
+}: {
+  order: OrderSnapshot;
+  locale: Locale;
+  labels: (typeof uiLabels)[Locale]["checkout"];
+}) {
   return (
     <section className="rounded-[18px] bg-white px-7 py-6 text-left">
       <div className="mb-6 flex items-center gap-3">
-        <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt="Chi tiết thanh toán" />
-        <h2 className="font-black">Chi tiết Thanh toán</h2>
+        <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt={labels.paymentDetails} />
+        <h2 className="font-black">{labels.paymentDetails}</h2>
       </div>
 
       <div className="space-y-5 text-sm font-bold leading-6 sm:text-base">
         <div className="flex justify-between gap-4 text-left">
-          <span>Tổng tiền hàng</span>
-          <span className="text-right">{formatPrice(order.subtotal)}</span>
+          <span>{labels.subtotal}</span>
+          <span className="text-right">{formatPrice(order.subtotal, locale)}</span>
         </div>
         <div className="flex justify-between gap-4 text-left">
-          <span>Tổng tiền phí vận chuyển</span>
-          <span className="text-right">{formatPrice(order.shippingFee)}</span>
+          <span>{labels.shippingFee}</span>
+          <span className="text-right">{formatPrice(order.shippingFee, locale)}</span>
         </div>
         <div className="flex justify-between gap-4 text-left">
-          <span>Giảm giá</span>
-          <span className="text-right">- {formatPrice(order.discountTotal)}</span>
+          <span>{labels.discount}</span>
+          <span className="text-right">- {formatPrice(order.discountTotal, locale)}</span>
         </div>
         <div className="border-t border-black pt-5">
           <div className="flex justify-between gap-4 text-left">
-            <span>Tổng thanh toán</span>
-            <span className="text-right">{formatPrice(order.paymentTotal)}</span>
+            <span>{labels.total}</span>
+            <span className="text-right">{formatPrice(order.paymentTotal, locale)}</span>
           </div>
         </div>
       </div>
@@ -489,20 +551,22 @@ function PaymentDetailsCard({ order }: { order: OrderSnapshot }) {
 function CancelOrderModal({
   onClose,
   onConfirm,
+  labels,
 }: {
   onClose: () => void;
   onConfirm: () => void;
+  labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
   return (
     <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/20 px-7 backdrop-blur-[1px]">
       <div className="w-full max-w-[348px] overflow-hidden rounded-[26px] border-2 border-black bg-white text-center text-black shadow-[0_24px_70px_rgba(0,0,0,0.25)]">
-        <p className="px-7 py-16 text-[15px] font-bold">Xác nhận bạn muốn huỷ đơn này không ?</p>
+        <p className="px-7 py-16 text-[15px] font-bold">{labels.confirmCancel}</p>
         <div className="grid grid-cols-2 border-t-2 border-black text-sm font-black">
           <button type="button" onClick={onClose} className="min-h-[58px] border-r border-black">
-            Không
+            {labels.no}
           </button>
           <button type="button" onClick={onConfirm} className="min-h-[58px]">
-            Xác nhận
+            {labels.confirm}
           </button>
         </div>
       </div>
@@ -512,6 +576,8 @@ function CancelOrderModal({
 
 export function CheckoutPageView() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].checkout;
   const { items, removeItem, updateQuantity } = useCart();
   const [selectedIds, setSelectedIds] = useState<Set<string> | null>(null);
   const [paymentOpen, setPaymentOpen] = useState(true);
@@ -582,6 +648,13 @@ export function CheckoutPageView() {
 
   const paymentTotal = Math.max(0, subtotal + shippingFee - discountTotal);
   const selectedPayment = paymentOptions.find((option) => option.id === paymentMethod) ?? paymentOptions[0];
+  const selectedPaymentLabel = labels.paymentOptions[selectedPayment.labelKey];
+  const visibleDeliveryAddress =
+    deliveryAddress === DEFAULT_DELIVERY_ADDRESS
+      ? locale === "vi"
+        ? DEFAULT_DELIVERY_ADDRESS
+        : "Enter your delivery address"
+      : deliveryAddress;
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -621,7 +694,7 @@ export function CheckoutPageView() {
 
   const handleChooseDeliveryAddress = () => {
     const mapQuery =
-      deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? "địa chỉ giao hàng gần tôi" : deliveryAddress;
+      deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? labels.mapsQuery : deliveryAddress;
 
     window.open(
       `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`,
@@ -630,7 +703,7 @@ export function CheckoutPageView() {
     );
 
     const nextAddress = window.prompt(
-      "Google Maps đã mở. Sau khi chọn/copy địa chỉ giao hàng, dán địa chỉ vào đây để Nấu lưu lại nhé:",
+      labels.mapsPrompt,
       deliveryAddress === DEFAULT_DELIVERY_ADDRESS ? "" : deliveryAddress,
     );
 
@@ -646,7 +719,7 @@ export function CheckoutPageView() {
     const totalQuantity = checkoutItems.reduce((total, item) => total + item.quantity, 0);
     const selectedVoucherLabels = voucherOptions
       .filter((voucher) => selectedVouchers.has(voucher.id))
-      .map((voucher) => voucher.label);
+      .map((voucher) => labels.vouchers[voucher.labelKey]);
 
     return {
       items: checkoutItems.map((item) => ({ ...item })),
@@ -654,12 +727,12 @@ export function CheckoutPageView() {
       shippingFee,
       discountTotal,
       paymentTotal,
-      paymentLabel: selectedPayment.label,
-      deliveryAddress,
+      paymentLabel: selectedPaymentLabel,
+      deliveryAddress: visibleDeliveryAddress,
       phoneNumber: ORDER_PHONE_NUMBER,
       selectedVoucherLabels,
       orderCode: `NAU-${Date.now().toString().slice(-6)}`,
-      createdAt: new Intl.DateTimeFormat("vi-VN", {
+      createdAt: new Intl.DateTimeFormat(locale === "vi" ? "vi-VN" : "en-US", {
         hour: "2-digit",
         minute: "2-digit",
         day: "2-digit",
@@ -710,11 +783,13 @@ export function CheckoutPageView() {
           order={orderSnapshot}
           onPreviewOrder={() => setOrderView("preview")}
           onCancelOrder={() => setIsCancelModalOpen(true)}
+          labels={labels}
         />
         {isCancelModalOpen ? (
           <CancelOrderModal
             onClose={() => setIsCancelModalOpen(false)}
             onConfirm={handleConfirmCancelOrder}
+            labels={labels}
           />
         ) : null}
       </>
@@ -722,7 +797,7 @@ export function CheckoutPageView() {
   }
 
   if (orderSnapshot && orderView === "preview") {
-    return <OrderPreviewPage order={orderSnapshot} onBack={() => setOrderView("final")} />;
+    return <OrderPreviewPage order={orderSnapshot} locale={locale} labels={labels} onBack={() => setOrderView("final")} />;
   }
 
   return (
@@ -739,9 +814,9 @@ export function CheckoutPageView() {
       <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
         <section className="-mt-1">
           <div className="relative z-10 flex items-end justify-center gap-4 text-center">
-            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Tóm tắt</h1>
-            <img src={logoMascot.src} alt="Mascot Nấu" className="h-24 w-24 object-contain" />
-            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">Đơn hàng</h1>
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">{labels.summaryLeft}</h1>
+            <img src={logoMascot.src} alt="Mascot Nau" className="h-24 w-24 object-contain" />
+            <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">{labels.summaryRight}</h1>
           </div>
 
           <div className="-mt-4 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
@@ -750,6 +825,8 @@ export function CheckoutPageView() {
                 <CheckoutItemRow
                   key={item.id}
                   item={item}
+                  locale={locale}
+                  labels={labels}
                   onDecrease={(currentItem) => updateQuantity(currentItem.id, Math.max(1, currentItem.quantity - 1))}
                   onIncrease={(currentItem) => updateQuantity(currentItem.id, currentItem.quantity + 1)}
                   onRemove={handleRemoveItem}
@@ -757,7 +834,7 @@ export function CheckoutPageView() {
               ))
             ) : (
               <div className="rounded-[22px] bg-white px-5 py-10 text-center font-black">
-                Giỏ hàng đang trống
+                {labels.emptyCart}
               </div>
             )}
           </div>
@@ -769,9 +846,9 @@ export function CheckoutPageView() {
             onClick={handleChooseDeliveryAddress}
             className="grid w-full grid-cols-[40px_minmax(0,1fr)_minmax(0,1.35fr)_24px] items-center gap-3 border-b border-black/55 pb-4 text-left"
           >
-            <CheckoutIcon src="/assets/buttons/address-001.png" alt="Địa chỉ" />
-            <span className="font-black">Địa Chỉ</span>
-            <span className="truncate text-sm font-bold">{deliveryAddress}</span>
+            <CheckoutIcon src="/assets/buttons/address-001.png" alt={labels.address} />
+            <span className="font-black">{labels.address}</span>
+            <span className="truncate text-sm font-bold">{visibleDeliveryAddress}</span>
             <ChevronRight className="h-6 w-6" />
           </button>
 
@@ -780,14 +857,17 @@ export function CheckoutPageView() {
             onClick={() => setPaymentOpen((current) => !current)}
             className="grid w-full grid-cols-[40px_minmax(0,1fr)_minmax(96px,auto)_24px] items-center gap-3 text-left"
           >
-            <CheckoutIcon src="/assets/buttons/payment-001.png" alt="Phương thức thanh toán" />
+            <CheckoutIcon src="/assets/buttons/payment-001.png" alt={labels.paymentMethod.replace("\n", " ")} />
             <span className="min-w-0 text-[13px] font-black leading-tight sm:text-sm">
-              Phương thức
-              <br />
-              Thanh toán
+              {labels.paymentMethod.split("\n").map((line, index) => (
+                <span key={line}>
+                  {line}
+                  {index === 0 ? <br /> : null}
+                </span>
+              ))}
             </span>
             <span className="shrink-0 whitespace-nowrap text-right text-[12px] font-bold">
-              {selectedPayment.label}
+              {selectedPaymentLabel}
             </span>
             <ChevronRight className={`h-6 w-6 shrink-0 transition ${paymentOpen ? "rotate-90" : ""}`} />
           </button>
@@ -806,8 +886,8 @@ export function CheckoutPageView() {
                       isActive ? "bg-[#ffe467]" : "bg-transparent"
                     }`}
                   >
-                    <CheckoutIcon src={option.icon} alt={option.label} />
-                    <span className="font-black">{option.label}</span>
+                    <CheckoutIcon src={option.icon} alt={labels.paymentOptions[option.labelKey]} />
+                    <span className="font-black">{labels.paymentOptions[option.labelKey]}</span>
                   </button>
                 );
               })}
@@ -821,18 +901,18 @@ export function CheckoutPageView() {
             onClick={() => setVoucherOpen((current) => !current)}
             className="flex w-full items-center gap-3 text-left"
           >
-            <CheckoutIcon src="/assets/buttons/voucher-001.png" alt="Voucher" />
-            <span className="font-black">Voucher</span>
+            <CheckoutIcon src="/assets/buttons/voucher-001.png" alt={labels.voucher} />
+            <span className="font-black">{labels.voucher}</span>
             <ChevronDown className={`ml-auto h-7 w-7 transition ${voucherOpen ? "rotate-180" : ""}`} />
           </button>
 
           {voucherOpen ? (
             <>
               <label className="flex min-h-12 items-center gap-3 rounded-full bg-[#ffe467] px-3 text-left">
-                <CheckoutIcon src="/assets/buttons/discount-typing-001.png" alt="Nhập mã giảm giá" />
+                <CheckoutIcon src="/assets/buttons/discount-typing-001.png" alt={labels.voucherPlaceholder} />
                 <input
                   className="min-w-0 flex-1 bg-transparent text-left text-sm font-black outline-none"
-                  placeholder="Nhập mã giảm giá"
+                  placeholder={labels.voucherPlaceholder}
                 />
                 <Search className="h-6 w-6" />
               </label>
@@ -852,7 +932,7 @@ export function CheckoutPageView() {
                           : "bg-[#f3f3f3]"
                       }`}
                     >
-                      {voucher.label}
+                      {labels.vouchers[voucher.labelKey]}
                     </button>
                   );
                 })}
@@ -863,27 +943,27 @@ export function CheckoutPageView() {
 
         <section className="rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="mb-6 flex items-center gap-3">
-            <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt="Chi tiết thanh toán" />
-            <h2 className="font-black">Chi tiết Thanh toán</h2>
+            <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt={labels.paymentDetails} />
+            <h2 className="font-black">{labels.paymentDetails}</h2>
           </div>
 
           <div className="space-y-5 text-sm font-bold leading-6 sm:text-base">
             <div className="flex justify-between gap-4 text-left">
-              <span>Tổng tiền hàng</span>
-              <span className="text-right">{formatPrice(subtotal)}</span>
+              <span>{labels.subtotal}</span>
+              <span className="text-right">{formatPrice(subtotal, locale)}</span>
             </div>
             <div className="flex justify-between gap-4 text-left">
-              <span>Tổng tiền phí vận chuyển</span>
-              <span className="text-right">{formatPrice(shippingFee)}</span>
+              <span>{labels.shippingFee}</span>
+              <span className="text-right">{formatPrice(shippingFee, locale)}</span>
             </div>
             <div className="flex justify-between gap-4 text-left">
-              <span>Giảm giá</span>
-              <span className="text-right">- {formatPrice(discountTotal)}</span>
+              <span>{labels.discount}</span>
+              <span className="text-right">- {formatPrice(discountTotal, locale)}</span>
             </div>
             <div className="border-t border-black pt-5">
               <div className="flex justify-between gap-4 text-left">
-                <span>Tổng thanh toán</span>
-                <span className="text-right">{formatPrice(paymentTotal)}</span>
+                <span>{labels.total}</span>
+                <span className="text-right">{formatPrice(paymentTotal, locale)}</span>
               </div>
             </div>
           </div>
@@ -894,17 +974,17 @@ export function CheckoutPageView() {
           disabled={checkoutItems.length === 0 || paymentStatus !== "idle"}
           onClick={handlePaymentClick}
           className="mx-auto flex h-[74px] w-[242px] items-center justify-center disabled:opacity-50"
-          aria-label="Thanh toán"
+          aria-label={labels.pay}
         >
           <img
             src="/assets/buttons/thanhtoan-button-001.png"
-            alt="Thanh toán"
+            alt={labels.pay}
             className="h-full w-full object-contain"
           />
         </button>
       </main>
 
-      {paymentStatus !== "idle" ? <PaymentLoadingOverlay status={paymentStatus} /> : null}
+      {paymentStatus !== "idle" ? <PaymentLoadingOverlay status={paymentStatus} labels={labels} /> : null}
 
       <RecipeMobileBottomNav />
     </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import type { HomeCategory, HomeCategoryKey } from "@/data/home-products";
 import { cn } from "@/lib/utils/cn";
 
@@ -34,6 +35,7 @@ export function CategoryTabs({
   onSelectCategory,
   className
 }: CategoryTabsProps) {
+  const { dictionary } = useLanguage();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [indicatorStep, setIndicatorStep] = useState(0);
@@ -137,13 +139,13 @@ export function CategoryTabs({
           >
             <Image
               src={homeButtonImage}
-              alt="Best deal"
+              alt={dictionary.categories.all}
               width={56}
               height={56}
               className="h-14 w-14 object-contain"
             />
           </span>
-          <span className="leading-tight">{"Best deal"}</span>
+          <span className="leading-tight">{dictionary.categories.all}</span>
         </button>
 
         {categories.map((category, index) => {
@@ -173,13 +175,13 @@ export function CategoryTabs({
               >
                 <Image
                   src={categoryButtonImageByKey[category.key]}
-                  alt={category.label}
+                  alt={dictionary.categories[category.key]}
                   width={56}
                   height={56}
                   className="h-14 w-14 object-contain"
                 />
               </span>
-              <span className="leading-tight">{category.label}</span>
+              <span className="leading-tight">{dictionary.categories[category.key]}</span>
             </button>
           );
         })}

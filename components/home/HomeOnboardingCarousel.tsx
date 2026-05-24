@@ -3,50 +3,33 @@
 import Image, { type StaticImageData } from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useLanguage } from "@/components/providers/language-provider";
+import { interpolate } from "@/lib/i18n/translations";
 import { cn } from "@/lib/utils/cn";
 
-type GuideCard = {
+type GuideCardVisual = {
   target: string;
-  eyebrow: string;
-  title: string;
-  description: string;
   image: string | StaticImageData;
-  imageAlt: string;
   cardClassName: string;
   imageClassName: string;
 };
 
-const guideCards: GuideCard[] = [
+const guideCardVisuals: GuideCardVisual[] = [
   {
-    eyebrow: "Chức năng 1 / 3",
-    title: "Quét nguyên liệu",
-    description:
-      "Chụp hoặc tải ảnh nguyên liệu bạn đang có. Nấu sẽ nhận diện thực phẩm và gợi ý món có thể nấu ngay.",
     target: "scan-mvp",
     image: "/assets/buttons/scan-button-001.png",
-    imageAlt: "Scan function",
     cardClassName: "bg-[#FFFFFF]",
     imageClassName: "h-[68px] w-[68px]"
   },
   {
-    eyebrow: "Chức năng 2 / 3",
-    title: "Nhập món ăn bạn muốn nấu",
-    description:
-      "Nhập món ăn và số người dùng bữa. AI sẽ gợi ý công thức, điều chỉnh định lượng và hỗ trợ thêm vào giỏ hàng.",
     target: "recipe-mvp",
     image: "/assets/buttons/function1-button-002.png",
-    imageAlt: "Typing recipe function",
     cardClassName: "bg-[#FFFFFF]",
     imageClassName: "h-[62px] w-[62px]"
   },
   {
-    eyebrow: "Chức năng 3 / 3",
-    title: "Cá nhân hoá nhân vật của bạn",
-    description:
-      "Vào User Profile để chọn outfit cho character đại diện của bạn, giúp trải nghiệm mua sắm vui hơn.",
     target: "user-profile",
     image: "/assets/buttons/button-023.png",
-    imageAlt: "User Profile function",
     cardClassName: "bg-[#FFFFFF]",
     imageClassName: "h-[70px] w-[70px]"
   }
@@ -57,6 +40,7 @@ interface HomeOnboardingCarouselProps {
 }
 
 export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselProps) {
+  const { dictionary } = useLanguage();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const pauseAutoSlideRef = useRef(false);
@@ -131,14 +115,14 @@ export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselPr
         return;
       }
 
-      scrollToCard((activeIndex + 1) % guideCards.length);
+      scrollToCard((activeIndex + 1) % guideCardVisuals.length);
     }, 10000);
 
     return () => window.clearInterval(interval);
   }, [activeIndex, scrollToCard]);
 
   return (
-    <div className="space-y-2" aria-label="Hướng dẫn chức năng">
+    <div className="space-y-2" aria-label={dictionary.onboarding.carouselLabel}>
       <div
         ref={scrollRef}
         className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -163,55 +147,59 @@ export function HomeOnboardingCarousel({ onOpenGuide }: HomeOnboardingCarouselPr
           dragBlockedClickRef.current = false;
         }}
       >
-        {guideCards.map((card, index) => (
-          <button
-            key={card.eyebrow}
-            ref={(node) => {
-              itemRefs.current[index] = node;
-            }}
-            type="button"
-            className={cn(
-              "grid min-w-full snap-center grid-cols-[82px_minmax(0,1fr)] items-center gap-3 rounded-[24px] px-4 py-4 text-left text-black active:scale-[0.99]",
-              card.cardClassName
-            )}
-            onClick={() => {
-              if (dragBlockedClickRef.current) {
-                return;
-              }
+        {guideCardVisuals.map((card, index) => {
+          const copy = dictionary.onboarding.cards[index];
 
-              onOpenGuide(card.target);
-            }}
-          >
-            <span className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full">
-              <Image
-                src={card.image}
-                alt={card.imageAlt}
-                width={76}
-                height={76}
-                className={cn("object-contain", card.imageClassName)}
-              />
-            </span>
-            <span className="min-w-0 px-1 py-1">
-              <span className="block text-[10px] font-black uppercase leading-tight text-[#4a7890]">
-                {card.eyebrow}
+          return (
+            <button
+              key={card.target}
+              ref={(node) => {
+                itemRefs.current[index] = node;
+              }}
+              type="button"
+              className={cn(
+                "grid min-w-full snap-center grid-cols-[82px_minmax(0,1fr)] items-center gap-3 rounded-[24px] px-4 py-4 text-left text-black active:scale-[0.99]",
+                card.cardClassName
+              )}
+              onClick={() => {
+                if (dragBlockedClickRef.current) {
+                  return;
+                }
+
+                onOpenGuide(card.target);
+              }}
+            >
+              <span className="flex h-[76px] w-[76px] items-center justify-center overflow-hidden rounded-full">
+                <Image
+                  src={card.image}
+                  alt={copy.imageAlt}
+                  width={76}
+                  height={76}
+                  className={cn("object-contain", card.imageClassName)}
+                />
               </span>
-              <span className="mt-1 block text-[15px] font-black leading-tight">
-                {card.title}
+              <span className="min-w-0 px-1 py-1">
+                <span className="block text-[10px] font-black uppercase leading-tight text-[#4a7890]">
+                  {copy.eyebrow}
+                </span>
+                <span className="mt-1 block text-[15px] font-black leading-tight">
+                  {copy.title}
+                </span>
+                <span className="mt-2 block text-[11px] font-semibold leading-[1.45] text-black/72">
+                  {copy.description}
+                </span>
               </span>
-              <span className="mt-2 block text-[11px] font-semibold leading-[1.45] text-black/72">
-                {card.description}
-              </span>
-            </span>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex items-center justify-center gap-2">
-        {guideCards.map((card, index) => (
+        {guideCardVisuals.map((card, index) => (
           <button
-            key={card.eyebrow}
+            key={card.target}
             type="button"
-            aria-label={`Xem hướng dẫn ${index + 1}`}
+            aria-label={interpolate(dictionary.onboarding.carouselIndicator, { index: index + 1 })}
             onClick={() => scrollToCard(index)}
             className={cn(
               "h-2.5 rounded-full transition-all",

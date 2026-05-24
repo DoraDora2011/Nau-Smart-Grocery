@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 
+import { useLanguage } from "@/components/providers/language-provider";
 import { saveDeliveryAddress } from "@/lib/utils/delivery-address";
 import {
   clearAnonymousOnboardingState,
@@ -41,6 +42,7 @@ async function submitUserProfileToSheet(profile: StoredUserProfile) {
 }
 
 export function UserLoginOnboardingModal() {
+  const { dictionary } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [name, setName] = useState("");
@@ -69,17 +71,17 @@ export function UserLoginOnboardingModal() {
     const nextErrors: FormErrors = {};
 
     if (!trimmedName) {
-      nextErrors.name = "Vui lòng nhập tên khách hàng.";
+      nextErrors.name = dictionary.loginOnboarding.nameError;
     }
 
     if (!trimmedAddress) {
-      nextErrors.address = "Vui lòng nhập địa chỉ.";
+      nextErrors.address = dictionary.loginOnboarding.addressError;
     }
 
     if (!trimmedEmail) {
-      nextErrors.email = "Vui lòng nhập Gmail cá nhân.";
+      nextErrors.email = dictionary.loginOnboarding.emailRequiredError;
     } else if (!emailPattern.test(trimmedEmail)) {
-      nextErrors.email = "Gmail chưa đúng định dạng.";
+      nextErrors.email = dictionary.loginOnboarding.emailInvalidError;
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -97,7 +99,7 @@ export function UserLoginOnboardingModal() {
 
     if (!saveStoredUserProfile(profile)) {
       setErrors({
-        storage: "Không thể lưu thông tin trên thiết bị này. Vui lòng thử lại."
+        storage: dictionary.loginOnboarding.storageError
       });
       return;
     }
@@ -120,17 +122,19 @@ export function UserLoginOnboardingModal() {
         aria-labelledby="user-login-title"
         className="w-full max-w-md rounded-[30px] bg-white px-5 py-6 shadow-[0_24px_80px_rgba(0,0,0,0.28)] sm:px-7"
       >
-        <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">Chào mừng bạn</p>
+        <p className="text-xs font-black uppercase leading-tight text-[#4a7890]">
+          {dictionary.loginOnboarding.eyebrow}
+        </p>
         <h2 id="user-login-title" className="mt-2 text-2xl font-black leading-tight">
-          Đăng nhập để bắt đầu
+          {dictionary.loginOnboarding.title}
         </h2>
         <p className="mt-2 text-sm font-semibold leading-6 text-black/62">
-          Điền thông tin để Nấu ghi nhớ tên và địa chỉ giao hàng của bạn.
+          {dictionary.loginOnboarding.description}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-4" noValidate>
           <label className="block">
-            <span className="mb-1.5 block text-sm font-black">Tên khách hàng</span>
+            <span className="mb-1.5 block text-sm font-black">{dictionary.loginOnboarding.name}</span>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -142,7 +146,7 @@ export function UserLoginOnboardingModal() {
           </label>
 
           <label className="block">
-            <span className="mb-1.5 block text-sm font-black">Địa chỉ</span>
+            <span className="mb-1.5 block text-sm font-black">{dictionary.loginOnboarding.address}</span>
             <input
               value={address}
               onChange={(event) => setAddress(event.target.value)}
@@ -155,7 +159,7 @@ export function UserLoginOnboardingModal() {
           </label>
 
           <label className="block">
-            <span className="mb-1.5 block text-sm font-black">Gmail cá nhân</span>
+            <span className="mb-1.5 block text-sm font-black">{dictionary.loginOnboarding.email}</span>
             <input
               type="email"
               value={email}
@@ -172,7 +176,7 @@ export function UserLoginOnboardingModal() {
             type="submit"
             className="mt-1 flex h-12 w-full items-center justify-center rounded-full bg-[#ffe467] px-6 text-base font-black text-black transition active:scale-[0.98]"
           >
-            Đăng nhập
+            {dictionary.loginOnboarding.submit}
           </button>
         </form>
       </section>

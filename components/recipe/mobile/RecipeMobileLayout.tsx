@@ -8,6 +8,8 @@ import { RecipeHistoryDrawerMobile } from "@/components/recipe/mobile/RecipeHist
 import { RecipeInputMobile } from "@/components/recipe/mobile/RecipeInputMobile";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
 import { RecipeResultMobile } from "@/components/recipe/mobile/RecipeResultMobile";
+import { useLanguage } from "@/components/providers/language-provider";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 
 type RecipeIngredient = {
   name: string;
@@ -114,6 +116,8 @@ export function RecipeMobileLayout({
   isRecipeFavorite,
   onToggleRecipeFavorite
 }: RecipeMobileLayoutProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].recipeMobile;
   const [isResultCollapsed, setIsResultCollapsed] = useState(false);
 
   useEffect(() => {
@@ -162,7 +166,7 @@ export function RecipeMobileLayout({
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="flex items-center gap-3 rounded-full bg-white px-5 py-3 text-sm font-black text-black">
             <LoaderCircle className="h-5 w-5 animate-spin" />
-            Đang tạo công thức...
+            {labels.loadingRecipe}
           </div>
         </div>
       ) : null}

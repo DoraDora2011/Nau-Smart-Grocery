@@ -96,6 +96,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main className="flex-1">{children}</main>
       </div>
 
+      {isHomePage ? null : isFullScreenAppPage ? (
+        <div className="fixed left-5 top-5 z-[95] lg:left-8 lg:top-8">
+          <LanguageSwitcher />
+        </div>
+      ) : null}
       {isHomePage || isFullScreenAppPage ? null : <MobileNav />}
       <UserLoginOnboardingModal />
       <DesktopWarning />

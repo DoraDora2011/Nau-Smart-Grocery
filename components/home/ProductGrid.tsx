@@ -1,6 +1,7 @@
 import type { HomeProduct } from "@/data/home-products";
 
 import { ProductCard } from "@/components/home/ProductCard";
+import { useLanguage } from "@/components/providers/language-provider";
 
 interface ProductGridProps {
   products: HomeProduct[];
@@ -21,10 +22,12 @@ export function ProductGrid({
   onDecreaseQuantity,
   desktop = false
 }: ProductGridProps) {
+  const { dictionary } = useLanguage();
+
   if (products.length === 0) {
     return (
       <div className="rounded-[28px] bg-white/70 px-5 py-8 text-center text-sm font-semibold text-black/65">
-        Chưa có sản phẩm phù hợp với bộ lọc hiện tại.
+        {dictionary.common.noProducts}
       </div>
     );
   }

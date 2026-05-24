@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 
 import logoMascot from "@/assets/brand_logo/logo-mascot-bigsize.png";
 import { AppImageButton } from "@/components/AppImageButton";
+import { useLanguage } from "@/components/providers/language-provider";
+import { uiLabels } from "@/lib/i18n/ui-labels";
 
 type RecipeChatMessage = {
   id: string;
@@ -70,6 +72,8 @@ export function RecipeInputMobile({
   onHistoryOpen,
   onBack
 }: RecipeInputMobileProps) {
+  const { locale } = useLanguage();
+  const labels = uiLabels[locale].recipeMobile;
   const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [voiceMessage, setVoiceMessage] = useState("");
@@ -92,19 +96,19 @@ export function RecipeInputMobile({
     const SpeechRecognition = window.SpeechRecognition ?? window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setVoiceMessage("Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói.");
+      setVoiceMessage(labels.voiceUnsupported);
       return;
     }
 
     const recognition = new SpeechRecognition();
     recognitionRef.current = recognition;
-    recognition.lang = "vi-VN";
+    recognition.lang = locale === "vi" ? "vi-VN" : "en-US";
     recognition.continuous = false;
     recognition.interimResults = false;
 
     recognition.onstart = () => {
       setIsListening(true);
-      setVoiceMessage("Đang nghe...");
+      setVoiceMessage(labels.listening);
     };
 
     recognition.onresult = (event) => {
@@ -119,27 +123,27 @@ export function RecipeInputMobile({
       setIsListening(false);
       setVoiceMessage(
         event.error === "not-allowed" || event.error === "service-not-allowed"
-          ? "Vui lòng cấp quyền micro để sử dụng nhập bằng giọng nói."
-          : "Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói."
+          ? labels.micPermission
+          : labels.voiceUnsupported
       );
     };
 
     recognition.onend = () => {
       setIsListening(false);
       recognitionRef.current = null;
-      setVoiceMessage((current) => (current === "Đang nghe..." ? "" : current));
+      setVoiceMessage((current) => (current === labels.listening ? "" : current));
     };
 
     try {
       recognition.start();
     } catch {
       setIsListening(false);
-      setVoiceMessage("Thiết bị của bạn chưa hỗ trợ nhập bằng giọng nói.");
+      setVoiceMessage(labels.voiceUnsupported);
     }
   };
 
   return (
-    <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#FFF1AF] px-6 pt-6 text-black lg:hidden">
+    <section className="fixed inset-0 z-0 min-h-[100dvh] overflow-hidden bg-[#FFF1AF] px-6 pt-[4.75rem] text-black lg:hidden">
       <div className="flex items-center justify-between">
         <AppImageButton
           buttonId="button-007"
@@ -170,7 +174,7 @@ export function RecipeInputMobile({
                   <div key={message.id} className="flex items-start gap-3">
                     <Image
                       src={logoMascot}
-                      alt="Mascot NÃ¢u"
+                      alt={labels.mascotAlt}
                       className="h-14 w-14 shrink-0 object-contain"
                     />
                     <button
@@ -198,20 +202,20 @@ export function RecipeInputMobile({
 
           {shouldShowGuide ? (
             <div className="flex items-center gap-3">
-              <Image src={logoMascot} alt="Mascot Nâu" className="h-14 w-14 shrink-0 object-contain" priority />
+              <Image src={logoMascot} alt={labels.mascotAlt} className="h-14 w-14 shrink-0 object-contain" priority />
               <button
                 type="button"
                 onClick={onOpenFilter}
                 className="flex min-h-11 flex-1 items-center justify-between rounded-full bg-white px-4 text-sm font-bold"
               >
-                Xem hướng dẫn nấu ăn ở đây
+                {labels.guideCta}
                 <ArrowRight className="h-5 w-5" />
               </button>
             </div>
           ) : null}
 
           <div className="flex items-center gap-3">
-            <Image src={logoMascot} alt="Mascot Nâu" className="h-14 w-14 shrink-0 object-contain" priority />
+            <Image src={logoMascot} alt={labels.mascotAlt} className="h-14 w-14 shrink-0 object-contain" priority />
             <div className="flex flex-1 flex-col gap-2">
               <label className="flex min-h-14 items-center gap-3 rounded-full border-2 border-black bg-white px-4 shadow-sm">
               <input
@@ -223,13 +227,13 @@ export function RecipeInputMobile({
                     onSubmitChat();
                   }
                 }}
-                placeholder="Nhập món ăn ở đây..."
+                placeholder={labels.placeholder}
                 className="min-w-0 flex-1 bg-transparent text-sm font-semibold text-black outline-none placeholder:text-black/70"
               />
                 <button
                   type="button"
                   onClick={handleVoiceInput}
-                  aria-label="Nhập món ăn bằng giọng nói"
+                  aria-label={labels.voiceInput}
                   className={`shrink-0 rounded-full p-1 transition lg:hidden ${
                     isListening ? "animate-pulse bg-[#FFE76A] text-black" : "text-black"
                   }`}
