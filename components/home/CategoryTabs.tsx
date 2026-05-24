@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/components/providers/language-provider";
 import type { HomeCategory, HomeCategoryKey } from "@/data/home-products";
 import { cn } from "@/lib/utils/cn";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 
 interface CategoryTabsProps {
   categories: HomeCategory[];
@@ -123,6 +124,7 @@ export function CategoryTabs({
           }}
           type="button"
           onClick={() => {
+            playUiSound("tap");
             centerCategoryItem(0);
             onSelectCategory(null);
           }}
@@ -142,7 +144,7 @@ export function CategoryTabs({
               alt={dictionary.categories.all}
               width={56}
               height={56}
-              className="h-14 w-14 object-contain"
+              className="h-14 w-14 object-contain contrast-[1.08] saturate-[1.05] [image-rendering:-webkit-optimize-contrast]"
             />
           </span>
           <span className="leading-tight">{dictionary.categories.all}</span>
@@ -159,6 +161,7 @@ export function CategoryTabs({
               }}
               type="button"
               onClick={() => {
+                playUiSound("tap");
                 centerCategoryItem(index + 1);
                 onSelectCategory(category.key);
               }}
@@ -178,7 +181,7 @@ export function CategoryTabs({
                   alt={dictionary.categories[category.key]}
                   width={56}
                   height={56}
-                  className="h-14 w-14 object-contain"
+                  className="h-14 w-14 object-contain contrast-[1.08] saturate-[1.05] [image-rendering:-webkit-optimize-contrast]"
                 />
               </span>
               <span className="leading-tight">{dictionary.categories[category.key]}</span>

@@ -161,6 +161,28 @@ img {
   }
 }
 
+.home-mascot-chat-bubble {
+  animation: home-mascot-chat-bubble-float 3.8s ease-in-out infinite;
+}
+
+@keyframes home-mascot-chat-bubble-float {
+  0%,
+  100% {
+    opacity: 0.96;
+    transform: translateY(0) scale(1);
+  }
+
+  45% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.015);
+  }
+
+  70% {
+    opacity: 0.92;
+    transform: translateY(-3px) scale(0.995);
+  }
+}
+
 .home-welcome-screen {
   animation: home-welcome-screen 3s ease-in-out forwards;
 }

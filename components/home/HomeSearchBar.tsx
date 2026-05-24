@@ -1,6 +1,7 @@
 import { Search, X } from "lucide-react";
 
 import { useLanguage } from "@/components/providers/language-provider";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 
 interface HomeSearchBarProps {
   value: string;
@@ -25,7 +26,10 @@ export function HomeSearchBar({ value, onChange, className }: HomeSearchBarProps
       {value ? (
         <button
           type="button"
-          onClick={() => onChange("")}
+          onClick={() => {
+            playUiSound("tap");
+            onChange("");
+          }}
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black/5 text-black transition hover:bg-black/10"
           aria-label={dictionary.home.clearSearch}
         >

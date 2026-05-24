@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppImageButton } from "@/components/AppImageButton";
 import { useLanguage } from "@/components/providers/language-provider";
 import { uiLabels } from "@/lib/i18n/ui-labels";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import {
   countUnreadNotifications,
   fetchWebsiteNotifications,
@@ -203,7 +204,11 @@ export function NotificationTextLink({ className }: { className?: string }) {
   const unreadCount = useUnreadNotificationCount();
 
   return (
-    <Link href="/notifications" className={`relative inline-flex items-center gap-2 ${className ?? ""}`}>
+    <Link
+      href="/notifications"
+      onClick={() => playUiSound("tap")}
+      className={`relative inline-flex items-center gap-2 ${className ?? ""}`}
+    >
       {uiLabels[locale].notifications.navLabel}
       {unreadCount > 0 ? (
         <span className="h-2.5 w-2.5 rounded-full bg-[#ffe467] ring-2 ring-white" aria-hidden="true" />

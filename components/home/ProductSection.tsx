@@ -2,6 +2,7 @@ import type { HomeProduct } from "@/data/home-products";
 
 import { ProductGrid } from "@/components/home/ProductGrid";
 import { useLanguage } from "@/components/providers/language-provider";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 
 interface ProductSectionProps {
   title: string;
@@ -37,7 +38,10 @@ export function ProductSection({
         {onToggleViewAll ? (
           <button
             type="button"
-            onClick={onToggleViewAll}
+            onClick={() => {
+              playUiSound("tap");
+              onToggleViewAll();
+            }}
             className="text-sm font-bold text-black transition hover:opacity-70"
           >
             {isExpanded ? dictionary.common.collapse : dictionary.common.viewAll}

@@ -4,6 +4,7 @@ import { Heart, Minus, Plus } from "lucide-react";
 import { useLanguage } from "@/components/providers/language-provider";
 import type { HomeProduct } from "@/data/home-products";
 import { getLocalizedProductText } from "@/lib/i18n/products";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 
 interface ProductCardProps {
   product: HomeProduct;
@@ -35,7 +36,10 @@ export function ProductCard({
     <article className="relative overflow-hidden rounded-[30px] bg-white p-2.5 pb-4 shadow-[0_16px_36px_rgba(46,46,18,0.08)]">
       <button
         type="button"
-        onClick={() => onToggleFavorite(product.id)}
+        onClick={() => {
+          playUiSound("tap");
+          onToggleFavorite(product.id);
+        }}
         className={`absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#6fbd7d] text-white ring-2 ring-white transition-transform duration-200 ${
           isFavorite ? "scale-110" : "scale-100"
         }`}
@@ -82,7 +86,10 @@ export function ProductCard({
             <div className="flex h-10 w-[72px] shrink-0 items-center justify-between rounded-full bg-[#6fbd7d] px-1.5 text-black">
               <button
                 type="button"
-                onClick={() => onDecreaseQuantity(product.id)}
+                onClick={() => {
+                  playUiSound("tap");
+                  onDecreaseQuantity(product.id);
+                }}
                 className="flex h-7 w-5 items-center justify-center rounded-full transition hover:bg-black/10"
                 aria-label={`${dictionary.common.remove} ${productText.name}`}
               >
