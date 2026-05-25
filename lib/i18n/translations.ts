@@ -79,7 +79,7 @@ export const translations = {
       chefAsk: "Hỏi Nấu đầu bếp",
       chefHint:
         "(Nhập món ăn và số người, Nấu sẽ gợi ý công thức, khẩu phần và tự động tạo giỏ hàng.)",
-      mascotGreeting: "Chào nha,\nmình là Nấu",
+      mascotGreeting: "Let Nâu\nhelp you “Nấu”",
       contact: "Liên hệ: (028) 3776 1300",
       footerLinks: [
         "Trung tâm dịch vụ",
@@ -90,11 +90,11 @@ export const translations = {
         "Điều khoản sử dụng"
       ],
       companyInfo: [
-        "Tên công ty: CÔNG TY TNHH Mô Tảo Thương Công",
-        "Người đại diện: Mô Đào",
+        "Tên công ty: CÔNG TY TNHH Mã Tấu Thành Công",
+        "Người đại diện: Mã Tấu Thành Công",
         "Mã số doanh nghiệp: 0123568888",
         "Địa chỉ: 702 Đường Nguyễn Văn Linh, TP. Hồ Chí Minh",
-        "Bản quyền Mô Tảo Thương Công © 2026"
+        "Bản quyền Mã Tấu Thành Công © 2026"
       ]
     },
     onboarding: {
@@ -354,7 +354,7 @@ export const translations = {
       chefAsk: "Ask Chef Nau",
       chefHint:
         "(Enter a dish and serving count; Nau suggests the recipe, portions, and a ready cart.)",
-      mascotGreeting: "Hi there,\nI'm Nau",
+      mascotGreeting: "Let Nâu\nhelp you “Nấu”",
       contact: "Contact: (028) 3776 1300",
       footerLinks: [
         "Service center",

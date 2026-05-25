@@ -6,6 +6,7 @@ import { BookOpen, Camera, ImagePlus, Minus, Plus, ScanLine } from "lucide-react
 
 import instructionScan from "@/assets/brand_logo/instruction-scan-001.png";
 import { AppImageButton } from "@/components/AppImageButton";
+import { DesktopFunctionHero } from "@/components/function/DesktopFunctionHero";
 import { useLanguage } from "@/components/providers/language-provider";
 import { uiLabels } from "@/lib/i18n/ui-labels";
 import { playUiSound } from "@/lib/utils/ui-sounds";
@@ -68,7 +69,80 @@ export function ImageIntake({
 }: ImageIntakeProps) {
   const { locale } = useLanguage();
   const labels = uiLabels[locale].scanInput;
+  const desktopCopy =
+    locale === "vi"
+      ? {
+          title: "Quét nguyên liệu",
+          uploadLabel: "Upload ảnh trong thiết bị của bạn",
+          guide: "Hướng dẫn sử dụng",
+          intro: (
+            <>
+              <span style={{ color: "#8A38F5" }}>Tải ảnh</span> nguyên liệu bạn đang có.
+              <br />
+              Nấu sẽ nhận diện thực phẩm và gợi ý những món có thể nấu ngay,
+              <br />
+              giúp bạn tận dụng đồ ăn còn lại và giảm lãng phí.
+            </>
+          )
+        }
+      : {
+          title: "Scan ingredients",
+          uploadLabel: "Upload an image from your device",
+          guide: "How to use",
+          intro: (
+            <>
+              <span style={{ color: "#8A38F5" }}>Upload an image</span> of the ingredients you have.
+              <br />
+              Nau will identify foods and suggest dishes you can cook right away,
+              <br />
+              helping you use leftovers and reduce waste.
+            </>
+          )
+        };
+  const desktopGuideSteps =
+    locale === "vi"
+      ? [
+          {
+            title: "Tải ảnh lên",
+            description: "Chụp hoặc chọn ảnh các nguyên liệu bạn đang có."
+          },
+          {
+            title: "Kiểm tra nguyên liệu",
+            description:
+              "\"Nấu\" sẽ hiển thị danh sách nguyên liệu tìm thấy trong ảnh. Bạn có thể xem lại và chỉnh sửa nếu cần."
+          },
+          {
+            title: "Nhận gợi ý món ăn",
+            description: "Dựa trên nguyên liệu đã nhận diện, Nấu sẽ đề xuất những món bạn có thể nấu."
+          },
+          {
+            title: "Xem nguyên liệu còn thiếu",
+            description:
+              "Nếu món ăn cần thêm nguyên liệu, Nấu sẽ gợi ý những món cần mua thêm để hoàn thiện bữa ăn."
+          }
+        ]
+      : [
+          {
+            title: "Upload an image",
+            description: "Take or choose a photo of the ingredients you have."
+          },
+          {
+            title: "Review ingredients",
+            description:
+              "Nau will show the ingredients found in the image. You can review and edit them if needed."
+          },
+          {
+            title: "Get dish ideas",
+            description: "Based on the detected ingredients, Nau will suggest dishes you can cook."
+          },
+          {
+            title: "See what's missing",
+            description:
+              "If a dish needs more ingredients, Nau will suggest what to buy to complete the meal."
+          }
+        ];
   const [isMobile, setIsMobile] = useState(false);
+  const [hasDetectedViewport, setHasDetectedViewport] = useState(false);
   const [cameraStatus, setCameraStatus] = useState<CameraStatus>("idle");
   const [isInstructionOpen, setIsInstructionOpen] = useState(true);
   const [zoomState, setZoomState] = useState<ZoomState>(DEFAULT_ZOOM_STATE);
@@ -81,7 +155,16 @@ export function ImageIntake({
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
-    const update = () => setIsMobile(mediaQuery.matches);
+    const update = () => {
+      const nextIsMobile = mediaQuery.matches;
+
+      setIsMobile(nextIsMobile);
+      setHasDetectedViewport(true);
+
+      if (!nextIsMobile) {
+        setIsInstructionOpen(false);
+      }
+    };
 
     update();
     mediaQuery.addEventListener("change", update);
@@ -281,30 +364,31 @@ export function ImageIntake({
   });
 
   return (
-    <section className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#FFF1AF] px-4 pb-[calc(6.75rem+env(safe-area-inset-bottom))] pt-[clamp(9.5rem,17dvh,10rem)] text-black lg:h-auto lg:min-h-[calc(100dvh-2rem)] lg:justify-between lg:overflow-visible lg:rounded-[42px] lg:px-14 lg:pb-20 lg:pt-28">
-      <input
-        ref={cameraInputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        className="hidden"
-        onChange={(event) => {
-          const file = event.target.files?.[0] ?? null;
-          onFileChange(file, "camera");
-        }}
-      />
-      <input
-        ref={uploadInputRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(event) => {
-          const file = event.target.files?.[0] ?? null;
-          onFileChange(file, "upload");
-        }}
-      />
-      <canvas ref={canvasRef} className="hidden" />
+    <>
+    <input
+      ref={cameraInputRef}
+      type="file"
+      accept="image/*"
+      capture="environment"
+      className="hidden"
+      onChange={(event) => {
+        const file = event.target.files?.[0] ?? null;
+        onFileChange(file, "camera");
+      }}
+    />
+    <input
+      ref={uploadInputRef}
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={(event) => {
+        const file = event.target.files?.[0] ?? null;
+        onFileChange(file, "upload");
+      }}
+    />
+    <canvas ref={canvasRef} className="hidden" />
 
+    <section className="flex h-[100dvh] min-h-0 flex-col overflow-hidden bg-[#FFF1AF] px-4 pb-[calc(6.75rem+env(safe-area-inset-bottom))] pt-[clamp(9.5rem,17dvh,10rem)] text-black lg:hidden">
       {isInstructionOpen ? (
         <div
           className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-black/40 px-5 py-[calc(1.5rem+env(safe-area-inset-top))]"
@@ -489,5 +573,190 @@ export function ImageIntake({
         </button>
       </div>
     </section>
+
+    <section className="hidden bg-[#FFF1AF] text-black lg:block">
+      {hasDetectedViewport && !isMobile && isInstructionOpen ? (
+        <div
+          className="fixed inset-0 z-[110] flex items-center justify-center overflow-y-auto bg-black/40 px-8 py-10"
+          role="dialog"
+          aria-modal="true"
+          aria-label={labels.guideLabel}
+        >
+          <div className="my-auto flex w-full max-w-[1120px] flex-col items-center">
+            <div
+              className="flex w-full flex-col items-center rounded-[24px] px-10 py-9 shadow-[0_20px_54px_rgba(0,0,0,0.22)] xl:px-12 xl:py-10"
+              style={{ backgroundColor: "#ffe66b" }}
+            >
+              <h2
+                className="text-center font-black"
+                style={{ fontSize: "clamp(38px, 2.8vw, 48px)", lineHeight: 1.05 }}
+              >
+                {desktopCopy.guide}
+              </h2>
+              <div className="mt-8 grid w-full grid-cols-2 gap-6 xl:mt-10 xl:grid-cols-4 xl:gap-7">
+                {desktopGuideSteps.map((step, index) => (
+                  <article
+                    key={step.title}
+                    className="grid min-h-[330px] rounded-[18px] bg-white px-6 py-7 shadow-[0_10px_22px_rgba(0,0,0,0.14)] xl:min-h-[350px] xl:px-7 xl:py-8"
+                    style={{ gridTemplateRows: "150px 1fr" }}
+                  >
+                    <div className="flex flex-col items-start gap-5">
+                      <span
+                        className="shrink-0 text-black"
+                        style={{
+                          alignItems: "center",
+                          backgroundColor: "#e9b8ff",
+                          borderRadius: "9999px",
+                          display: "flex",
+                          fontSize: 30,
+                          fontWeight: 900,
+                          height: 56,
+                          justifyContent: "center",
+                          lineHeight: 1,
+                          width: 56
+                        }}
+                      >
+                        {index + 1}
+                      </span>
+                      <h3
+                        className="font-extrabold"
+                        style={{ fontSize: 23, lineHeight: 1.22 }}
+                      >
+                        {step.title}
+                      </h3>
+                    </div>
+                    <p
+                      className="self-start pt-2 font-bold"
+                      style={{ fontSize: 16.5, lineHeight: 1.55 }}
+                    >
+                      {step.description}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound("tap");
+                setIsInstructionOpen(false);
+              }}
+              className="mt-7 w-full max-w-[19rem] rounded-full bg-white px-8 py-4 text-xl font-black text-black shadow-[0_6px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_0_rgba(0,0,0,0.16)] active:translate-y-0.5 active:shadow-[0_4px_0_rgba(0,0,0,0.18)]"
+            >
+              {labels.understood}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <DesktopFunctionHero
+        iconSlot={
+          <button
+            type="button"
+            onClick={() => {
+              playUiSound("scan");
+              openPicker("upload");
+            }}
+            className="relative flex h-[220px] w-[220px] shrink-0 items-center justify-center transition hover:scale-[1.03] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-8 focus-visible:outline-[#cd6cfd] xl:h-[240px] xl:w-[240px]"
+            aria-label={labels.pickImage}
+          >
+            <Image
+              src="/assets/buttons/scan-icon-desktop.png"
+              alt=""
+              width={190}
+              height={190}
+              className="h-[190px] w-[190px] -translate-y-2 object-contain xl:h-[204px] xl:w-[204px]"
+              priority
+            />
+          </button>
+        }
+        intro={desktopCopy.intro}
+        ctaLabel={desktopCopy.guide}
+        onCtaClick={() => {
+          playUiSound("tap");
+          setIsInstructionOpen(true);
+        }}
+      />
+
+      <section className="mx-auto max-w-[1480px] px-12 pb-32 pt-16">
+        <h1 className="mb-12 ml-[12.5%] text-[26px] font-black leading-tight">{desktopCopy.title}</h1>
+        <button
+          type="button"
+          onClick={() => {
+            playUiSound("scan");
+            openPicker("upload");
+          }}
+          className="mx-auto flex min-h-[650px] w-full items-center justify-center rounded-[24px] bg-white px-10 py-16 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(0,0,0,0.08)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-8 focus-visible:outline-[#cd6cfd]"
+          aria-label={labels.pickImage}
+        >
+          {previewUrl ? (
+            <span className="relative block h-[420px] w-full overflow-hidden rounded-[20px] bg-[#f6f3d5]">
+              <Image
+                src={previewUrl}
+                alt={labels.previewAlt}
+                width={1400}
+                height={900}
+                unoptimized
+                className="h-full w-full object-contain"
+                priority
+              />
+              {isLoading ? (
+                <span className="absolute inset-x-0 top-1/2 h-2 animate-[scan-sweep_2.2s_ease-in-out_infinite] rounded-full bg-[#cd6cfd] shadow-[0_0_18px_rgba(205,108,253,0.78)]" />
+              ) : null}
+            </span>
+          ) : (
+            <span className="flex flex-col items-center justify-center gap-10">
+              <Image
+                src="/assets/buttons/cloud-upload.png"
+                alt=""
+                width={260}
+                height={260}
+                className="h-[260px] w-[260px] object-contain"
+                priority
+              />
+              <span className="text-[26px] font-black leading-tight">{desktopCopy.uploadLabel}</span>
+            </span>
+          )}
+        </button>
+
+        {selectedFile ? (
+          <p className="mx-auto mt-5 max-w-[900px] truncate text-center text-sm font-bold text-black/50">
+            {selectedFile.name}
+          </p>
+        ) : null}
+        {errorMessage ? (
+          <p className="mx-auto mt-5 max-w-[900px] rounded-3xl bg-white px-5 py-3 text-center text-sm font-bold text-[#9a3f2f] shadow-sm">
+            {errorMessage}
+          </p>
+        ) : null}
+        {previewUrl ? (
+          <div className="mt-8 flex justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound("scan");
+                handleScanButton();
+              }}
+              disabled={isLoading}
+              className="rounded-full bg-[#ffe467] px-9 py-4 text-base font-black text-black shadow-sm transition hover:scale-[1.02] disabled:opacity-60"
+            >
+              {isLoading ? labels.analyzing : labels.analyzeImage}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                playUiSound("tap");
+                resetInputs();
+                onClear();
+              }}
+              className="rounded-full bg-white px-9 py-4 text-base font-black text-black shadow-sm transition hover:scale-[1.02]"
+            >
+              {labels.clearImage}
+            </button>
+          </div>
+        ) : null}
+      </section>
+    </section>
+    </>
   );
 }

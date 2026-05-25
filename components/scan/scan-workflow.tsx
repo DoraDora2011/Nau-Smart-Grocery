@@ -1,20 +1,27 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChefHat, Clock, Heart, LoaderCircle, Plus, Sparkles } from "lucide-react";
+import { ArrowLeft, ChefHat, Clock, Heart, LoaderCircle, Plus, Sparkles } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import { DesktopCategoryMenu } from "@/components/layout/DesktopCategoryMenu";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
 import { ScanHistoryDrawer, type ScanHistoryItem } from "@/components/scan/scan-history-drawer";
 import { ImageIntake } from "@/components/scan/image-intake";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useFavorites } from "@/components/providers/favorite-provider";
 import { useCart } from "@/components/providers/cart-provider";
+import { homeBrandAssets } from "@/data/home-products";
 import { productCatalog, type ProductCatalogItem } from "@/data/productCatalog";
 import { getLocalizedIngredientName } from "@/lib/i18n/ingredient-names";
 import { getLocalizedProductText } from "@/lib/i18n/products";
 import { interpolate } from "@/lib/i18n/translations";
 import { estimateRecipeNutrition } from "@/lib/services/recipeNutrition";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { CartItem } from "@/types";
 import type {
   DishSuggestion,
@@ -44,6 +51,80 @@ type ScanRecipeApiResult = {
 
 const SCAN_HISTORY_STORAGE_KEY = "nau-smart-grocery-scan-history";
 const SCAN_HISTORY_LIMIT = 20;
+
+function DesktopScanHeader() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 hidden rounded-b-[28px] bg-white shadow-sm lg:block">
+      <nav className="mx-auto flex h-[100px] max-w-[1480px] items-center justify-between gap-10 px-14">
+        <DesktopCategoryMenu />
+
+        <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
+          <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.home}
+          </Link>
+          <Link href="/favorite" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.favorite}
+          </Link>
+          <NotificationTextLink className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black" />
+          <a href="#policy" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.policy}
+          </a>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-7">
+          <LanguageSwitcher />
+          <AppImageButton
+            buttonId="button-021"
+            href="/cart"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center transition hover:scale-105"
+          />
+          <AppImageButton
+            buttonId="button-023"
+            href="/profile"
+            size={58}
+            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+          />
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+function DesktopScanFooter() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <footer className="hidden rounded-t-[34px] bg-white px-6 py-10 text-black lg:block xl:px-10 xl:py-12">
+      <div className="mx-auto grid max-w-7xl grid-cols-[0.95fr_1.35fr_1.5fr] items-start gap-8 xl:grid-cols-[1.1fr_1.4fr_1.8fr] xl:gap-12">
+        <div className="space-y-4">
+          <Image
+            src={homeBrandAssets.logoText}
+            alt="Nấu Smart Grocery"
+            className="h-32 w-auto object-contain xl:h-40"
+          />
+          <p className="text-sm font-bold leading-tight xl:text-[15px]">{dictionary.home.contact}</p>
+        </div>
+
+        <div className="grid content-start grid-cols-2 gap-x-8 gap-y-4 pt-6 text-sm font-bold leading-tight xl:gap-x-12 xl:gap-y-5 xl:pt-8 xl:text-[15px]">
+          {dictionary.home.footerLinks.map((link) => (
+            <a key={link} href="#footer" onClick={() => playUiSound("tap")} className="hover:underline">
+              {link}
+            </a>
+          ))}
+        </div>
+
+        <div className="space-y-2.5 pt-6 text-right text-sm font-bold leading-tight xl:space-y-3 xl:pt-8 xl:text-[15px]">
+          {dictionary.home.companyInfo.map((line) => (
+            <p key={line}>{line}</p>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
 
 const VIETNAMESE_DISH_COPY: Record<
   string,
@@ -402,7 +483,7 @@ export function ScanWorkflow() {
       steps: fallbackSteps,
       upsellProducts: getUpsellProductsForSuggestion(suggestion),
     });
-    setIsSuggestionSheetOpen(false);
+    setIsSuggestionSheetOpen(true);
     setCartMessage(null);
     setIsLoadingRecipeDetails(true);
 
@@ -468,6 +549,7 @@ export function ScanWorkflow() {
     setScanSummary(null);
     setSuggestionMessage(null);
     setIsSuggestionSheetOpen(false);
+    setSelectedRecipeView(null);
   }, []);
 
   const suggestDishesFromIngredients = useCallback(async (detectedIngredients: Ingredient[]) => {
@@ -590,9 +672,11 @@ export function ScanWorkflow() {
   }, [handleScan, isScanning, selectedFile, source]);
 
   return (
-    <div className="relative h-[100dvh] min-h-0 overflow-hidden bg-[#FFF1AF] text-black lg:h-auto lg:min-h-[100dvh]">
+    <div className="relative h-[100dvh] min-h-0 overflow-hidden bg-[#FFF1AF] text-black lg:h-auto lg:min-h-[100dvh] lg:overflow-visible">
+      <DesktopScanHeader />
+
       {!selectedRecipeView ? (
-        <div className="fixed right-6 top-[5.75rem] z-50">
+        <div className="fixed right-6 top-[5.75rem] z-50 lg:hidden">
           <AppImageButton
             buttonId="button-009"
             href="/"
@@ -603,7 +687,7 @@ export function ScanWorkflow() {
       ) : null}
 
       {!selectedRecipeView ? (
-        <div className="fixed left-6 top-[5.75rem] z-50">
+        <div className="fixed left-6 top-[5.75rem] z-50 lg:hidden">
           <AppImageButton
             buttonId="button-007"
             onClick={() => setIsHistoryOpen(true)}
@@ -631,11 +715,15 @@ export function ScanWorkflow() {
         errorMessage={errorMessage}
       />
 
+      <DesktopScanFooter />
+
       {ingredients.length > 0 ? (
         <div
-          className={`fixed inset-x-0 bottom-0 z-40 mx-auto max-h-[82dvh] max-w-md overflow-hidden rounded-t-[34px] bg-[#ffe467] px-6 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-20px_45px_rgba(0,0,0,0.25)] transition-transform duration-300 ease-out lg:max-w-3xl lg:pb-10 ${
-            isSuggestionSheetOpen ? "translate-y-0" : "translate-y-[calc(100%-24px)]"
-          }`}
+          className="fixed inset-x-0 bottom-0 z-40 mx-auto max-h-[82dvh] overflow-hidden rounded-t-[34px] bg-[#ffe467] px-6 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 shadow-[0_-20px_45px_rgba(0,0,0,0.25)] transition-transform duration-300 ease-out lg:pb-10"
+          style={{
+            transform: isSuggestionSheetOpen ? "translateY(0)" : "translateY(calc(100% - 4rem))",
+            width: "min(calc(100vw - 2rem), 768px)"
+          }}
         >
           <button
             type="button"
@@ -669,14 +757,207 @@ export function ScanWorkflow() {
           </button>
 
           <div className="max-h-[68dvh] overflow-y-auto pb-[calc(6.5rem+env(safe-area-inset-bottom))] pr-1 lg:pb-0">
+            {selectedRecipeView ? (
+              <div className="hidden lg:block">
+                {cartMessage ? (
+                  <div className="mb-4 rounded-full bg-white px-5 py-3 text-center text-sm font-black shadow-sm">
+                    {cartMessage}
+                  </div>
+                ) : null}
+
+                <div className="mb-5 flex items-center justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={closeScanRecipeView}
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-black text-black shadow-sm transition hover:-translate-y-0.5"
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                    {dictionary.common.back}
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <AppImageButton
+                      buttonId="button-007"
+                      onClick={() => setIsHistoryOpen(true)}
+                      size={44}
+                      className="flex h-11 w-11 items-center justify-center rounded-full"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleToggleSelectedRecipeFavorite}
+                      className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-sm ring-2 ring-white transition active:scale-90 ${
+                        favoriteRecipeIds.has(getScanFavoriteRecipeId(selectedRecipeView.suggestion))
+                          ? "bg-[#cd6cfd]"
+                          : "bg-[#69bf7b]"
+                      }`}
+                      aria-label={interpolate(dictionary.scan.saveDish, { dish: selectedRecipeView.display.name })}
+                    >
+                      <Heart className="h-5 w-5" fill="currentColor" />
+                    </button>
+                  </div>
+                </div>
+
+                <article className="w-full rounded-[28px] bg-white p-6 text-left shadow-sm">
+                  <div className="grid gap-6 lg:grid-cols-[1fr_260px]">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-wide text-black/45">
+                        {selectedRecipeView.display.cuisine}
+                      </p>
+                      <h2 className="mt-2 text-3xl font-black leading-tight">
+                        {selectedRecipeView.display.name}
+                      </h2>
+                      <p className="mt-4 text-sm font-bold leading-6 text-black/70">
+                        {selectedRecipeView.display.summary}
+                      </p>
+                      <p className="mt-4 text-sm font-bold leading-6 text-black/70">
+                        {dictionary.scan.recipeIntro}
+                      </p>
+                    </div>
+
+                    <div className="grid content-start grid-cols-2 gap-3">
+                      {[
+                        ["Calories", selectedRecipeView.nutrition.calories],
+                        ["Carb", selectedRecipeView.nutrition.carbs],
+                        ["Protein", selectedRecipeView.nutrition.protein],
+                        ["Fat", selectedRecipeView.nutrition.fat],
+                      ].map(([label, value]) => (
+                        <div
+                          key={label}
+                          className="rounded-2xl border-2 border-black/15 bg-white px-3 py-3 text-center text-[11px] font-black leading-tight"
+                        >
+                          <p className="text-base">{value}</p>
+                          <p>{label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 rounded-[24px] bg-[#fff4a8] px-5 py-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <h3 className="text-lg font-black leading-tight">
+                        {locale === "vi" ? "Hướng dẫn cách nấu" : "Cooking instructions"}
+                      </h3>
+                      {isLoadingRecipeDetails ? <LoaderCircle className="h-5 w-5 animate-spin" /> : null}
+                    </div>
+                    <div className="mt-4 space-y-3">
+                      {selectedRecipeView.steps.map((step, index) => (
+                        <p key={`${step}-${index}`} className="text-sm font-bold leading-6 text-black/80">
+                          {index + 1}. {step}
+                        </p>
+                      ))}
+                    </div>
+                    <p className="mt-5 text-sm font-black leading-6 text-black/80">
+                      {dictionary.scan.youtubeLabel}{" "}
+                      <a
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(
+                          `${dictionary.scan.youtubeQueryPrefix} ${selectedRecipeView.display.name}`,
+                        )}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#8A38F5] underline decoration-2 underline-offset-4"
+                      >
+                        {dictionary.scan.seeMore}
+                      </a>
+                    </p>
+                  </div>
+                </article>
+
+                <section className="mt-5 w-full rounded-[28px] bg-white/80 p-5 shadow-sm">
+                  <div className="rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_45%,#cd6cfd_100%)] px-6 py-3">
+                    <p className="text-sm font-black leading-6">{dictionary.scan.upsellIntro}</p>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-4 gap-4">
+                    {selectedRecipeView.upsellProducts.slice(0, 4).map((product) => {
+                      const productText = getLocalizedProductText(
+                        {
+                          id: product.id,
+                          name: product.name,
+                          detail: product.detail ?? product.displayUnit,
+                          category: product.category,
+                          categoryLabel: product.categoryLabel,
+                          sellUnitLabel: product.sellUnitLabel,
+                          displayUnit: product.displayUnit
+                        },
+                        locale
+                      );
+
+                      return (
+                        <article key={product.id} className="rounded-[22px] bg-white p-2.5 pb-4 shadow-sm">
+                          <div className="relative flex aspect-square items-center justify-center rounded-[18px] bg-[#EEEEEE] p-3">
+                            {product.image ? (
+                              <Image
+                                src={product.image}
+                                alt={productText.name}
+                                width={140}
+                                height={140}
+                                className="h-full w-full object-contain"
+                                unoptimized
+                              />
+                            ) : (
+                              <span className="text-center text-xs font-black">{productText.name}</span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => toggleUpsellFavorite(product)}
+                              className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-[#69bf7b] text-white ring-2 ring-white transition active:scale-90"
+                              aria-label={interpolate(dictionary.common.addFavorite, { product: productText.name })}
+                            >
+                              <Heart
+                                className="h-3.5 w-3.5"
+                                fill={favoriteIds.has(product.id) ? "#CD6CFD" : "none"}
+                                stroke={favoriteIds.has(product.id) ? "#CD6CFD" : "currentColor"}
+                              />
+                            </button>
+                          </div>
+
+                          <h3 className="mt-3 line-clamp-2 min-h-9 text-[11px] font-black leading-snug">
+                            {productText.name}
+                          </h3>
+                          <p className="mt-1 line-clamp-1 text-[10px] font-bold text-black/65">
+                            {productText.detail}
+                          </p>
+                          <div className="mt-3 flex items-end justify-between gap-2">
+                            <p className="text-base font-black leading-none">{formatPrice(product.price, locale)}</p>
+                            <button
+                              type="button"
+                              onClick={() => addUpsellProductToCart(product)}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#69bf7b] text-black"
+                              aria-label={interpolate(dictionary.scan.addProduct, { product: productText.name })}
+                            >
+                              {upsellQuantities[product.id] ? (
+                                <span className="text-xs font-black">{upsellQuantities[product.id]}</span>
+                              ) : (
+                                <Plus className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </section>
+              </div>
+            ) : null}
+
+            <div className={selectedRecipeView ? "lg:hidden" : ""}>
             <div className="mb-5">
-              <p className="text-sm font-black uppercase tracking-wide text-black/55">
-                {dictionary.scan.suggestionEyebrow}
-              </p>
-              <h2 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">{dictionary.scan.suggestionTitle}</h2>
-              <p className="mt-2 text-sm font-bold text-black/60">
-                {scanSummary ?? interpolate(dictionary.scan.identifiedCount, { count: ingredients.length })}
-              </p>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-black uppercase tracking-wide text-black/55">
+                    {dictionary.scan.suggestionEyebrow}
+                  </p>
+                  <h2 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">{dictionary.scan.suggestionTitle}</h2>
+                  <p className="mt-2 text-sm font-bold text-black/60">
+                    {scanSummary ?? interpolate(dictionary.scan.identifiedCount, { count: ingredients.length })}
+                  </p>
+                </div>
+                <AppImageButton
+                  buttonId="button-007"
+                  onClick={() => setIsHistoryOpen(true)}
+                  size={44}
+                  className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full lg:flex"
+                />
+              </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {ingredients.slice(0, 6).map((ingredient) => (
                   <span
@@ -800,12 +1081,13 @@ export function ScanWorkflow() {
                 ))}
               </div>
             ) : null}
+            </div>
           </div>
         </div>
       ) : null}
 
       {selectedRecipeView ? (
-        <div className="fixed inset-0 z-40 overflow-y-auto bg-white pb-0 text-black">
+        <div className="fixed inset-0 z-40 overflow-y-auto bg-white pb-0 text-black lg:hidden">
           {cartMessage ? (
             <div className="fixed left-1/2 top-4 z-[70] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full bg-white px-5 py-3 text-center text-sm font-black shadow-lg">
               {cartMessage}

@@ -1,11 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
-import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { DesktopCategoryMenu } from "@/components/layout/DesktopCategoryMenu";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { NotificationNavButton, NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { useLanguage } from "@/components/providers/language-provider";
 import { uiLabels } from "@/lib/i18n/ui-labels";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import {
   fetchWebsiteNotifications,
   markNotificationsSeen,
@@ -17,6 +21,47 @@ type NotificationGroup = {
   label: string;
   notifications: WebsiteNotification[];
 };
+
+function DesktopNotificationsHeader() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 hidden rounded-b-[28px] bg-white shadow-sm lg:block">
+      <nav className="mx-auto flex h-[100px] max-w-[1480px] items-center justify-between gap-10 px-14">
+        <DesktopCategoryMenu />
+
+        <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
+          <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.home}
+          </Link>
+          <Link href="/favorite" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.favorite}
+          </Link>
+          <NotificationTextLink className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black" />
+          <a href="#policy" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.policy}
+          </a>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-7">
+          <LanguageSwitcher />
+          <AppImageButton
+            buttonId="button-021"
+            href="/cart"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center transition hover:scale-105"
+          />
+          <AppImageButton
+            buttonId="button-023"
+            href="/profile"
+            size={58}
+            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+          />
+        </div>
+      </nav>
+    </header>
+  );
+}
 
 function parseNotificationDate(notification: WebsiteNotification) {
   if (notification.sentAt) {
@@ -211,9 +256,47 @@ export function NotificationsPage() {
   );
 
   return (
-    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
-      <main className="mx-auto w-full max-w-md px-6 pb-32 pt-[calc(2rem+env(safe-area-inset-top))] lg:max-w-4xl lg:pb-16 lg:pt-4">
-        <div className="flex justify-end">
+    <>
+      <style>{`
+        @media (min-width: 768px) {
+          .notifications-page-shell {
+            padding-top: clamp(160px, 12vh, 200px) !important;
+            min-height: 100dvh !important;
+          }
+
+          .notifications-page-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+          }
+
+          .notifications-page-content {
+            max-width: none !important;
+            width: min(100%, 1040px) !important;
+          }
+
+          .notifications-page-heading {
+            margin-top: 44px !important;
+          }
+
+          .notifications-page-list {
+            margin-top: 40px !important;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .notifications-page-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+
+          .notifications-page-content {
+            width: min(100%, 1120px) !important;
+          }
+        }
+      `}</style>
+      <DesktopNotificationsHeader />
+      <div className="notifications-page-shell min-h-[100dvh] bg-[#FFF1AF] text-black lg:min-h-[100dvh] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
+      <main className="notifications-page-main mx-auto w-full max-w-md px-6 pb-32 pt-[calc(2rem+env(safe-area-inset-top))] lg:max-w-[1120px] lg:px-0 lg:pb-16 lg:pt-0">
+        <div className="flex justify-end lg:hidden">
           <AppImageButton
             buttonId="button-009"
             href="/"
@@ -222,28 +305,28 @@ export function NotificationsPage() {
           />
         </div>
 
-        <header className="mt-14">
+        <header className="notifications-page-heading mx-auto mt-14 w-full lg:max-w-none">
           <h1 className="text-[28px] font-black leading-none sm:text-4xl">{labels.title}</h1>
-          <p className="mt-4 max-w-xl text-sm font-semibold leading-6 text-black/62 sm:text-base">
+          <p className="mt-4 max-w-3xl text-sm font-semibold leading-6 text-black/62 sm:text-base">
             {labels.description}
           </p>
         </header>
 
-        <section className="mt-9">
+        <section className="notifications-page-list mx-auto mt-9 w-full lg:mt-10">
           {loading ? (
-            <div className="rounded-[28px] bg-white/85 px-6 py-8 text-sm font-bold text-black/62 shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
+            <div className="notifications-page-content mx-auto rounded-[28px] bg-white/85 px-6 py-8 text-sm font-bold text-black/62 shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
               {labels.loading}
             </div>
           ) : null}
 
           {error ? (
-            <div className="rounded-[28px] bg-white/85 px-6 py-8 text-sm font-bold leading-6 text-black shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
+            <div className="notifications-page-content mx-auto rounded-[28px] bg-white/85 px-6 py-8 text-sm font-bold leading-6 text-black shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
               {error}
             </div>
           ) : null}
 
           {!loading && !error && visibleNotifications.length === 0 ? (
-            <div className="rounded-[30px] bg-white/80 px-6 py-10 text-center shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
+            <div className="notifications-page-content mx-auto rounded-[30px] bg-white/80 px-6 py-10 text-center shadow-[0_16px_34px_rgba(46,46,18,0.08)] lg:min-h-[300px] lg:px-10 lg:py-14">
               <div className="mx-auto h-14 w-14 rounded-full bg-[#ffe467]" />
               <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">{labels.emptyTitle}</h2>
               <p className="mt-3 text-sm font-semibold leading-6 text-black/65">
@@ -253,7 +336,7 @@ export function NotificationsPage() {
           ) : null}
 
           {!loading && !error && notificationGroups.length > 0 ? (
-            <div className="space-y-7">
+            <div className="notifications-page-content mx-auto space-y-7">
               {notificationGroups.map((group) => (
                 <section key={group.key}>
                   <h2 className="mb-3 px-1 text-sm font-black leading-tight text-black/55 sm:text-base">
@@ -266,7 +349,7 @@ export function NotificationsPage() {
                       return (
                         <article
                           key={notification.id}
-                          className="rounded-[24px] bg-white/88 px-4 py-4 shadow-[0_14px_30px_rgba(48,44,17,0.08)] sm:px-5"
+                          className="rounded-[24px] bg-white/88 px-4 py-4 shadow-[0_14px_30px_rgba(48,44,17,0.08)] sm:px-5 lg:px-7 lg:py-5"
                         >
                           <div className="flex items-start gap-3">
                             <span
@@ -303,6 +386,7 @@ export function NotificationsPage() {
       </main>
 
       <NotificationsBottomNav />
-    </div>
+      </div>
+    </>
   );
 }

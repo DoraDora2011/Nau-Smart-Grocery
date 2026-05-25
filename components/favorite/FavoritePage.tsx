@@ -1,12 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { Heart, Minus, Plus, Trash2 } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
-import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { DesktopCategoryMenu } from "@/components/layout/DesktopCategoryMenu";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { NotificationNavButton, NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { useCart } from "@/components/providers/cart-provider";
 import { useLanguage } from "@/components/providers/language-provider";
 import {
@@ -17,10 +20,52 @@ import {
 import { getLocalizedProductText } from "@/lib/i18n/products";
 import { interpolate, type Locale } from "@/lib/i18n/translations";
 import { uiLabels } from "@/lib/i18n/ui-labels";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { CartItem } from "@/types";
 
 type FavoriteTab = "products" | "recipes";
 type QuantityMap = Record<string, number>;
+
+function DesktopFavoriteHeader() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 hidden rounded-b-[28px] bg-white shadow-sm lg:block">
+      <nav className="mx-auto flex h-[100px] max-w-[1480px] items-center justify-between gap-10 px-14">
+        <DesktopCategoryMenu />
+
+        <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
+          <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.home}
+          </Link>
+          <Link href="/favorite" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.favorite}
+          </Link>
+          <NotificationTextLink className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black" />
+          <a href="#policy" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.policy}
+          </a>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-7">
+          <LanguageSwitcher />
+          <AppImageButton
+            buttonId="button-021"
+            href="/cart"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center transition hover:scale-105"
+          />
+          <AppImageButton
+            buttonId="button-023"
+            href="/profile"
+            size={58}
+            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+          />
+        </div>
+      </nav>
+    </header>
+  );
+}
 
 function formatPrice(value: number, locale: Locale) {
   return (
@@ -31,8 +76,8 @@ function formatPrice(value: number, locale: Locale) {
 
 function EmptyFavoriteState({ type, labels }: { type: FavoriteTab; labels: (typeof uiLabels)[Locale]["favorite"] }) {
   return (
-    <div className="rounded-[28px] bg-white/80 px-6 py-10 text-center shadow-[0_16px_34px_rgba(46,46,18,0.08)]">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#ffe467] text-black">
+    <div className="rounded-[28px] bg-white px-6 py-10 text-center shadow-[0_18px_36px_rgba(0,0,0,0.08)] lg:min-h-[300px] lg:w-full lg:px-10 lg:py-14">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#FFE467] text-black">
         <Heart className="h-7 w-7" />
       </div>
       <h2 className="mt-5 text-lg font-black leading-tight sm:text-xl">
@@ -43,7 +88,7 @@ function EmptyFavoriteState({ type, labels }: { type: FavoriteTab; labels: (type
       </p>
       <Link
         href="/"
-        className="mt-6 inline-flex rounded-full bg-white px-6 py-3 text-sm font-bold"
+        className="mt-6 inline-flex rounded-full bg-[#FFE467] px-6 py-3 text-sm font-bold shadow-[0_3px_0_rgba(0,0,0,0.14)]"
       >
         {labels.backShopping}
       </Link>
@@ -82,7 +127,7 @@ function FavoriteProductCard({
   const displayName = productText.name;
 
   return (
-    <article className="relative overflow-hidden rounded-[30px] bg-white p-2.5 pb-4 shadow-[0_16px_36px_rgba(46,46,18,0.08)]">
+    <article className="favorite-product-card relative overflow-hidden rounded-[30px] bg-white p-2.5 pb-4 shadow-[0_18px_38px_rgba(0,0,0,0.08)] lg:p-3 lg:pb-5">
       <button
         type="button"
         onClick={() => onRemove(product.id)}
@@ -92,20 +137,27 @@ function FavoriteProductCard({
         <Trash2 className="h-4.5 w-4.5" />
       </button>
 
-      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#EEEEEE] p-4">
+      <div className="flex aspect-[1.15/1] items-center justify-center rounded-[26px] bg-[#EEEEEE] p-4 lg:rounded-[28px] lg:p-6">
         {product.image ? (
-          <img src={product.image} alt={displayName} className="h-full w-full object-contain" />
+          <Image
+            src={product.image}
+            alt={displayName}
+            width={420}
+            height={360}
+            className="h-full w-full object-contain"
+            unoptimized
+          />
         ) : (
           <span className="px-2 text-center text-xs font-black leading-tight">{displayName}</span>
         )}
       </div>
 
-      <div className="space-y-2 px-1.5 pt-4">
+      <div className="space-y-2 px-1.5 pt-4 lg:px-2 lg:pt-5">
         <div>
-          <h3 className="line-clamp-2 min-h-9 text-[13px] font-bold leading-snug text-black">
+          <h3 className="line-clamp-2 min-h-9 text-[13px] font-bold leading-snug text-black lg:text-[15px]">
             {displayName}
           </h3>
-          <p className="mt-0.5 text-[11px] font-semibold text-black/70">{productText.detail}</p>
+          <p className="mt-1 text-[11px] font-semibold text-black/70 lg:text-xs">{productText.detail}</p>
         </div>
 
         <div className="flex items-center justify-between gap-2 pt-1">
@@ -179,7 +231,7 @@ function RecipeFavoriteCard({
       tabIndex={0}
       onClick={() => onOpen(recipe)}
       onKeyDown={handleKeyDown}
-      className="relative cursor-pointer rounded-[24px] bg-white px-5 py-4 text-black shadow-[0_16px_34px_rgba(46,46,18,0.08)] transition active:scale-[0.99]"
+      className="relative cursor-pointer rounded-[28px] bg-white px-5 py-4 text-black shadow-[0_18px_38px_rgba(0,0,0,0.08)] transition active:scale-[0.99] lg:px-6 lg:py-5"
       aria-label={interpolate(labels.openRecipe, { name: recipe.name })}
     >
       <button
@@ -210,7 +262,7 @@ function RecipeFavoriteCard({
         ].map(([label, value]) => (
           <div
             key={label}
-            className="rounded-2xl border-2 border-black px-2 py-2 text-center text-[10px] font-bold leading-tight"
+            className="rounded-2xl border-2 border-black/15 px-2 py-2 text-center text-[10px] font-bold leading-tight"
           >
             <p className="text-sm font-black">{value}</p>
             <p>{label}</p>
@@ -268,9 +320,9 @@ function FavoriteRecipeOverlay({
   };
 
   return (
-    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#FFF1AF] text-black lg:flex lg:items-start lg:justify-center">
+    <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#FFF1AF] text-black lg:flex lg:items-start lg:justify-center lg:px-8">
       <section
-        className="min-h-[100dvh] bg-[#ffe467] px-6 pb-32 pt-3 shadow-[0_-16px_40px_rgba(0,0,0,0.18)] lg:mt-8 lg:min-h-0 lg:w-full lg:max-w-xl lg:rounded-[36px]"
+        className="min-h-[100dvh] bg-[#FFE467] px-6 pb-32 pt-3 shadow-[0_-16px_40px_rgba(0,0,0,0.18)] lg:mt-8 lg:min-h-0 lg:w-full lg:max-w-4xl lg:rounded-[36px] lg:px-10 lg:pb-16"
         style={{
           transform: `translateY(${dragY}px)`,
           transition: isDragging ? "none" : "transform 180ms ease-out"
@@ -311,7 +363,7 @@ function FavoriteRecipeOverlay({
           ].map(([label, value]) => (
             <div
               key={label}
-              className="rounded-2xl border-2 border-black bg-white/70 px-2 py-2 text-center text-[10px] font-bold leading-tight"
+              className="rounded-2xl border-2 border-black/15 bg-white/70 px-2 py-2 text-center text-[10px] font-bold leading-tight"
             >
               <p className="text-sm font-black">{value}</p>
               <p>{label}</p>
@@ -321,7 +373,7 @@ function FavoriteRecipeOverlay({
 
         <div className="mt-7">
           <h2 className="text-lg font-black leading-tight sm:text-xl">{labels.ingredientsTitle}</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-3">
             {(ingredients.length > 0 ? ingredients : [labels.noIngredientList]).map(
               (ingredient, index) => (
                 <article
@@ -465,15 +517,68 @@ export function FavoritePage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:rounded-[36px] lg:px-8 lg:py-10">
+    <>
+      <style>{`
+        @media (min-width: 768px) {
+          .favorite-page-shell {
+            padding-top: clamp(160px, 12vh, 200px) !important;
+            min-height: 100dvh !important;
+          }
+
+          .favorite-page-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+          }
+
+          .favorite-page-tabs,
+          .favorite-page-content {
+            max-width: none !important;
+            width: min(100%, 1040px) !important;
+          }
+
+          .favorite-page-tabs {
+            margin-top: 44px !important;
+          }
+
+          .favorite-page-content {
+            margin-top: 48px !important;
+          }
+
+          .favorite-product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+            gap: 36px !important;
+          }
+
+          .favorite-product-card {
+            min-height: 390px;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .favorite-page-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+
+          .favorite-page-tabs,
+          .favorite-page-content {
+            width: min(100%, 1120px) !important;
+          }
+
+          .favorite-product-grid {
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+          }
+        }
+      `}</style>
+      <DesktopFavoriteHeader />
+      <div className="favorite-page-shell min-h-[100dvh] bg-[#FFF1AF] text-black lg:min-h-[100dvh] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
       {cartMessage ? (
         <div className="fixed left-1/2 top-4 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-full bg-white px-5 py-3 text-center text-sm font-semibold shadow-lg">
           {cartMessage}
         </div>
       ) : null}
 
-      <main className="mx-auto max-w-md px-6 pb-32 pt-8 lg:max-w-4xl">
-        <div className="flex justify-end">
+      <main className="favorite-page-main mx-auto w-full max-w-md px-6 pb-32 pt-8 lg:max-w-[1120px] lg:px-0 lg:pb-12 lg:pt-0">
+        <div className="flex justify-end lg:hidden">
           <AppImageButton
             buttonId="button-009"
             href={backHref}
@@ -482,14 +587,14 @@ export function FavoritePage() {
           />
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-6">
+        <div className="favorite-page-tabs mx-auto mt-14 grid w-full grid-cols-2 gap-6 lg:mt-20 lg:w-[min(100%,960px)] lg:max-w-none">
           <button
             type="button"
             onClick={() => setActiveTab("products")}
             style={{
               boxShadow: activeTab === "products" ? "0 2px 0 rgba(0,0,0,0.18)" : "none"
             }}
-            className={`h-11 rounded-full px-4 text-sm font-bold transition ${
+            className={`h-11 rounded-full px-4 text-sm font-bold transition lg:h-12 lg:text-base ${
               activeTab === "products"
                 ? "bg-[#ffe467]"
                 : "bg-white/55"
@@ -503,7 +608,7 @@ export function FavoritePage() {
             style={{
               boxShadow: activeTab === "recipes" ? "0 2px 0 rgba(0,0,0,0.18)" : "none"
             }}
-            className={`h-11 rounded-full px-4 text-sm font-bold transition ${
+            className={`h-11 rounded-full px-4 text-sm font-bold transition lg:h-12 lg:text-base ${
               activeTab === "recipes"
                 ? "bg-[#ffe467]"
                 : "bg-white/55"
@@ -513,10 +618,10 @@ export function FavoritePage() {
           </button>
         </div>
 
-        <section className="mt-12">
+        <section className="favorite-page-content mx-auto mt-12 w-full lg:mt-14 lg:w-[min(100%,960px)] lg:max-w-none">
           {activeTab === "products" ? (
             products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-5 gap-y-7">
+              <div className="favorite-product-grid grid grid-cols-2 gap-x-5 gap-y-7 lg:gap-x-8 lg:gap-y-9">
                 {products.map((product) => (
                   <FavoriteProductCard
                     key={product.id}
@@ -534,7 +639,7 @@ export function FavoritePage() {
               <EmptyFavoriteState type="products" labels={labels} />
             )
           ) : recipes.length > 0 ? (
-            <div className="space-y-8">
+            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
               {recipes.map((recipe) => (
                 <RecipeFavoriteCard
                   key={recipe.id}
@@ -556,6 +661,7 @@ export function FavoritePage() {
       ) : null}
 
       <FavoriteBottomNav />
-    </div>
+      </div>
+    </>
   );
 }

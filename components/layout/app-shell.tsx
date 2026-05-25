@@ -55,12 +55,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             ? "flex min-h-screen flex-col"
             : isProfilePage || isMascotPage
               ? "flex min-h-screen flex-col"
+            : isDishPage || isScanPage || isFavoritePage || isNotificationsPage || isCartPage || isCheckoutPage
+              ? "flex min-h-screen flex-col"
             : isFullScreenAppPage
               ? "flex min-h-screen flex-col lg:mx-auto lg:max-w-6xl lg:px-8 lg:pb-28 lg:pt-4"
             : "mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4 sm:px-6 lg:px-8"
         }
       >
-        <header className={`${isHomePage || isProfilePage || isMascotPage ? "hidden" : isFullScreenAppPage ? "hidden lg:flex" : "flex"} mb-6 items-center justify-between rounded-[32px] border border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(235,245,234,0.9))] px-5 py-4 shadow-[0_16px_40px_rgba(24,52,41,0.08)]`}>
+        <header className={`${isHomePage || isDishPage || isScanPage || isFavoritePage || isNotificationsPage || isCartPage || isCheckoutPage || isProfilePage || isMascotPage ? "hidden" : isFullScreenAppPage ? "hidden lg:flex" : "flex"} mb-6 items-center justify-between rounded-[32px] border border-white/60 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(235,245,234,0.9))] px-5 py-4 shadow-[0_16px_40px_rgba(24,52,41,0.08)]`}>
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-primary)] text-white">
               <Sparkles className="h-5 w-5" />
@@ -96,7 +98,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
 
       {isHomePage ? null : isFullScreenAppPage ? (
-        <div className="fixed left-5 top-5 z-[95] lg:left-8 lg:top-8">
+        <div className={`fixed left-5 top-5 z-[95] lg:left-8 lg:top-8 ${isDishPage || isScanPage || isFavoritePage || isNotificationsPage || isCartPage || isCheckoutPage || isProfilePage || isMascotPage ? "lg:hidden" : ""}`}>
           <LanguageSwitcher />
         </div>
       ) : null}

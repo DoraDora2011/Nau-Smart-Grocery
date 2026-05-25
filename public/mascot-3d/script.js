@@ -32,6 +32,7 @@ const appShell = document.querySelector(".app");
 const toolbarToggle = document.querySelector("#toolbarToggle");
 const urlParams = new URLSearchParams(window.location.search);
 const isPreviewMode = urlParams.get("preview") === "1";
+const isProfilePreviewFit = urlParams.get("previewFit") === "profile";
 const initialOutfitKey = getValidOutfitKey(urlParams.get("outfit"));
 const clock = new THREE.Clock();
 const raycaster = new THREE.Raycaster();
@@ -488,15 +489,17 @@ function fitCameraToObject(object) {
   const fitHeightDistance =
     maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360));
   const fitWidthDistance = fitHeightDistance / camera.aspect;
-  const distance = Math.max(fitHeightDistance, fitWidthDistance) * (isPreviewMode ? 1.65 : 1.25);
-  const direction = new THREE.Vector3(0, 0.18, 1).normalize();
+  const previewDistanceMultiplier = isProfilePreviewFit ? 2.05 : 1.65;
+  const distance = Math.max(fitHeightDistance, fitWidthDistance) * (isPreviewMode ? previewDistanceMultiplier : 1.25);
+  const direction = new THREE.Vector3(0, isProfilePreviewFit ? 0.04 : 0.18, 1).normalize();
 
   camera.position.copy(center).add(direction.multiplyScalar(distance));
   camera.near = Math.max(distance / 100, 0.01);
   camera.far = distance * 100;
   camera.updateProjectionMatrix();
 
-  controls.target.copy(center);
+  const targetOffset = isProfilePreviewFit ? new THREE.Vector3(0, -size.y * 0.08, 0) : new THREE.Vector3();
+  controls.target.copy(center).add(targetOffset);
   controls.update();
 }
 

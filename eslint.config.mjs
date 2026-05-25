@@ -1,6 +1,9 @@
 import nextConfig from "eslint-config-next";
 
 const eslintConfig = [
+  {
+    ignores: [".next-locked-*/**"]
+  },
   ...nextConfig,
   {
     rules: {

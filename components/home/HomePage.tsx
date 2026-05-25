@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { HomeDesktopLayout } from "@/components/home/HomeDesktopLayout";
 import { HomeMobileLayout } from "@/components/home/HomeMobileLayout";
 import { HomeWelcomeLoader } from "@/components/home/HomeWelcomeLoader";
+import { HOME_CATEGORY_ANCHOR, HOME_CATEGORY_EVENT } from "@/components/layout/DesktopCategoryMenu";
 import { OnboardingTour } from "@/components/onboarding/OnboardingTour";
 import { useFavorites } from "@/components/providers/favorite-provider";
 import { useLanguage } from "@/components/providers/language-provider";
@@ -34,6 +35,10 @@ function normalizeText(value: string) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[đĐ]/g, "d");
+}
+
+function isHomeCategoryKey(value: string | null): value is HomeCategoryKey {
+  return homeCategories.some((category) => category.key === value);
 }
 
 export function HomePage() {
@@ -78,6 +83,49 @@ export function HomePage() {
 
     return () => window.clearTimeout(timer);
   }, [cartMessage]);
+
+  useEffect(() => {
+    const scrollToCategorySection = () => {
+      window.requestAnimationFrame(() => {
+        document.getElementById(HOME_CATEGORY_ANCHOR)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    };
+
+    const applyCategory = (value: string | null) => {
+      const nextCategory = isHomeCategoryKey(value) ? value : null;
+
+      setActiveCategory(nextCategory);
+      setSearchQuery("");
+      scrollToCategorySection();
+    };
+
+    const applyCategoryFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const categoryParam = params.get("category");
+
+      if (window.location.hash === `#${HOME_CATEGORY_ANCHOR}` || categoryParam) {
+        applyCategory(categoryParam === "all" ? null : categoryParam);
+      }
+    };
+
+    const handleCategoryEvent = (event: Event) => {
+      const detail = (event as CustomEvent<{ category?: HomeCategoryKey | null }>).detail;
+
+      applyCategory(detail?.category ?? null);
+    };
+
+    applyCategoryFromUrl();
+    window.addEventListener("popstate", applyCategoryFromUrl);
+    window.addEventListener(HOME_CATEGORY_EVENT, handleCategoryEvent);
+
+    return () => {
+      window.removeEventListener("popstate", applyCategoryFromUrl);
+      window.removeEventListener(HOME_CATEGORY_EVENT, handleCategoryEvent);
+    };
+  }, []);
 
   const filteredProducts = useMemo(() => {
     const normalizedQuery = normalizeText(searchQuery.trim());

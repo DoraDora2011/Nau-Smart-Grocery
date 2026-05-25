@@ -178,7 +178,7 @@ export function ScanHistoryDrawer({
   }
 
   return (
-    <div className="fixed inset-0 z-[90] bg-black/25 text-black backdrop-blur-[1px] lg:hidden">
+    <div className="fixed inset-0 z-[90] bg-black/25 text-black backdrop-blur-[1px]">
       <button
         type="button"
         aria-label={labels.closeHistory}
@@ -186,7 +186,7 @@ export function ScanHistoryDrawer({
         onClick={onClose}
       />
 
-      <aside className="relative flex h-[100dvh] w-[76vw] max-w-[320px] flex-col overflow-hidden rounded-r-[28px] bg-white shadow-2xl">
+      <aside className="relative flex h-[100dvh] w-[76vw] max-w-[320px] flex-col overflow-hidden rounded-r-[28px] bg-white shadow-2xl lg:w-[360px] lg:max-w-[360px]">
         <div className="px-6 pt-6">
           <AppImageButton
             buttonId="button-007"

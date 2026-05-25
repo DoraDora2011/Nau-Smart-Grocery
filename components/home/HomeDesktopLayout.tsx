@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Menu } from "lucide-react";
-import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { AppImageButton } from "@/components/AppImageButton";
 import { CategoryTabs } from "@/components/home/CategoryTabs";
 import { HomeSearchBar } from "@/components/home/HomeSearchBar";
+import { DesktopCategoryMenu, HOME_CATEGORY_ANCHOR } from "@/components/layout/DesktopCategoryMenu";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { LocationBadgeIcon } from "@/components/home/LocationBadgeIcon";
 import { NotificationTextLink } from "@/components/notifications/NotificationNavButton";
@@ -220,18 +221,46 @@ export function HomeDesktopLayout({
   onReplayOnboarding
 }: HomeDesktopLayoutProps) {
   const { dictionary } = useLanguage();
+  const mascotVideoRef = useRef<HTMLVideoElement | null>(null);
+  const mascotLoopDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (mascotLoopDelayRef.current) {
+        clearTimeout(mascotLoopDelayRef.current);
+      }
+    };
+  }, []);
+
+  const handleMascotVideoReady = () => {
+    if (mascotVideoRef.current) {
+      mascotVideoRef.current.playbackRate = 0.72;
+    }
+  };
+
+  const handleMascotVideoEnded = () => {
+    if (mascotLoopDelayRef.current) {
+      clearTimeout(mascotLoopDelayRef.current);
+    }
+
+    mascotLoopDelayRef.current = setTimeout(() => {
+      const video = mascotVideoRef.current;
+
+      if (!video) {
+        return;
+      }
+
+      video.currentTime = 0;
+      video.playbackRate = 0.72;
+      void video.play();
+    }, 950);
+  };
+
   return (
     <div className="hidden min-h-screen bg-[#FFF1AF] text-black lg:block">
       <header className="fixed inset-x-0 top-0 z-50 rounded-b-[28px] bg-white shadow-sm">
         <nav className="mx-auto flex h-[92px] max-w-[1480px] items-center justify-between gap-6 px-8 xl:h-[100px] xl:gap-10 xl:px-14">
-          <button
-            type="button"
-            onClick={() => playUiSound("tap")}
-            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full bg-[#edc7ff] text-black transition hover:scale-105"
-            aria-label="Menu"
-          >
-            <Menu className="h-8 w-8" strokeWidth={2.4} />
-          </button>
+          <DesktopCategoryMenu />
 
           <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
             <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
@@ -352,28 +381,27 @@ export function HomeDesktopLayout({
           <div className="relative flex min-h-[430px] items-start justify-center pt-2 xl:min-h-[520px]">
             <div className="absolute inset-8 rounded-[56px] bg-white/15 blur-2xl" />
             <video
+              ref={mascotVideoRef}
               className="pointer-events-none relative h-[340px] w-full max-w-[390px] translate-y-10 scale-[2.05] bg-transparent object-contain brightness-[1.08] saturate-[1.2] xl:h-[360px] xl:max-w-[430px] xl:translate-y-7 xl:scale-[2.57] 2xl:translate-y-6 2xl:scale-[3]"
               src="/models/Animation - Wave.webm"
               autoPlay
-              loop
               muted
               playsInline
               preload="auto"
+              onLoadedMetadata={handleMascotVideoReady}
+              onEnded={handleMascotVideoEnded}
               aria-label="Nấu mascot waving animation"
             />
-            <div className="home-mascot-chat-bubble absolute -right-6 top-16 rounded-[999px] bg-white px-7 py-5 text-lg font-bold leading-snug shadow-sm xl:-right-8 xl:top-[4.5rem] xl:px-9 xl:py-6 xl:text-2xl 2xl:-right-6 2xl:top-20">
-              {dictionary.home.mascotGreeting.split("\n").map((line, index) => (
-                <span key={line}>
-                  {index > 0 ? <br /> : null}
-                  {line}
-                </span>
-              ))}
-            </div>
           </div>
+        </div>
+        <div className="home-mascot-chat-bubble absolute right-[clamp(2rem,5vw,7rem)] top-[clamp(7rem,15vh,10rem)] z-10 flex min-h-[132px] w-[300px] items-center justify-center rounded-[50%] bg-white px-12 py-7 text-center text-2xl font-bold leading-[1.35] shadow-sm xl:min-h-[152px] xl:w-[344px] xl:px-14 xl:text-[32px]">
+          <span className="relative z-10 block whitespace-pre-line">
+            {dictionary.home.mascotGreeting}
+          </span>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-4 pt-10">
+      <section id={HOME_CATEGORY_ANCHOR} className="mx-auto max-w-6xl scroll-mt-28 px-6 pb-4 pt-10">
         <h2 className="mb-8 text-xl font-bold leading-tight text-black sm:text-2xl">{dictionary.home.shoppingCategories}</h2>
         <CategoryTabs
           categories={categories}

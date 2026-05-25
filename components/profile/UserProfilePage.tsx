@@ -5,10 +5,13 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { AppImageButton } from "@/components/AppImageButton";
-import { NotificationNavButton } from "@/components/notifications/NotificationNavButton";
+import { DesktopCategoryMenu } from "@/components/layout/DesktopCategoryMenu";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { NotificationNavButton, NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { useLanguage } from "@/components/providers/language-provider";
 import { interpolate } from "@/lib/i18n/translations";
 import { uiLabels } from "@/lib/i18n/ui-labels";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import {
   readStoredUserProfile,
   USER_PROFILE_UPDATED_EVENT,
@@ -31,6 +34,47 @@ const profileMenuItems = [
   { labelKey: "support", href: "#support" },
   { labelKey: "languageRegion", href: "#language-region" },
 ] as const;
+
+function DesktopProfileHeader() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 hidden rounded-b-[28px] bg-white shadow-sm lg:block">
+      <nav className="mx-auto flex h-[100px] max-w-[1480px] items-center justify-between gap-10 px-14">
+        <DesktopCategoryMenu />
+
+        <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
+          <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.home}
+          </Link>
+          <Link href="/favorite" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.favorite}
+          </Link>
+          <NotificationTextLink className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black" />
+          <a href="#policy" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.policy}
+          </a>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-7">
+          <LanguageSwitcher />
+          <AppImageButton
+            buttonId="button-021"
+            href="/cart"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center transition hover:scale-105"
+          />
+          <AppImageButton
+            buttonId="button-023"
+            href="/profile"
+            size={58}
+            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+          />
+        </div>
+      </nav>
+    </header>
+  );
+}
 
 function ProfileBottomNav() {
   return (
@@ -67,7 +111,7 @@ export function UserProfilePage() {
   const [mascotPreview, setMascotPreview] = useState<MascotProfilePreview | null>(null);
   const [userProfile, setUserProfile] = useState<StoredUserProfile | null>(null);
   const [isPersonalInfoOpen, setIsPersonalInfoOpen] = useState(false);
-  const mascotPreviewSrc = `/mascot-3d/index.html?preview=1&outfit=${encodeURIComponent(
+  const mascotPreviewSrc = `/mascot-3d/index.html?preview=1&previewFit=profile&outfit=${encodeURIComponent(
     mascotPreview?.outfit ?? "default",
   )}`;
 
@@ -103,24 +147,91 @@ export function UserProfilePage() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] bg-[#FFF1AF] text-black lg:px-8 lg:py-10">
-      <main className="mx-auto max-w-md px-0 pb-32 lg:max-w-3xl">
-        <div className="px-1 pt-2">
+    <>
+      <style jsx global>{`
+        @media (min-width: 1024px) {
+          .profile-page-shell {
+            padding-top: clamp(122px, 9vh, 148px) !important;
+          }
+
+          .profile-page-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+          }
+
+          .profile-hero,
+          .profile-actions {
+            max-width: none !important;
+            width: min(100%, 1040px) !important;
+          }
+
+          .profile-hero {
+            margin-top: 18px !important;
+          }
+
+          .profile-mascot-room {
+            border-radius: 72px !important;
+            padding: 32px 28px 28px !important;
+          }
+
+          .profile-mascot-stage {
+            min-height: 380px !important;
+          }
+
+          .profile-mascot-frame {
+            height: 380px !important;
+          }
+
+          .profile-menu-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            column-gap: 32px !important;
+            row-gap: 24px !important;
+          }
+
+          .profile-membership {
+            grid-column: 1 / -1;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .profile-page-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+
+          .profile-hero,
+          .profile-actions {
+            width: min(100%, 1120px) !important;
+          }
+
+          .profile-mascot-stage {
+            min-height: 420px !important;
+          }
+
+          .profile-mascot-frame {
+            height: 420px !important;
+          }
+        }
+      `}</style>
+      <DesktopProfileHeader />
+      <div className="profile-page-shell min-h-[100dvh] bg-[#FFF1AF] text-black lg:min-h-[calc(100dvh-100px)] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
+      <main className="profile-page-main mx-auto w-full max-w-md px-0 pb-32 lg:max-w-[1120px] lg:pb-16">
+        <div className="profile-hero mx-auto px-1 pt-2 lg:px-0 lg:pt-0">
           <section
-            className="rounded-b-[42px] rounded-t-[48px] bg-[linear-gradient(180deg,#d7fdd9_0%,#edc7ff_52%,#cd6cfd_100%)] px-2 pb-3 pt-5 shadow-[0_10px_18px_rgba(0,0,0,0.24)] lg:rounded-b-[54px] lg:rounded-t-[88px] lg:px-4 lg:pb-5 lg:pt-8"
+            className="profile-mascot-room rounded-b-[42px] rounded-t-[48px] bg-[linear-gradient(180deg,#d7fdd9_0%,#edc7ff_52%,#cd6cfd_100%)] px-2 pb-3 pt-5 shadow-[0_10px_18px_rgba(0,0,0,0.24)] lg:rounded-b-[54px] lg:rounded-t-[88px] lg:px-4 lg:pb-5 lg:pt-8"
             aria-label={labels.mascotRoomLabel}
           >
-            <div className="flex min-h-[235px] items-center justify-center lg:min-h-[360px]">
+            <div className="profile-mascot-stage flex min-h-[235px] items-center justify-center lg:min-h-[360px]">
               <iframe
                 src={mascotPreviewSrc}
                 title={interpolate(labels.mascotTitle, { outfit: mascotPreview?.outfit ?? "default" })}
-                className="h-[235px] w-full border-0 bg-transparent lg:h-[360px]"
+                className="profile-mascot-frame h-[235px] w-full border-0 bg-transparent lg:h-[360px]"
               />
             </div>
           </section>
         </div>
 
-        <section className="space-y-8 px-5 pt-8 lg:px-8 lg:pt-10">
+        <section className="profile-actions mx-auto space-y-8 px-5 pt-8 lg:px-0 lg:pt-10">
           <Link
             href="/mascot"
             className="mx-auto flex min-h-[58px] w-full max-w-[320px] items-center justify-center rounded-full bg-[#ffe467] px-8 py-3 text-center text-[15px] font-black leading-snug text-black shadow-[0_8px_18px_rgba(0,0,0,0.2)] transition hover:brightness-105 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black active:scale-[0.98] lg:min-h-[66px] lg:max-w-[420px] lg:px-10 lg:text-lg"
@@ -131,13 +242,13 @@ export function UserProfilePage() {
 
           <Link
             href="#membership"
-            className="group flex min-h-10 items-center justify-between rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_36%,#cd6cfd_100%)] px-5 text-lg font-black leading-tight shadow-sm transition duration-200 hover:brightness-110 hover:shadow-[0_10px_22px_rgba(205,108,253,0.26)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#cd6cfd] active:scale-[0.99] active:brightness-110 sm:px-7 sm:text-[22px] lg:min-h-20 lg:px-8 lg:text-[26px]"
+            className="profile-membership group flex min-h-10 items-center justify-between rounded-full bg-[linear-gradient(100deg,#ffffff_0%,#edc7ff_36%,#cd6cfd_100%)] px-5 text-lg font-black leading-tight shadow-sm transition duration-200 hover:brightness-110 hover:shadow-[0_10px_22px_rgba(205,108,253,0.26)] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[#cd6cfd] active:scale-[0.99] active:brightness-110 sm:px-7 sm:text-[22px] lg:min-h-20 lg:px-8 lg:text-[26px]"
           >
             Membership
             <ChevronRight className="h-7 w-7 stroke-[2.3] transition group-hover:translate-x-1 group-focus-visible:translate-x-1 lg:h-10 lg:w-10" />
           </Link>
 
-          <div className="space-y-4 px-0 lg:space-y-5 lg:px-4">
+          <div className="profile-menu-grid space-y-4 px-0 lg:space-y-0 lg:px-0">
             {profileMenuItems.map((item) => {
               const itemLabel = labels.menu[item.labelKey];
 
@@ -187,7 +298,7 @@ export function UserProfilePage() {
         </section>
       </main>
 
-      <div className="fixed right-6 top-6 z-40">
+      <div className="fixed right-6 top-6 z-40 lg:hidden">
         <AppImageButton
           buttonId="button-009"
           href="/"
@@ -198,5 +309,6 @@ export function UserProfilePage() {
 
       <ProfileBottomNav />
     </div>
+    </>
   );
 }

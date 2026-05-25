@@ -165,6 +165,18 @@ img {
   animation: home-mascot-chat-bubble-float 3.8s ease-in-out infinite;
 }
 
+.home-mascot-chat-bubble::after {
+  position: absolute;
+  left: -24px;
+  bottom: 34px;
+  width: 64px;
+  height: 42px;
+  background: #ffffff;
+  border-radius: 0 0 0 100%;
+  clip-path: polygon(0 78%, 100% 28%, 72% 100%);
+  content: "";
+}
+
 @keyframes home-mascot-chat-bubble-float {
   0%,
   100% {

@@ -10,9 +10,13 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { AppImageButton } from "@/components/AppImageButton";
+import { DesktopCategoryMenu } from "@/components/layout/DesktopCategoryMenu";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { NotificationTextLink } from "@/components/notifications/NotificationNavButton";
 import { RecipeMobileBottomNav } from "@/components/recipe/mobile/RecipeMobileBottomNav";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useCart } from "@/components/providers/cart-provider";
@@ -25,6 +29,7 @@ import {
   readStoredDeliveryAddress,
   saveDeliveryAddress,
 } from "@/lib/utils/delivery-address";
+import { playUiSound } from "@/lib/utils/ui-sounds";
 import type { CartItem } from "@/types";
 
 const CHECKOUT_SELECTION_STORAGE_KEY = "nau-smart-grocery:checkout-selection";
@@ -62,6 +67,47 @@ type OrderSnapshot = {
   createdAt: string;
   totalQuantity: number;
 };
+
+function DesktopCheckoutHeader() {
+  const { dictionary } = useLanguage();
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50 hidden rounded-b-[28px] bg-white shadow-sm lg:block">
+      <nav className="mx-auto flex h-[100px] max-w-[1480px] items-center justify-between gap-10 px-14">
+        <DesktopCategoryMenu />
+
+        <div className="flex flex-1 items-center justify-center gap-[clamp(2rem,5vw,6.25rem)] text-base font-bold leading-none text-black">
+          <Link href="/" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.home}
+          </Link>
+          <Link href="/favorite" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.favorite}
+          </Link>
+          <NotificationTextLink className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black" />
+          <a href="#policy" onClick={() => playUiSound("tap")} className="whitespace-nowrap transition hover:-translate-y-0.5 hover:text-black">
+            {dictionary.nav.policy}
+          </a>
+        </div>
+
+        <div className="flex shrink-0 items-center gap-7">
+          <LanguageSwitcher />
+          <AppImageButton
+            buttonId="button-021"
+            href="/cart"
+            size={58}
+            className="flex h-[58px] w-[58px] items-center justify-center transition hover:scale-105"
+          />
+          <AppImageButton
+            buttonId="button-023"
+            href="/profile"
+            size={58}
+            className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full text-black transition hover:scale-105"
+          />
+        </div>
+      </nav>
+    </header>
+  );
+}
 
 function formatPrice(value: number, locale: Locale) {
   return (
@@ -115,7 +161,7 @@ function CheckoutItemRow({
   );
 
   return (
-    <article className="grid grid-cols-[86px_1fr_auto] gap-3 rounded-[22px] bg-white p-2">
+    <article className="checkout-item-row grid grid-cols-[86px_1fr_auto] gap-3 rounded-[22px] bg-white p-2">
       <div className="relative">
         <AppImageButton
           buttonId="button-015"
@@ -266,9 +312,46 @@ function FinalBillPage({
   labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
   return (
-    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
-      <main className="mx-auto max-w-md space-y-14 pt-8">
-        <section className="rounded-[14px] bg-white px-5 py-5 text-[15px] font-bold shadow-sm">
+    <>
+      <style jsx global>{`
+        @media (min-width: 1024px) {
+          .checkout-final-shell {
+            padding-top: clamp(122px, 9vh, 148px) !important;
+          }
+
+          .checkout-final-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            align-items: start !important;
+            gap: 32px !important;
+          }
+
+          .checkout-final-card {
+            border-radius: 28px !important;
+            padding: 32px !important;
+          }
+
+          .checkout-final-bill {
+            min-height: 360px !important;
+          }
+
+          .checkout-final-shipment {
+            min-height: 520px !important;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .checkout-final-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+        }
+      `}</style>
+      <DesktopCheckoutHeader />
+      <div className="checkout-final-shell relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:min-h-[calc(100dvh-100px)] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
+      <main className="checkout-final-main mx-auto max-w-md space-y-14 pt-8 lg:max-w-[1120px] lg:space-y-0 lg:pt-0">
+        <section className="checkout-final-card checkout-final-bill rounded-[14px] bg-white px-5 py-5 text-[15px] font-bold shadow-sm">
           <div className="grid grid-cols-[1fr_auto] items-center gap-x-5 gap-y-5">
             <span>{interpolate(labels.billDetails, { quantity: order.totalQuantity })}</span>
             <button
@@ -309,7 +392,7 @@ function FinalBillPage({
           </button>
         </section>
 
-        <section className="rounded-[14px] bg-white px-5 py-6 shadow-sm">
+        <section className="checkout-final-card checkout-final-shipment rounded-[14px] bg-white px-5 py-6 shadow-sm">
           <h1 className="flex items-center justify-center gap-2 text-center text-xl font-black leading-tight sm:text-[22px]">
             <PackageCheck className="h-6 w-6" />
             {labels.shipmentProcess}
@@ -324,6 +407,7 @@ function FinalBillPage({
 
       <RecipeMobileBottomNav />
     </div>
+    </>
   );
 }
 
@@ -421,9 +505,67 @@ function OrderPreviewPage({
   locale: Locale;
   labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
+  const { dictionary } = useLanguage();
+
   return (
-    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
-      <div className="fixed right-6 top-6 z-40">
+    <>
+      <style jsx global>{`
+        @media (min-width: 1024px) {
+          .checkout-preview-shell {
+            padding-top: clamp(122px, 9vh, 148px) !important;
+          }
+
+          .checkout-preview-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+          }
+
+          .checkout-preview-summary,
+          .checkout-preview-details-grid {
+            max-width: none !important;
+            width: min(100%, 1040px) !important;
+          }
+
+          .checkout-preview-summary {
+            margin-top: 18px !important;
+          }
+
+          .checkout-preview-list {
+            max-height: 360px !important;
+            border-radius: 28px !important;
+            padding: 18px !important;
+          }
+
+          .checkout-preview-details-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 32px !important;
+          }
+
+          .checkout-preview-card {
+            border-radius: 28px !important;
+            padding: 28px !important;
+          }
+
+          .checkout-preview-payment-card {
+            grid-column: 1 / -1;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .checkout-preview-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+
+          .checkout-preview-summary,
+          .checkout-preview-details-grid {
+            width: min(100%, 1120px) !important;
+          }
+        }
+      `}</style>
+      <DesktopCheckoutHeader />
+      <div className="checkout-preview-shell relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:min-h-[calc(100dvh-100px)] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
+      <div className="fixed right-6 top-6 z-40 lg:hidden">
         <AppImageButton
           buttonId="button-009"
           onClick={onBack}
@@ -432,22 +574,33 @@ function OrderPreviewPage({
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
-        <section>
+      <main className="checkout-preview-main mx-auto w-full max-w-md space-y-10 pt-[4.75rem] lg:max-w-[1120px] lg:space-y-10 lg:pt-0">
+        <div className="hidden justify-end lg:flex">
+          <button
+            type="button"
+            onClick={onBack}
+            className="rounded-full bg-white px-6 py-3 text-sm font-black text-black shadow-[0_10px_24px_rgba(46,46,18,0.12)] transition hover:-translate-y-0.5"
+          >
+            {dictionary.common.back}
+          </button>
+        </div>
+
+        <section className="checkout-preview-summary mx-auto">
           <div className="relative z-10 flex items-end justify-center gap-3 text-center">
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">{labels.summaryLeft}</h1>
             <img src={logoMascot.src} alt="Mascot Nau" className="h-20 w-20 object-contain" />
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[25px]">{labels.summaryRight}</h1>
           </div>
 
-          <div className="-mt-3 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
+          <div className="checkout-preview-list -mt-3 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
             {order.items.map((item) => (
               <ReadOnlyItemRow key={item.id} item={item} locale={locale} labels={labels} />
             ))}
           </div>
         </section>
 
-        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
+        <div className="checkout-preview-details-grid mx-auto space-y-10 lg:space-y-0">
+        <section className="checkout-preview-card space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="grid grid-cols-[40px_minmax(0,1fr)_minmax(0,1.35fr)] items-center gap-3 border-b border-black/55 pb-4">
             <CheckoutIcon src="/assets/buttons/address-001.png" alt={labels.address} />
             <span className="font-black">{labels.address}</span>
@@ -477,7 +630,7 @@ function OrderPreviewPage({
           </div>
         </section>
 
-        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="checkout-preview-card space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="flex w-full items-center gap-3 text-left">
             <CheckoutIcon src="/assets/buttons/voucher-001.png" alt={labels.voucher} />
             <span className="font-black">{labels.voucher}</span>
@@ -500,11 +653,13 @@ function OrderPreviewPage({
         </section>
 
         <PaymentDetailsCard order={order} locale={locale} labels={labels} />
+        </div>
 
       </main>
 
       <RecipeMobileBottomNav />
     </div>
+    </>
   );
 }
 
@@ -518,7 +673,7 @@ function PaymentDetailsCard({
   labels: (typeof uiLabels)[Locale]["checkout"];
 }) {
   return (
-    <section className="rounded-[18px] bg-white px-7 py-6 text-left">
+    <section className="checkout-preview-card checkout-preview-payment-card rounded-[18px] bg-white px-7 py-6 text-left">
       <div className="mb-6 flex items-center gap-3">
         <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt={labels.paymentDetails} />
         <h2 className="font-black">{labels.paymentDetails}</h2>
@@ -801,8 +956,70 @@ export function CheckoutPageView() {
   }
 
   return (
-    <div className="relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:pb-14">
-      <div className="fixed right-6 top-6 z-40">
+    <>
+      <style jsx global>{`
+        @media (min-width: 1024px) {
+          .checkout-page-shell {
+            padding-top: clamp(122px, 9vh, 148px) !important;
+          }
+
+          .checkout-page-main {
+            max-width: none !important;
+            width: min(calc(100vw - 160px), 1180px) !important;
+          }
+
+          .checkout-summary-section,
+          .checkout-details-grid {
+            max-width: none !important;
+            width: min(100%, 1040px) !important;
+          }
+
+          .checkout-summary-section {
+            margin-top: 18px !important;
+          }
+
+          .checkout-summary-list {
+            max-height: 360px !important;
+            border-radius: 28px !important;
+            padding: 18px !important;
+          }
+
+          .checkout-item-row {
+            grid-template-columns: 112px 1fr auto !important;
+            gap: 24px !important;
+            padding: 14px !important;
+          }
+
+          .checkout-details-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 32px !important;
+          }
+
+          .checkout-detail-card {
+            border-radius: 28px !important;
+            padding: 28px !important;
+          }
+
+          .checkout-payment-card {
+            grid-column: 1 / -1;
+          }
+        }
+
+        @media (min-width: 1280px) {
+          .checkout-page-main {
+            width: min(calc(100vw - 220px), 1240px) !important;
+          }
+
+          .checkout-summary-section,
+          .checkout-details-grid {
+            width: min(100%, 1120px) !important;
+          }
+        }
+      `}</style>
+      <DesktopCheckoutHeader />
+      <div className="checkout-page-shell relative min-h-[100dvh] bg-[#FFF1AF] px-6 pb-36 text-black lg:min-h-[calc(100dvh-100px)] lg:rounded-b-[36px] lg:px-[clamp(3rem,7vw,7.5rem)] lg:pb-[clamp(3rem,6vw,5.5rem)] lg:pt-[calc(100px+clamp(4.5rem,7vw,7rem))]">
+      <div className="fixed right-6 top-6 z-40 lg:hidden">
         <AppImageButton
           buttonId="button-009"
           onClick={handleBack}
@@ -811,15 +1028,15 @@ export function CheckoutPageView() {
         />
       </div>
 
-      <main className="mx-auto max-w-md space-y-10 pt-[4.75rem]">
-        <section className="-mt-1">
+      <main className="checkout-page-main mx-auto w-full max-w-md space-y-10 pt-[4.75rem] lg:max-w-[1120px] lg:pt-0">
+        <section className="checkout-summary-section mx-auto -mt-1">
           <div className="relative z-10 flex items-end justify-center gap-4 text-center">
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">{labels.summaryLeft}</h1>
             <img src={logoMascot.src} alt="Mascot Nau" className="h-24 w-24 object-contain" />
             <h1 className="pb-5 text-2xl font-black leading-tight sm:text-[28px]">{labels.summaryRight}</h1>
           </div>
 
-          <div className="-mt-4 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
+          <div className="checkout-summary-list -mt-4 max-h-[258px] space-y-4 overflow-y-auto rounded-[18px] bg-white p-3">
             {checkoutItems.length > 0 ? (
               checkoutItems.map((item) => (
                 <CheckoutItemRow
@@ -840,7 +1057,8 @@ export function CheckoutPageView() {
           </div>
         </section>
 
-        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
+        <div className="checkout-details-grid mx-auto space-y-10 lg:space-y-0">
+        <section className="checkout-detail-card space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <button
             type="button"
             onClick={handleChooseDeliveryAddress}
@@ -895,7 +1113,7 @@ export function CheckoutPageView() {
           ) : null}
         </section>
 
-        <section className="space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="checkout-detail-card space-y-5 rounded-[18px] bg-white px-7 py-6 text-left">
           <button
             type="button"
             onClick={() => setVoucherOpen((current) => !current)}
@@ -941,7 +1159,7 @@ export function CheckoutPageView() {
           ) : null}
         </section>
 
-        <section className="rounded-[18px] bg-white px-7 py-6 text-left">
+        <section className="checkout-detail-card checkout-payment-card rounded-[18px] bg-white px-7 py-6 text-left">
           <div className="mb-6 flex items-center gap-3">
             <CheckoutIcon src="/assets/buttons/cart-detailed-001.png" alt={labels.paymentDetails} />
             <h2 className="font-black">{labels.paymentDetails}</h2>
@@ -968,12 +1186,13 @@ export function CheckoutPageView() {
             </div>
           </div>
         </section>
+        </div>
 
         <button
           type="button"
           disabled={checkoutItems.length === 0 || paymentStatus !== "idle"}
           onClick={handlePaymentClick}
-          className="mx-auto flex h-[74px] w-[242px] items-center justify-center disabled:opacity-50"
+          className="checkout-pay-area mx-auto flex h-[74px] w-[242px] items-center justify-center disabled:opacity-50 lg:w-[242px]"
           aria-label={labels.pay}
         >
           <img
@@ -988,5 +1207,6 @@ export function CheckoutPageView() {
 
       <RecipeMobileBottomNav />
     </div>
+    </>
   );
 }
